@@ -66,4 +66,9 @@ public class StudentProfileController {
         profileStore.put(dto.getStudentId(), dto);
         return Result.success("学员档案维护成功");
     }
+
+    @GetMapping("/scores")
+    public Result<java.util.List<StudentProfile>> getScores() {
+        return Result.success(new java.util.ArrayList<>(profileStore.values()));
+    }
 }

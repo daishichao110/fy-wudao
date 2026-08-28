@@ -130,43 +130,7 @@
     </view>
   </view>
 
-  <!-- ==================== 4. 📦 物品选购计划发布与家长报名 (支持截止时间置灰、到货状态维护与供应商导出) ==================== -->
-  <view class="section-header-row margin-top-16">
-    <text class="section-title">📦 物品选购计划发布</text>
-    <view class="header-act-btn" wx:if="{{hasManagePermission}}" bindtap="openItemModal">＋ 发布选购计划</view>
-  </view>
-
-  <view class="item-demand-list">
-    <block wx:for="{{itemDemandList}}" wx:key="itemId">
-      <view class="item-card {{item.isExpired ? 'expired-card' : ''}}">
-        <view class="item-header">
-          <text class="item-name">📦 {{item.itemName}}</text>
-          <text class="item-status-tag {{item.isExpired ? 'tag-gray' : 'tag-emerald'}}">{{item.isExpired ? '⏰ 报名已截止 (已置灰)' : '🔥 选购报名中'}}</text>
-        </view>
-
-        <view class="item-meta-row margin-top-4">
-          <text class="im-pill">📅 截止时间: {{item.deadlineStr}}</text>
-          <text class="im-pill">🚚 预计到货: {{item.expectedArrivalDate}}</text>
-          <text class="im-pill status-click" bindtap="updateArrivalStatus" data-item="{{item}}">📦 到货状态: {{item.arrivalStatus}} ▾</text>
-        </view>
-
-        <!-- 尺码汇总统计 (发给供应商) -->
-        <view class="size-summary-box margin-top-8">
-          <text class="ss-title">📊 各尺码报名总数统计 (家委实时汇总):</text>
-          <text class="ss-content">{{item.sizeSummaryStr}}</text>
-        </view>
-
-        <view class="item-footer margin-top-8">
-          <view class="export-btn" bindtap="exportPlanForSupplier" data-item="{{item}}">📥 导出采购单给供应商</view>
-        </view>
-      </view>
-    </block>
-
-    <view class="empty-box" wx:if="{{itemDemandList.length === 0}}">
-      <text class="empty-icon">📦</text>
-      <text class="empty-text">暂无物品选购计划发布</text>
-    </view>
-  </view>
+  <!-- 提示：所有选购计划与配置工具统一集成于【我的】页面 -->
 
   <!-- ==================== 弹窗 1：🛠️ 管理员 & 家委【编辑/新建舞团工作小组 Modal】 ==================== -->
   <view class="modal-mask" wx:if="{{showWorkGroupModal}}">

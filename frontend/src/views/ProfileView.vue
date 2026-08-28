@@ -946,7 +946,7 @@ onMounted(() => {
 .u-info-col { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .u-name-line { display: flex; align-items: center; gap: 8px; }
 .u-name { font-size: 18px; font-weight: 800; }
-.role-badge { font-size: 10px; font-weight: 700; background: #fef08a; color: #854d0e; padding: 2px 8px; border-radius: 10px; }
+.role-badge { font-size: 11px; font-weight: 800; background: #ffffff; color: #ea580c; padding: 2px 10px; border-radius: 12px; box-shadow: 0 2px 6px rgba(234, 88, 12, 0.15); display: inline-flex; align-items: center; }
 .u-sub-text { font-size: 11px; opacity: 0.9; }
 .switch-btn { font-size: 11px; font-weight: 700; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px); padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.3); color: #ffffff; text-decoration: none; }
 

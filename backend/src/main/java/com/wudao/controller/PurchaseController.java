@@ -63,7 +63,7 @@ public class PurchaseController {
             p.setUnitPrice(price);
             p.setTotalAmount(price.multiply(new BigDecimal(count)));
             p.setRemark("家委采购公示 / 预算数量: " + count);
-            p.setProofUrl("http://172.20.10.4:8080/image/purchase_proof.jpg");
+            p.setProofUrl("/image/purchase_proof.jpg");
             p.setCreatedAt(new Date());
             purchaseService.createPurchase(p);
         }

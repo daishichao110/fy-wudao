@@ -1,5 +1,5 @@
-// 微信小程序开发与真机调试配置: 支持局域网 IP 直连 (172.20.10.4) 解决真机 127.0.0.1 无法连接 Mac 本地 8080 端口问题
-const BASE_URL = 'http://172.20.10.4:8080/api';
+// 微信小程序开发与真机调试配置: 支持局域网 IP 直连 (192.168.1.35) 解决真机/模拟器连接 Mac 本地 8080 端口问题
+const BASE_URL = 'http://192.168.1.35:8080/api';
 
 const request = (url, method = 'GET', data = {}, showErrorToast = false) => {
   const token = wx.getStorageSync('token') || '';
@@ -33,8 +33,23 @@ const request = (url, method = 'GET', data = {}, showErrorToast = false) => {
   });
 };
 
+const getImageUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    const imgIndex = url.indexOf('/image');
+    if (imgIndex !== -1) {
+      url = url.substring(imgIndex);
+    } else {
+      return url;
+    }
+  }
+  const host = BASE_URL.replace(/\/api$/, '');
+  return url.startsWith('/') ? `${host}${url}` : `${host}/${url}`;
+};
+
 module.exports = {
   BASE_URL: BASE_URL,
+  getImageUrl: getImageUrl,
   request: request,
   wxLogin: (data) => request('/auth/wx-login', 'POST', data, true),
   applyLoginPermission: (data) => request('/auth/apply-login', 'POST', data, true),

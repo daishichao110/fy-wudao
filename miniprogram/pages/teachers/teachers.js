@@ -24,8 +24,12 @@ Page({
     api.getTeacherList().then(res => {
       const rawList = (res && res.data) ? res.data : [];
       const uniqueList = this.deduplicateTeachers(rawList);
-      this.setData({ teacherList: uniqueList });
-      this.filterByCategory(this.data.currentCategory, uniqueList);
+      const mapped = uniqueList.map(item => ({
+        ...item,
+        avatarUrl: api.getImageUrl(item.avatarUrl)
+      }));
+      this.setData({ teacherList: mapped });
+      this.filterByCategory(this.data.currentCategory, mapped);
       if (typeof cb === 'function') cb();
     }).catch(err => {
       console.log('读取后端教师列表 API 异常:', err);

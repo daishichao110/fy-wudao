@@ -36,7 +36,7 @@ public class BannerController {
         }
         if (banner.getImageUrl() == null || banner.getImageUrl().trim().isEmpty()) {
             // 设置默认优雅精美配图
-            banner.setImageUrl("http://172.20.10.4:8080/image/banner1.jpg");
+            banner.setImageUrl("/image/banner1.jpg");
         }
         if (banner.getBadge() == null || banner.getBadge().trim().isEmpty()) {
             banner.setBadge("🎪 大型演出");

@@ -27,7 +27,7 @@ Page({
       eventDate: '',
       location: '',
       content: '',
-      imageUrl: 'http://172.20.10.4:8080/image/banner1.jpg'
+      imageUrl: '/image/banner1.jpg'
     }
   },
 
@@ -63,7 +63,11 @@ Page({
   loadBanners() {
     api.getBannerList().then(res => {
       const list = (res && res.data) ? res.data : [];
-      this.setData({ bannerList: list });
+      const mapped = list.map(item => ({
+        ...item,
+        imageUrl: api.getImageUrl(item.imageUrl)
+      }));
+      this.setData({ bannerList: mapped });
     }).catch(err => {
       console.log('读取后端 Banner API 异常:', err);
     });
@@ -82,7 +86,11 @@ Page({
   loadTeachers(cb) {
     api.getTeacherList().then(res => {
       const list = (res && res.data) ? res.data : [];
-      this.setData({ previewTeachers: list.slice(0, 2) });
+      const mapped = list.map(t => ({
+        ...t,
+        avatarUrl: api.getImageUrl(t.avatarUrl)
+      }));
+      this.setData({ previewTeachers: mapped.slice(0, 2) });
       if (cb) cb();
     }).catch(err => {
       console.log('读取后端教师列表 API 异常:', err);
@@ -149,10 +157,10 @@ Page({
             }
           });
         } else if (res.tapIndex === 1) {
-          this.setData({ 'publishBannerForm.imageUrl': 'http://172.20.10.4:8080/image/banner1.jpg' });
+          this.setData({ 'publishBannerForm.imageUrl': '/image/banner1.jpg' });
           wx.showToast({ title: '已应用剧照 1', icon: 'success' });
         } else if (res.tapIndex === 2) {
-          this.setData({ 'publishBannerForm.imageUrl': 'http://172.20.10.4:8080/image/banner2.jpg' });
+          this.setData({ 'publishBannerForm.imageUrl': '/image/banner2.jpg' });
           wx.showToast({ title: '已应用剧照 2', icon: 'success' });
         }
       }

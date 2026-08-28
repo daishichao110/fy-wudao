@@ -45,7 +45,7 @@
   <view class="teacher-preview-list">
     <block wx:for="{{previewTeachers}}" wx:key="teacherId">
       <view class="tp-card" bindtap="openTeacherModal" data-teacher="{{item}}">
-        <image class="tp-avatar" src="{{item.avatarUrl || 'http://172.20.10.4:8080/image/teacher1.jpg'}}" mode="aspectFill"></image>
+        <image class="tp-avatar" src="{{item.avatarUrl || '/image/teacher1.jpg'}}" mode="aspectFill"></image>
         <view class="tp-content">
           <view class="tp-name-line">
             <text class="tp-name">{{item.name}}</text>
@@ -146,7 +146,7 @@
       <scroll-view scroll-y class="modal-body">
         <view class="t-detail-card" wx:if="{{selectedTeacher}}">
           <view class="td-header">
-            <image class="td-avatar" src="{{selectedTeacher.avatarUrl || 'http://172.20.10.4:8080/image/teacher1.jpg'}}" mode="aspectFill"></image>
+            <image class="td-avatar" src="{{selectedTeacher.avatarUrl || '/image/teacher1.jpg'}}" mode="aspectFill"></image>
             <view class="td-meta">
               <text class="td-name">{{selectedTeacher.name}}</text>
               <text class="td-title">{{selectedTeacher.title}}</text>

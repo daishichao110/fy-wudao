@@ -1,0 +1,146 @@
+<!-- 🏆 劲松金帆舞团 —— 独立学员成绩与测评管理页面 -->
+<view class="container">
+  <!-- 1. 👑 权限视角 Header Banner -->
+  <view class="permission-banner-card">
+    <view class="pbc-left">
+      <text class="pbc-title">{{roleTitle}}</text>
+      <text class="pbc-desc">{{permissionTip}}</text>
+    </view>
+    <view class="pbc-badge">
+      <text>{{userRoleName}}</text>
+    </view>
+  </view>
+
+  <!-- 2. 🔍 年级检索与录入成绩操作栏 -->
+  <view class="filter-action-bar margin-top-12">
+    <!-- 年级下拉选择器 (管理员/老师可自由切全校或各年级；家委会/家长固定显示) -->
+    <view class="fab-left">
+      <block wx:if="{{canSelectGrade}}">
+        <picker bindchange="onGradeChange" value="{{gradeIndex}}" range="{{gradeOptions}}">
+          <view class="picker-pill-orange">
+            <text class="ppo-label">年级筛选: </text>
+            <text class="ppo-text">{{gradeOptions[gradeIndex]}}</text>
+            <text class="ppo-arrow">▼</text>
+          </view>
+        </picker>
+      </block>
+      <block wx:else>
+        <view class="locked-grade-pill">
+          <text class="lgp-text">📍 当前维度: {{lockedGradeName}}</text>
+        </view>
+      </block>
+    </view>
+
+    <!-- 录入/新增成绩信息按钮 -->
+    <view class="btn-add-score" bindtap="openAddScoreModal" wx:if="{{canAddScore}}">
+      <text class="bas-icon">➕</text>
+      <text class="bas-text">录入/编辑成绩</text>
+    </view>
+  </view>
+
+  <!-- 3. 📊 成绩榜单与档案卡片列表 -->
+  <view class="scores-list margin-top-12">
+    <block wx:if="{{displayScores.length > 0}}">
+      <block wx:for="{{displayScores}}" wx:key="id">
+        <view class="score-item-card">
+          <view class="sic-header">
+            <view class="sich-left">
+              <view class="rank-badge {{index === 0 ? 'rank-1' : (index === 1 ? 'rank-2' : (index === 2 ? 'rank-3' : 'rank-normal'))}}">
+                <text>{{index === 0 ? '🥇 1' : (index === 1 ? '🥈 2' : (index === 2 ? '🥉 3' : index + 1))}}</text>
+              </view>
+              <text class="sic-name">{{item.studentName}}</text>
+              <text class="sic-grade-tag">{{item.gradeLevel}}</text>
+            </view>
+
+            <view class="sich-right">
+              <view class="sic-total">
+                <text class="st-label">总分</text>
+                <text class="st-num">{{item.totalScore}} 分</text>
+              </view>
+              <!-- 编辑改动按钮：符合对应权限时方可触发编辑 -->
+              <view class="edit-icon-btn" bindtap="editStudentScore" data-item="{{item}}" wx:if="{{item.canEdit}}">
+                <text>✏️ 编辑</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 详细科目成绩 -->
+          <view class="sic-body">
+            <view class="sub-pills-row">
+              <view class="sub-pill chinese"><text>语文: </text><text class="sp-val">{{item.chineseScore}}分</text></view>
+              <view class="sub-pill math"><text>数学: </text><text class="sp-val">{{item.mathScore}}分</text></view>
+              <view class="sub-pill english"><text>英语: </text><text class="sp-val">{{item.englishScore}}分</text></view>
+            </view>
+
+            <view class="sic-resume" wx:if="{{item.resumeBio}}">
+              <text class="sr-label">📜 艺术履历与成绩评语: </text>
+              <text class="sr-content">{{item.resumeBio}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </block>
+    <block wx:else>
+      <view class="empty-box">
+        <text class="eb-icon">📂</text>
+        <text class="eb-text">暂无对应年级/学员的成绩记录</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 4. 📝 成绩信息录入/修改弹窗 (Form Modal) -->
+  <view class="modal-overlay" wx:if="{{showScoreModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">{{scoreForm.id ? '✏️ 编辑学员成绩与简历' : '➕ 录入学员成绩信息'}}</text>
+        <text class="close-btn" bindtap="closeScoreModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <!-- 权限提示 -->
+        <view class="form-tip-banner">
+          <text>🔒 权限说明：{{modalPermissionHint}}</text>
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">学员姓名 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：李小桐" value="{{scoreForm.studentName}}" bindinput="onFormInput" data-field="studentName" disabled="{{isStudentRole}}" />
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">所属年级 <text class="required">*</text></text>
+          <picker bindchange="onFormGradeChange" value="{{formGradeIndex}}" range="{{formGradeOptions}}" disabled="{{isStudentRole || isCommitteeRole}}">
+            <view class="fancy-input picker-input">
+              <text>{{formGradeOptions[formGradeIndex]}}</text>
+              <text class="pi-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+
+        <view class="form-row-3 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">语文成绩</text>
+            <input class="fancy-input" type="digit" placeholder="95.5" value="{{scoreForm.chineseScore}}" bindinput="onFormInput" data-field="chineseScore" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">数学成绩</text>
+            <input class="fancy-input" type="digit" placeholder="98.0" value="{{scoreForm.mathScore}}" bindinput="onFormInput" data-field="mathScore" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">英语成绩</text>
+            <input class="fancy-input" type="digit" placeholder="94.0" value="{{scoreForm.englishScore}}" bindinput="onFormInput" data-field="englishScore" />
+          </view>
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">📜 艺术简历/评价备注</text>
+          <textarea class="fancy-textarea" placeholder="例如：芭蕾舞4级考级通过；全区大赛一等奖..." value="{{scoreForm.resumeBio}}" bindinput="onFormInput" data-field="resumeBio"></textarea>
+        </view>
+      </scroll-view>
+
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closeScoreModal">取消</view>
+        <view class="act-btn btn-pass" bindtap="saveScoreSubmit">💾 保存成绩信息</view>
+      </view>
+    </view>
+  </view>
+</view>
