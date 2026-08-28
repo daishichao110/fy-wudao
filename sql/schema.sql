@@ -1,0 +1,207 @@
+SET NAMES utf8mb4;
+
+-- 舞团数字化综合管理系统 —— 全量数据库 Schema 定义 (全表主键统一摒弃 AUTO_INCREMENT 自增，采用雪花算法 Snowflake ID)
+
+CREATE DATABASE IF NOT EXISTS wudao_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE wudao_db;
+
+-- 1. 系统用户表 (sys_user)
+DROP TABLE IF EXISTS sys_user;
+CREATE TABLE sys_user (
+    user_id BIGINT PRIMARY KEY COMMENT '用户ID (雪花算法 64位分布式ID)',
+    username VARCHAR(50) NOT NULL UNIQUE COMMENT '账号名/手机号',
+    real_name VARCHAR(50) NOT NULL COMMENT '真实姓名/家长姓名',
+    student_name VARCHAR(50) DEFAULT '' COMMENT '关联学生姓名',
+    relationship VARCHAR(30) DEFAULT '' COMMENT '与学生关系: 爸爸/妈妈/其他监护人',
+    phone VARCHAR(20) DEFAULT '' COMMENT '授权手机号',
+    avatar_url VARCHAR(255) DEFAULT '' COMMENT '头像',
+    role_type VARCHAR(30) NOT NULL COMMENT 'SUPER_ADMIN(管理员)/TEACHER(专业老师)/COMMITTEE(班委/家委干部)/STUDENT(学员及家长)',
+    dance_class_name VARCHAR(50) DEFAULT '' COMMENT '所在班级名称',
+    remaining_hours INT DEFAULT 20 COMMENT '剩余课时',
+    volunteer_points INT DEFAULT 0 COMMENT '爱心志愿积分',
+    status TINYINT DEFAULT 1 COMMENT '1-正常/已审批通过 0-待管理员审批 2-已驳回',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统用户表';
+
+-- 2. 课程排期与装备规范表 (dance_schedule)
+DROP TABLE IF EXISTS dance_schedule;
+CREATE TABLE dance_schedule (
+    schedule_id BIGINT PRIMARY KEY COMMENT '排期ID (雪花算法 ID)',
+    course_name VARCHAR(100) NOT NULL COMMENT '课程名称',
+    dance_type VARCHAR(50) NOT NULL COMMENT '舞种:中国舞/芭蕾/拉丁/现代舞等',
+    teacher_id BIGINT NOT NULL COMMENT '任课教师ID',
+    teacher_name VARCHAR(50) NOT NULL COMMENT '任课教师姓名',
+    classroom_name VARCHAR(50) NOT NULL COMMENT '教室名称',
+    class_date DATE NOT NULL COMMENT '上课日期',
+    start_time VARCHAR(20) NOT NULL COMMENT '开始时间 14:00',
+    end_time VARCHAR(20) NOT NULL COMMENT '结束时间 16:00',
+    tops_req VARCHAR(100) NOT NULL COMMENT '上身着装',
+    bottoms_req VARCHAR(100) NOT NULL COMMENT '下身着装',
+    skirt_req VARCHAR(100) DEFAULT '粉色雪纺一片裙/无需短裙' COMMENT '裙子要求',
+    shoes_req VARCHAR(100) NOT NULL COMMENT '鞋履要求',
+    hair_req VARCHAR(100) NOT NULL COMMENT '发型要求',
+    props_req VARCHAR(100) NOT NULL COMMENT '携带教具',
+    capacity INT DEFAULT 15 COMMENT '班级容量',
+    booked_count INT DEFAULT 0 COMMENT '已预约/在读人数',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='课程排期表';
+
+-- 3. 请假与补课核销表 (leave_make_up)
+DROP TABLE IF EXISTS leave_make_up;
+CREATE TABLE leave_make_up (
+    record_id BIGINT PRIMARY KEY COMMENT '记录ID (雪花算法 ID)',
+    student_id BIGINT NOT NULL COMMENT '学员ID',
+    student_name VARCHAR(50) NOT NULL COMMENT '学员姓名',
+    schedule_id BIGINT NOT NULL COMMENT '关联排期ID',
+    course_name VARCHAR(100) NOT NULL COMMENT '课程名称',
+    record_type VARCHAR(20) NOT NULL COMMENT 'LEAVE-请假 / MAKE_UP-补课',
+    reason VARCHAR(255) DEFAULT '' COMMENT '请假/补课说明',
+    status VARCHAR(20) DEFAULT 'EFFECTIVE' COMMENT 'EFFECTIVE-生效中 / CANCELLED-已撤销',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请假与补课核销表';
+
+-- 4. 身材量体档案表 (student_body_metric)
+DROP TABLE IF EXISTS student_body_metric;
+CREATE TABLE student_body_metric (
+    metric_id BIGINT PRIMARY KEY COMMENT '量体记录ID (雪花算法 ID)',
+    student_id BIGINT NOT NULL COMMENT '学员ID',
+    student_name VARCHAR(50) NOT NULL COMMENT '学员姓名',
+    height_cm DECIMAL(5,2) NOT NULL COMMENT '身高(cm)',
+    weight_kg DECIMAL(5,2) NOT NULL COMMENT '体重(kg)',
+    bust_cm DECIMAL(5,2) NOT NULL COMMENT '胸围(cm)',
+    waist_cm DECIMAL(5,2) NOT NULL COMMENT '腰围(cm)',
+    hip_cm DECIMAL(5,2) NOT NULL COMMENT '臀围(cm)',
+    torso_length_cm DECIMAL(5,2) NOT NULL COMMENT '胴长(cm)',
+    shoe_size DECIMAL(4,1) NOT NULL COMMENT '舞鞋码数(欧码)',
+    measured_date DATE NOT NULL COMMENT '测量日期',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='学员身材量体档案表';
+
+-- 5. 家委志愿任务表 (volunteer_task)
+DROP TABLE IF EXISTS volunteer_task;
+CREATE TABLE volunteer_task (
+    task_id BIGINT PRIMARY KEY COMMENT '任务ID (雪花算法 ID)',
+    task_name VARCHAR(100) NOT NULL COMMENT '任务名称',
+    group_type VARCHAR(50) NOT NULL COMMENT '后勤保障/化妆道具/安全看护/跟拍宣传',
+    activity_name VARCHAR(100) NOT NULL COMMENT '关联演出活动名称',
+    quota_count INT NOT NULL DEFAULT 3 COMMENT '总名额',
+    enrolled_count INT NOT NULL DEFAULT 0 COMMENT '已认领人数',
+    status VARCHAR(20) DEFAULT 'RECRUITING' COMMENT 'RECRUITING-招募中 / FULL-已满额',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='家委志愿任务表';
+
+-- 6. 家委志愿认领记录表 (volunteer_enrollment)
+DROP TABLE IF EXISTS volunteer_enrollment;
+CREATE TABLE volunteer_enrollment (
+    enrollment_id BIGINT PRIMARY KEY COMMENT '认领记录ID (雪花算法 ID)',
+    task_id BIGINT NOT NULL COMMENT '志愿任务ID',
+    user_id BIGINT NOT NULL COMMENT '家委/家长用户ID',
+    user_name VARCHAR(50) NOT NULL COMMENT '家长姓名/称谓 (如 李小桐的爸爸)',
+    status VARCHAR(20) DEFAULT 'COMPLETED' COMMENT 'COMPLETED-已自动核销确认',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '认领时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='家委志愿认领记录表';
+
+-- 7. 高低年级结对子互助表 (student_mentorship)
+DROP TABLE IF EXISTS student_mentorship;
+CREATE TABLE student_mentorship (
+    pair_id BIGINT PRIMARY KEY COMMENT '结对ID (雪花算法 ID)',
+    senior_student_id BIGINT NOT NULL COMMENT '高年级学姐ID',
+    senior_student_name VARCHAR(50) NOT NULL COMMENT '学姐姓名',
+    junior_student_id BIGINT NOT NULL COMMENT '低年级学妹ID',
+    junior_student_name VARCHAR(50) NOT NULL COMMENT '学妹姓名',
+    dance_class_name VARCHAR(50) NOT NULL COMMENT '关联班级',
+    star_points INT DEFAULT 0 COMMENT '姐妹星积分',
+    checkin_count INT DEFAULT 0 COMMENT '打卡次数',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '结对时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='高低年级结对子互助表';
+
+-- 8. 1对1私信与知识库表 (qa_message)
+DROP TABLE IF EXISTS qa_message;
+CREATE TABLE qa_message (
+    msg_id BIGINT PRIMARY KEY COMMENT '消息ID (雪花算法 ID)',
+    student_id BIGINT NOT NULL COMMENT '学员/家长ID',
+    student_name VARCHAR(50) NOT NULL COMMENT '学员姓名',
+    teacher_id BIGINT NOT NULL COMMENT '导师ID',
+    teacher_name VARCHAR(50) NOT NULL COMMENT '导师姓名',
+    question_content TEXT NOT NULL COMMENT '咨询问题',
+    reply_content TEXT COMMENT '导师专业解答',
+    is_featured TINYINT DEFAULT 0 COMMENT '1-设为精选公开知识 0-私信',
+    featured_title VARCHAR(150) DEFAULT '' COMMENT '精选知识标题',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '提问时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='私信与精选知识库表';
+
+-- 9. 集中采购与费用公示表 (purchase_record)
+DROP TABLE IF EXISTS purchase_record;
+CREATE TABLE purchase_record (
+    purchase_id BIGINT PRIMARY KEY COMMENT '采购ID (雪花算法 ID)',
+    item_name VARCHAR(100) NOT NULL COMMENT '采购物品名称',
+    category VARCHAR(50) NOT NULL COMMENT '道具/演出服/剧场租用/跟拍费',
+    unit_price DECIMAL(10,2) NOT NULL COMMENT '单价',
+    quantity INT NOT NULL COMMENT '数量',
+    total_amount DECIMAL(10,2) NOT NULL COMMENT '总金额',
+    proof_url VARCHAR(255) DEFAULT '' COMMENT '发票凭证图片URL',
+    remark VARCHAR(255) DEFAULT '' COMMENT '采购说明',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '采购公示时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='集中采购公示表';
+
+-- 10. 官方通知公告表 (sys_notice)
+DROP TABLE IF EXISTS sys_notice;
+CREATE TABLE sys_notice (
+    notice_id BIGINT PRIMARY KEY COMMENT '公告ID (雪花算法 ID)',
+    tag VARCHAR(30) DEFAULT '【通知】' COMMENT '标签',
+    title VARCHAR(200) NOT NULL COMMENT '标题',
+    content TEXT COMMENT '公告内容',
+    publisher VARCHAR(50) DEFAULT '舞团教务处' COMMENT '发布单位',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='官方通知公告表';
+
+-- 11. 名师团队档案表 (sys_teacher)
+DROP TABLE IF EXISTS sys_teacher;
+CREATE TABLE sys_teacher (
+    teacher_id BIGINT PRIMARY KEY COMMENT '教师ID (雪花算法 ID)',
+    name VARCHAR(50) NOT NULL COMMENT '教师姓名',
+    title VARCHAR(100) NOT NULL COMMENT '职称头衔',
+    dance_type VARCHAR(50) NOT NULL COMMENT '专业舞种',
+    experience_years VARCHAR(30) DEFAULT '8年教龄' COMMENT '教龄经验',
+    avatar_url VARCHAR(255) DEFAULT '' COMMENT '肖像照片URL',
+    bio TEXT COMMENT '导师履历介绍',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='名师团队档案表';
+
+-- 12. 未来7天家委轮值看护排班表 (duty_schedule)
+DROP TABLE IF EXISTS duty_schedule;
+CREATE TABLE duty_schedule (
+    duty_id BIGINT PRIMARY KEY COMMENT '轮值看护ID (雪花算法 ID)',
+    duty_date DATE NOT NULL COMMENT '轮值日期',
+    assignee_name VARCHAR(64) NOT NULL COMMENT '认领家委称谓 (如 李小桐的爸爸)',
+    user_id BIGINT DEFAULT NULL COMMENT '关联用户ID',
+    dance_class_name VARCHAR(50) NOT NULL DEFAULT '二年级' COMMENT '关联班级',
+    status VARCHAR(20) DEFAULT 'SCHEDULED' COMMENT '状态',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '申请时间',
+    UNIQUE KEY uk_duty_date_class (duty_date, dance_class_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='家委7天轮值看护表';
+
+-- 13. 学员全量综合档案表 (student_profile)
+DROP TABLE IF EXISTS student_profile;
+CREATE TABLE student_profile (
+    profile_id BIGINT PRIMARY KEY COMMENT '档案ID (雪花算法 ID)',
+    student_id BIGINT NOT NULL UNIQUE COMMENT '学员用户ID',
+    student_name VARCHAR(50) NOT NULL COMMENT '学员姓名',
+    grade_level VARCHAR(50) DEFAULT '' COMMENT '年纪/年级',
+    chinese_score DECIMAL(5,2) DEFAULT 0 COMMENT '语文成绩',
+    math_score DECIMAL(5,2) DEFAULT 0 COMMENT '数学成绩',
+    english_score DECIMAL(5,2) DEFAULT 0 COMMENT '英语成绩',
+    height_cm DECIMAL(5,2) DEFAULT 0 COMMENT '身高(cm)',
+    weight_kg DECIMAL(5,2) DEFAULT 0 COMMENT '体重(kg)',
+    bust_cm DECIMAL(5,2) DEFAULT 0 COMMENT '胸围(cm)',
+    waist_cm DECIMAL(5,2) DEFAULT 0 COMMENT '腰围(cm)',
+    hip_cm DECIMAL(5,2) DEFAULT 0 COMMENT '臀围(cm)',
+    shoe_size DECIMAL(4,1) DEFAULT 0 COMMENT '舞鞋码数(欧码)',
+    parent_name VARCHAR(50) DEFAULT '' COMMENT '家长姓名',
+    parent_phone VARCHAR(20) DEFAULT '' COMMENT '家长手机号',
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='学员全量综合档案表';
+
+-- 初始管理员数据 (采用固定雪花长整型 ID: 1787400000000000001)
+INSERT INTO sys_user (user_id, username, real_name, student_name, relationship, phone, role_type, dance_class_name, remaining_hours, volunteer_points, status) VALUES
+(1787400000000000001, 'admin', '系统管理员', '全校学生', '管理员', '13800000000', 'SUPER_ADMIN', '全校全局管理', 1000, 100, 1);

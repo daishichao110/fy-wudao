@@ -1,0 +1,20 @@
+<view class="container">
+  <view class="sec-title">🛍️ 集中采购与费用公示明细</view>
+
+  <block wx:for="{{purchaseList}}" wx:key="purchaseId">
+    <view class="dance-card">
+      <view class="p-head">
+        <text class="tag-badge tag-blue">{{item.category}}</text>
+        <text class="p-price">￥{{item.totalAmount}}</text>
+      </view>
+
+      <view class="p-title">{{item.itemName}}</view>
+      <view class="p-meta">单价: ￥{{item.unitPrice}} | 数量: {{item.quantity}}</view>
+      <view class="p-remark" wx:if="{{item.remark}}">备注：{{item.remark}}</view>
+
+      <view class="p-btn-row">
+        <button class="btn-outline" bindtap="showProof" data-url="{{item.proofUrl}}">查看发票凭证</button>
+      </view>
+    </view>
+  </block>
+</view>

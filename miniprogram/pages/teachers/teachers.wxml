@@ -1,0 +1,71 @@
+<!-- 舞蹈学校数字化综合管理小程序 —— 全部名师团队与风采展示页 -->
+<view class="container">
+  <!-- 顶部分类标签 Pills -->
+  <view class="filter-pills-row">
+    <block wx:for="{{categoryList}}" wx:key="index">
+      <view class="pill-item {{currentCategory === item ? 'active-pill' : ''}}" bindtap="selectCategory" data-category="{{item}}">
+        {{item}}
+      </view>
+    </block>
+  </view>
+
+  <!-- 教师全量列表卡片 -->
+  <view class="teacher-list">
+    <block wx:for="{{filteredTeachers}}" wx:key="teacherId">
+      <view class="teacher-card" bindtap="openTeacherDetail" data-teacher="{{item}}">
+        <image class="t-avatar" src="{{item.avatarUrl || 'http://localhost:8080/image/teacher1.jpg'}}" mode="aspectFill"></image>
+        <view class="t-info-col">
+          <view class="t-head-line">
+            <text class="t-name">{{item.name}}</text>
+            <text class="t-title-badge">{{item.title}}</text>
+          </view>
+          <view class="t-tags-line">
+            <text class="tag-purple">{{item.danceType}}</text>
+            <text class="tag-amber">{{item.experienceYears || '8年教学经验'}}</text>
+          </view>
+          <text class="t-bio-snippet">{{item.bio}}</text>
+          <view class="t-more-link">
+            <text class="link-text">查看完整简介与授课项目 ➔</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 📢 教师完整履历详情 Modal 弹窗 -->
+  <view class="modal-mask" wx:if="{{showDetailModal}}">
+    <view class="modal-box style-modal">
+      <view class="modal-header">
+        <text class="modal-title">💃 名师履历与专业介绍</text>
+        <text class="close-icon" bindtap="closeDetailModal">✖</text>
+      </view>
+      <scroll-view scroll-y class="modal-body" wx:if="{{selectedTeacher}}">
+        <view class="t-detail-card">
+          <view class="td-header">
+            <image class="td-avatar" src="{{selectedTeacher.avatarUrl || 'http://localhost:8080/image/teacher1.jpg'}}" mode="aspectFill"></image>
+            <view class="td-meta">
+              <text class="td-name">{{selectedTeacher.name}}</text>
+              <text class="td-title">{{selectedTeacher.title}}</text>
+              <view class="td-tags">
+                <text class="tag-purple">{{selectedTeacher.danceType}}</text>
+                <text class="tag-amber">{{selectedTeacher.experienceYears || '8年教学经验'}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="td-divider"></view>
+          <view class="td-section">
+            <text class="td-sec-title">🌟 导师简介与获奖履历：</text>
+            <text class="td-sec-content">{{selectedTeacher.bio}}</text>
+          </view>
+          <view class="td-section margin-top-12">
+            <text class="td-sec-title">🩰 主讲方向与教研成果：</text>
+            <text class="td-sec-content">针对青少年少儿舞蹈基训、软开度安全提升、剧目变奏及考级项目提供 1对1 提分辅导与定制排练。</text>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="btn-confirm" bindtap="closeDetailModal">关闭窗口</view>
+      </view>
+    </view>
+  </view>
+</view>

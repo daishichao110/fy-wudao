@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.WorkGroupMapper">
+
+    <select id="selectAll" resultType="com.wudao.entity.WorkGroup">
+        SELECT group_id, group_name, icon, leader_user_id, member_user_ids, leader_name, member_names, duty_desc, sort_order, created_at
+        FROM sys_work_group
+        ORDER BY sort_order ASC, group_id ASC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO sys_work_group (group_id, group_name, icon, leader_user_id, member_user_ids, leader_name, member_names, duty_desc, sort_order, created_at)
+        VALUES (#{groupId}, #{groupName}, #{icon}, #{leaderUserId}, #{memberUserIds}, #{leaderName}, #{memberNames}, #{dutyDesc}, #{sortOrder}, NOW())
+    </insert>
+
+    <update id="update">
+        UPDATE sys_work_group
+        SET group_name = #{groupName}, icon = #{icon}, leader_user_id = #{leaderUserId}, member_user_ids = #{memberUserIds}, leader_name = #{leaderName}, member_names = #{memberNames}, duty_desc = #{dutyDesc}, sort_order = #{sortOrder}
+        WHERE group_id = #{groupId}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM sys_work_group WHERE group_id = #{groupId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.ScheduleMapper">
+
+    <!-- 过滤已过期的课程：仅拉取今天及未来未到时间的课程 (按日期升序、开始时间升序排列) -->
+    <select id="selectAll" resultType="com.wudao.entity.Schedule">
+        SELECT schedule_id, course_name, dance_type, teacher_id, teacher_name, classroom_name, class_date, start_time, end_time, tops_req, bottoms_req, skirt_req, shoes_req, hair_req, props_req, other_req, remark, participant_names, capacity, booked_count, dance_class_name, created_at
+        FROM dance_schedule
+        WHERE class_date >= CURDATE()
+        <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理'">
+            AND (dance_class_name = #{danceClassName} OR dance_class_name = 'GRADE_ALL')
+        </if>
+        ORDER BY class_date ASC, start_time ASC
+    </select>
+
+    <select id="selectById" resultType="com.wudao.entity.Schedule">
+        SELECT schedule_id, course_name, dance_type, teacher_id, teacher_name, classroom_name, class_date, start_time, end_time, tops_req, bottoms_req, skirt_req, shoes_req, hair_req, props_req, other_req, remark, participant_names, capacity, booked_count, dance_class_name, created_at
+        FROM dance_schedule
+        WHERE schedule_id = #{scheduleId}
+    </select>
+
+    <insert id="insert" parameterType="com.wudao.entity.Schedule">
+        INSERT INTO dance_schedule (
+            schedule_id, course_name, dance_type, teacher_id, teacher_name, classroom_name, class_date, start_time, end_time, tops_req, bottoms_req, skirt_req, shoes_req, hair_req, props_req, other_req, remark, participant_names, capacity, booked_count, dance_class_name
+        ) VALUES (
+            #{scheduleId}, #{courseName}, #{danceType}, #{teacherId}, #{teacherName}, #{classroomName}, #{classDate}, #{startTime}, #{endTime}, #{topsReq}, #{bottomsReq}, #{skirtReq}, #{shoesReq}, #{hairReq}, #{propsReq}, #{otherReq}, #{remark}, #{participantNames}, #{capacity}, #{bookedCount}, #{danceClassName}
+        )
+    </insert>
+
+    <update id="decrementBookedCount">
+        UPDATE dance_schedule SET booked_count = GREATEST(booked_count - 1, 0) WHERE schedule_id = #{scheduleId}
+    </update>
+
+    <update id="incrementBookedCount">
+        UPDATE dance_schedule SET booked_count = booked_count + 1 WHERE schedule_id = #{scheduleId}
+    </update>
+
+</mapper>

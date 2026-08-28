@@ -1,0 +1,21 @@
+{
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "登录页",
+          "pathName": "pages/login/login",
+          "query": ""
+        }
+      ]
+    }
+  },
+  "description": "微信开发者工具私有配置"
+}

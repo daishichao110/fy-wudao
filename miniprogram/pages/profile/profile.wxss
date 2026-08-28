@@ -1,0 +1,564 @@
+/* profile.wxss - 爱马仕橙 + 翡翠绿 + 洁白空灵主题 */
+.container {
+  padding: 14px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 1. 🩰 舞蹈专属身份与练功档案 Header 卡片 (爱马仕橙主色) */
+.profile-header-card {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  border-radius: 20px;
+  padding: 18px 16px 14px;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(234, 88, 12, 0.25);
+  margin-bottom: 12px;
+}
+
+.user-main-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.u-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+}
+
+.u-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.u-name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.u-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.role-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.u-sub-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* 🎨 主题色 Picker 卡片 */
+.color-picker-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f1f5f9;
+}
+
+.cp-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.cp-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.cp-current {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cp-options {
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.cp-dot {
+  flex: 1;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.active-dot {
+  border-color: #ffffff !important;
+  box-shadow: 0 0 0 2px #0f172a !important;
+  transform: scale(1.05);
+}
+
+.cp-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Section Header */
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.margin-top-14 {
+  margin-top: 14px;
+}
+
+.menu-group-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.group-tip {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* 4. 网格服务工具箱 */
+.action-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f1f5f9;
+  margin-bottom: 6px;
+}
+
+.grid-col-2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+  padding: 16px 24px !important;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.action-icon-box {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  transition: all 0.2s ease;
+}
+
+/* 📐 SVG 图标样式 */
+.svg-icon {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.action-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  text-align: center;
+}
+
+.badge-dot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ea580c;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 10px;
+  border: 1.5px solid #ffffff;
+}
+
+/* 📷 教师照片上传 Box */
+.avatar-upload-card {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1.5px dashed #fed7aa;
+  background: #fff7ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.upload-preview-img {
+  width: 100%;
+  height: 100%;
+}
+
+.upload-tip-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #ffffff;
+}
+
+.u-icon { font-size: 12px; }
+.u-text { font-size: 11px; }
+
+/* 5. 弹窗与表单基础 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border-bottom: 1px solid #fed7aa;
+}
+
+.m-title { font-size: 14px; font-weight: 700; color: #c2410c; }
+.close-btn { font-size: 15px; color: #94a3b8; padding: 4px; }
+
+.modal-body {
+  max-height: 60vh;
+  padding: 14px 18px;
+  box-sizing: border-box;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-input {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.form-textarea {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #0f172a;
+  width: 100%;
+  height: 75px;
+  box-sizing: border-box;
+}
+
+.picker-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.text-dark { color: #0f172a; }
+.text-placeholder { color: #94a3b8; }
+.arrow { font-size: 11px; color: #ea580c; }
+
+.form-row-2 { display: flex; gap: 8px; }
+.form-row-3 { display: flex; gap: 6px; }
+.flex-1 { flex: 1; }
+.margin-top-4 { margin-top: 4px; }
+.margin-top-6 { margin-top: 6px; }
+.margin-top-8 { margin-top: 8px; }
+.margin-top-12 { margin-top: 12px; }
+
+.section-divider {
+  font-size: 12px;
+  font-weight: 700;
+  color: #047857;
+  background: #ecfdf5;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin: 10px 0 6px;
+  border: 1px solid #a7f3d0;
+}
+
+.modal-foot {
+  padding: 12px 18px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.act-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.btn-reject { background: #f1f5f9; color: #64748b; }
+.btn-pass { background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+
+.pending-user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.p-user-info { display: flex; flex-direction: column; gap: 3px; }
+.p-name-row { display: flex; align-items: center; gap: 6px; }
+.p-name { font-size: 13px; font-weight: 700; color: #0f172a; }
+.p-sub { font-size: 11px; color: #64748b; }
+.p-actions { display: flex; gap: 6px; }
+
+.empty-pending {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+  padding: 16px 0;
+}
+
+.submit-ask-btn {
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* 👥 参与学员多选平铺 Grid */
+.student-select-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.select-all-btn {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ea580c;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.student-check-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.student-check-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.item-checked {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.item-unchecked {
+  background: #ffffff;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+}
+
+.check-box-icon {
+  font-size: 13px;
+}
+
+/* 📊 全校学员成绩总览组件 */
+.picker-pill-orange {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 14px;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ppo-text {
+  font-size: 11px;
+  font-weight: 800;
+  color: #ea580c;
+}
+
+.ppo-arrow {
+  font-size: 10px;
+  color: #ea580c;
+}
+
+.score-rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.score-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 12px 14px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.sc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sch-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rank-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.rank-1 { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+.rank-2 { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; }
+.rank-3 { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+.rank-normal { background: #f1f5f9; color: #64748b; }
+
+.sc-name { font-size: 15px; font-weight: 800; color: #0f172a; }
+.sc-grade-tag { font-size: 10px; font-weight: 700; color: #047857; background: #ecfdf5; padding: 2px 6px; border-radius: 6px; }
+
+.sc-total-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.sct-label { font-size: 10px; color: #64748b; }
+.sct-num { font-size: 15px; font-weight: 800; color: #ea580c; }
+
+.sub-score-pills {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.s-pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  background: #f8fafc;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.sc-resume {
+  font-size: 11px;
+  color: #047857;
+  background: #ecfdf5;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: block;
+}

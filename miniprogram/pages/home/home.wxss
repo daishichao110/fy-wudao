@@ -1,0 +1,716 @@
+/* home.wxss - 爱马仕橙 + 翡翠绿 + 洁白空灵美学主题 */
+.container {
+  padding: 14px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 1. 顶部轮播图样式 */
+.banner-wrapper {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px -4px rgba(234, 88, 12, 0.2);
+}
+
+.banner-swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.banner-img {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.88) 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.banner-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  padding: 2px 8px;
+  border-radius: 12px;
+  align-self: flex-start;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.4);
+}
+
+.banner-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.banner-sub {
+  font-size: 11px;
+  color: #e2e8f0;
+}
+
+.admin-banner-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.a-icon { font-size: 12px; }
+.a-text { font-size: 11px; font-weight: 700; }
+
+/* 2. 跑马灯公告栏 */
+.notice-bar {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-top: 14px;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.06);
+  border: 1px solid #fed7aa;
+}
+
+.notice-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-right: 10px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.notice-swiper {
+  flex: 1;
+  height: 20px;
+}
+
+.notice-text {
+  font-size: 12px;
+  color: #1e293b;
+  font-weight: 600;
+  line-height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Section Header */
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.section-more {
+  font-size: 12px;
+  color: #ea580c;
+  font-weight: 800;
+}
+
+.margin-top-12 { margin-top: 14px; }
+.margin-top-16 { margin-top: 18px; }
+
+/* 3. 🏛️ 舞馆介绍卡片 */
+.school-intro-card {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px -4px rgba(234, 88, 12, 0.08);
+  border: 1px solid #f1f5f9;
+}
+
+.school-banner-img {
+  width: 100%;
+  height: 130px;
+}
+
+.school-intro-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.school-title-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.school-brand-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.school-tag {
+  font-size: 10px;
+  font-weight: 800;
+  color: #c2410c;
+  background: #fff7ed;
+  padding: 3px 8px;
+  border-radius: 6px;
+  align-self: flex-start;
+  border: 1px solid #fed7aa;
+}
+
+.school-sub-desc {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.school-features-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.sf-pill {
+  font-size: 10px;
+  font-weight: 700;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+/* 4. 👩‍🏫 顶级名师团队预览列表 */
+.teacher-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tp-card {
+  display: flex;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tp-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #ea580c 0%, #059669 100%);
+}
+
+.tp-avatar {
+  width: 68px;
+  height: 84px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.tp-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.tp-name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tp-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.tp-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #c2410c;
+  background: #fff7ed;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid #fed7aa;
+}
+
+.tp-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #047857;
+}
+
+.tp-bio {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Modal 弹窗基础 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border-bottom: 1px solid #fed7aa;
+}
+
+.modal-title { font-size: 15px; font-weight: 800; color: #c2410c; }
+.close-icon { font-size: 16px; color: #94a3b8; padding: 4px; }
+
+.modal-body {
+  max-height: 60vh;
+  padding: 16px 20px;
+  box-sizing: border-box;
+}
+
+.school-full-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sf-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ea580c;
+}
+
+.sf-desc {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* 教师详情 Modal */
+.t-detail-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.td-header {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.td-avatar {
+  width: 80px;
+  height: 100px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.td-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.td-name { font-size: 18px; font-weight: 800; color: #0f172a; }
+.td-title { font-size: 12px; font-weight: 800; color: #ea580c; }
+
+.td-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.td-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 12px 0;
+}
+
+.td-sec-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.td-sec-content {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-confirm {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 24px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+}
+
+/* Banner 详情与上传弹窗组件 */
+.b-header-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bd-cover-img {
+  width: 100%;
+  height: 180px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.bd-meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bd-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ea580c;
+}
+
+.bd-location {
+  font-size: 12px;
+  font-weight: 700;
+  color: #047857;
+}
+
+.bd-publisher-box {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.bd-pub-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #c2410c;
+}
+
+.banner-upload-box {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1.5px dashed #fed7aa;
+  background: #fff7ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bu-img {
+  width: 100%;
+  height: 100%;
+}
+
+.bu-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 23, 42, 0.75);
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #ffffff;
+}
+
+.bu-icon { font-size: 14px; }
+.bu-text { font-size: 11px; font-weight: 700; }
+
+.fancy-textarea {
+  width: 100%;
+  height: 90px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #0f172a;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+
+.form-item { width: 100%; }
+.field-label { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; display: block; }
+.required { color: #ea580c; }
+
+.fancy-input {
+  width: 100%;
+  height: 42px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0 14px;
+  font-size: 13px;
+  color: #0f172a;
+  box-sizing: border-box;
+}
+
+.fancy-picker {
+  width: 100%;
+  height: 42px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.picker-value { font-size: 13px; font-weight: 700; color: #0f172a; }
+.picker-arrow { color: #ea580c; font-size: 14px; font-weight: 800; }
+
+.btn-cancel {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1.5px solid #fed7aa;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 12px;
+}
+
+/* 📖 全屏沉浸式长文报道视图 */
+.full-page-article-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-nav-bar {
+  height: 52px;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.nav-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ea580c;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.back-arrow {
+  font-size: 18px;
+}
+
+.nav-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.nav-placeholder {
+  width: 60px;
+}
+
+.article-scroll-body {
+  flex: 1;
+  height: 100%;
+}
+
+.article-container {
+  padding: 20px 18px 40px;
+}
+
+.article-hero-img {
+  width: 100%;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px -4px rgba(234, 88, 12, 0.15);
+  margin-bottom: 20px;
+}
+
+.article-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.article-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.article-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ea580c;
+}
+
+.article-main-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+}
+
+.article-meta-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.meta-item {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.article-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 20px 0;
+}
+
+.article-content-body {
+  font-size: 15px;
+  color: #334155;
+  line-height: 1.9;
+  letter-spacing: 0.4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.content-paragraph {
+  display: block;
+}
+
+.article-footer-stamp {
+  margin-top: 36px;
+  padding: 16px;
+  background: #fff7ed;
+  border: 1px dashed #fed7aa;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.stamp-brand {
+  font-size: 13px;
+  font-weight: 800;
+  color: #c2410c;
+}
+
+.stamp-tip {
+  font-size: 11px;
+  color: #ea580c;
+}

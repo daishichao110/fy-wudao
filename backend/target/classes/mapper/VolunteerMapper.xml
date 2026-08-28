@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.VolunteerMapper">
+
+    <select id="selectAllTasks" resultType="com.wudao.entity.VolunteerTask">
+        SELECT task_id, activity_name, group_type, task_name, task_date, service_time, location, quota_count, enrolled_count, status, description, dance_class_name, created_at
+        FROM volunteer_task
+        <where>
+            <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理'">
+            dance_class_name = #{danceClassName}
+        </if>
+        </where>
+        ORDER BY task_id DESC
+    </select>
+
+    <select id="selectTaskById" resultType="com.wudao.entity.VolunteerTask">
+        SELECT task_id, activity_name, group_type, task_name, task_date, service_time, location, quota_count, enrolled_count, status, description, dance_class_name, created_at
+        FROM volunteer_task
+        WHERE task_id = #{taskId}
+    </select>
+
+    <insert id="insertTask">
+        INSERT INTO volunteer_task(task_id, task_name, activity_name, group_type, task_date, service_time, location, quota_count, enrolled_count, status, description, dance_class_name)
+        VALUES(#{taskId}, #{taskName}, #{activityName}, #{groupType}, #{taskDate}, #{serviceTime}, #{location}, #{quotaCount}, 0, 'RECRUITING', #{description}, #{danceClassName})
+    </insert>
+
+    <update id="incrementTaskEnrolledCount">
+        UPDATE volunteer_task
+        SET enrolled_count = enrolled_count + 1
+        WHERE task_id = #{taskId}
+    </update>
+
+    <update id="updateTaskStatusFull">
+        UPDATE volunteer_task
+        SET status = 'FULL'
+        WHERE task_id = #{taskId} AND enrolled_count >= quota_count
+    </update>
+
+    <insert id="insertEnrollment">
+        INSERT INTO volunteer_enrollment(enrollment_id, task_id, user_id, user_name, status)
+        VALUES(#{enrollmentId}, #{taskId}, #{userId}, #{userName}, #{status})
+    </insert>
+
+    <select id="selectEnrollment" resultType="com.wudao.entity.VolunteerEnrollment">
+        SELECT enrollment_id, task_id, user_id, user_name, status, created_at
+        FROM volunteer_enrollment
+        WHERE task_id = #{taskId} AND user_id = #{userId}
+        LIMIT 1
+    </select>
+
+</mapper>

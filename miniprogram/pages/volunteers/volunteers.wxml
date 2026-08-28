@@ -1,0 +1,287 @@
+<!-- 舞蹈学校数字化综合管理小程序 —— 家委协同与家长活动视图 -->
+<view class="container">
+  <!-- 1. 顶部 Header 班级卡片与班级切换 Picker -->
+  <view class="header-card">
+    <view class="header-title-row">
+      <view class="title-meta">
+        <text class="page-title">家委协同 · 家长活动与招募</text>
+        <text class="page-subtitle">7天家长活动协同 · 舞团工作小组 · 物品需求录入</text>
+      </view>
+      <picker bindchange="onClassPickerChange" value="{{classPickerIndex}}" range="{{classPickerOptions}}">
+        <view class="class-picker-pill">
+          <text class="picker-value">{{currentClassName}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- ==================== 1. 📅 7天家长活动与看护排班 (报名非申请) ==================== -->
+  <view class="section-header-row margin-top-12">
+    <text class="section-title">📅 7天家长活动与看护排班</text>
+    <text class="section-tip">互相协同 · 护航优雅成长</text>
+  </view>
+
+  <view class="week-calendar-grid">
+    <block wx:for="{{weekDaysList}}" wx:key="dateStr">
+      <view class="day-duty-card {{item.isAssigned ? 'assigned-style' : 'open-style'}}">
+        <view class="dd-header">
+          <text class="dd-label">{{item.dayLabel}}</text>
+          <text class="dd-date">{{item.monthDayStr}}</text>
+        </view>
+        <view class="dd-body">
+          <view class="user-row" wx:if="{{item.isAssigned}}">
+            <text class="u-icon">👤</text>
+            <text class="u-name">{{item.assignedUser}}</text>
+          </view>
+          <view class="user-row empty-row" wx:else>
+            <text class="u-icon">🤝</text>
+            <text class="u-name">名额开放报名</text>
+          </view>
+        </view>
+        <view class="dd-footer">
+          <view class="action-btn {{item.isAssigned ? 'btn-done' : 'btn-apply'}}" bindtap="claimDutySchedule" data-item="{{item}}">
+            <text>{{item.isAssigned ? '已报名安排' : '报名'}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- ==================== 2. 🚩 舞团大型活动专项招募令 ==================== -->
+  <view class="section-header-row margin-top-16">
+    <text class="section-title">🚩 舞团大型活动专项招募令</text>
+    <view class="header-act-btn" wx:if="{{hasManagePermission}}" bindtap="openPublishTaskModal">＋ 发布招募令</view>
+  </view>
+
+  <view class="task-list-wrapper">
+    <block wx:for="{{taskList}}" wx:key="taskId">
+      <view class="task-card">
+        <view class="task-head">
+          <view class="th-left">
+            <text class="tag-badge tag-orange">{{item.groupType || '通用'}}</text>
+            <text class="task-act-title">{{item.activityName}}</text>
+          </view>
+          <text class="task-status-pill">{{item.status === 'RECRUITING' ? '🔥 招募中' : '已满员'}}</text>
+        </view>
+        
+        <text class="task-name-text">📋 {{item.taskName}}</text>
+        
+        <view class="task-meta-box">
+          <text class="t-meta-item">⏰ 服务时间段: {{item.serviceTime || '13:30 - 17:30 (4小时)'}}</text>
+          <text class="t-meta-item">📍 活动地点: {{item.location || '大剧院/排练厅'}}</text>
+          <text class="t-meta-item">👥 招募配额: {{item.enrolledCount || 0}} / {{item.quotaCount}} 人</text>
+        </view>
+
+        <text class="task-desc">{{item.description}}</text>
+
+        <!-- 已报名家长列表展示 -->
+        <view class="enrolled-members-box margin-top-8" wx:if="{{item.enrolledList && item.enrolledList.length > 0}}">
+          <text class="em-title">✨ 已报名家长:</text>
+          <view class="em-pills">
+            <block wx:for="{{item.enrolledList}}" wx:for-item="parentName" wx:key="*this">
+              <text class="em-pill">{{parentName}}</text>
+            </block>
+          </view>
+        </view>
+
+        <view class="task-footer margin-top-10">
+          <view class="enroll-btn" bindtap="enrollTask" data-task="{{item}}">🙋 立即报名参加</view>
+        </view>
+      </view>
+    </block>
+
+    <view class="empty-box" wx:if="{{taskList.length === 0}}">
+      <text class="empty-icon">🚩</text>
+      <text class="empty-text">暂无招募任务发布</text>
+    </view>
+  </view>
+
+  <!-- ==================== 3. 🛠️ 舞团日常工作小组风采与家委分组 ==================== -->
+  <view class="section-header-row margin-top-16">
+    <text class="section-title">🛠️ 舞团日常工作小组风采</text>
+    <view class="header-act-btn" wx:if="{{hasManagePermission}}" bindtap="openWorkGroupModal">＋ 编辑/新建小组</view>
+  </view>
+
+  <view class="work-group-grid">
+    <block wx:for="{{workGroupList}}" wx:key="groupId">
+      <view class="group-card" bindtap="openWorkGroupModal" data-group="{{item}}">
+        <view class="group-header">
+          <view class="gh-left">
+            <text class="g-icon">{{item.icon || '💄'}}</text>
+            <text class="g-name">{{item.groupName}}</text>
+          </view>
+          <text class="g-leader-pill">👑 组长: {{item.leaderName || '待定'}}</text>
+        </view>
+        
+        <text class="g-members">👥 组员: {{item.memberNames || '暂无成员'}}</text>
+        <text class="g-duty">📝 职责: {{item.dutyDesc || '协助舞团日常保障'}}</text>
+        
+        <view class="group-actions" wx:if="{{hasManagePermission}}">
+          <text class="act-text-edit" catchtap="openWorkGroupModal" data-group="{{item}}">✏️ 编辑</text>
+          <text class="act-text-del" catchtap="deleteWorkGroup" data-id="{{item.groupId}}">🗑️ 删除</text>
+        </view>
+      </view>
+    </block>
+
+    <view class="empty-box" wx:if="{{workGroupList.length === 0}}">
+      <text class="empty-icon">👥</text>
+      <text class="empty-text">暂无工作小组记录</text>
+    </view>
+  </view>
+
+  <!-- ==================== 4. 📦 物品选购计划发布与家长报名 (支持截止时间置灰、到货状态维护与供应商导出) ==================== -->
+  <view class="section-header-row margin-top-16">
+    <text class="section-title">📦 物品选购计划发布</text>
+    <view class="header-act-btn" wx:if="{{hasManagePermission}}" bindtap="openItemModal">＋ 发布选购计划</view>
+  </view>
+
+  <view class="item-demand-list">
+    <block wx:for="{{itemDemandList}}" wx:key="itemId">
+      <view class="item-card {{item.isExpired ? 'expired-card' : ''}}">
+        <view class="item-header">
+          <text class="item-name">📦 {{item.itemName}}</text>
+          <text class="item-status-tag {{item.isExpired ? 'tag-gray' : 'tag-emerald'}}">{{item.isExpired ? '⏰ 报名已截止 (已置灰)' : '🔥 选购报名中'}}</text>
+        </view>
+
+        <view class="item-meta-row margin-top-4">
+          <text class="im-pill">📅 截止时间: {{item.deadlineStr}}</text>
+          <text class="im-pill">🚚 预计到货: {{item.expectedArrivalDate}}</text>
+          <text class="im-pill status-click" bindtap="updateArrivalStatus" data-item="{{item}}">📦 到货状态: {{item.arrivalStatus}} ▾</text>
+        </view>
+
+        <!-- 尺码汇总统计 (发给供应商) -->
+        <view class="size-summary-box margin-top-8">
+          <text class="ss-title">📊 各尺码报名总数统计 (家委实时汇总):</text>
+          <text class="ss-content">{{item.sizeSummaryStr}}</text>
+        </view>
+
+        <view class="item-footer margin-top-8">
+          <view class="export-btn" bindtap="exportPlanForSupplier" data-item="{{item}}">📥 导出采购单给供应商</view>
+        </view>
+      </view>
+    </block>
+
+    <view class="empty-box" wx:if="{{itemDemandList.length === 0}}">
+      <text class="empty-icon">📦</text>
+      <text class="empty-text">暂无物品选购计划发布</text>
+    </view>
+  </view>
+
+  <!-- ==================== 弹窗 1：🛠️ 管理员 & 家委【编辑/新建舞团工作小组 Modal】 ==================== -->
+  <view class="modal-mask" wx:if="{{showWorkGroupModal}}">
+    <view class="modal-box">
+      <view class="modal-header">
+        <text class="modal-title">🛠️ {{groupForm.groupId ? '编辑' : '新建'}}舞团工作小组</text>
+        <text class="close-icon" bindtap="closeWorkGroupModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="form-item">
+          <text class="field-label">小组名称 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：服装组 / 化妆组 / 营养组 / 车队" model:value="{{groupForm.groupName}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">小组图标 (例如: 💄/👗/🥗/📷/🚗)</text>
+          <input class="fancy-input" placeholder="💄" model:value="{{groupForm.icon}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">小组组长姓名</text>
+          <input class="fancy-input" placeholder="例如：张妈妈 (家委)" model:value="{{groupForm.leaderName}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">组员名单 (逗号分隔)</text>
+          <input class="fancy-input" placeholder="例如：李妈妈, 王妈妈, 赵妈妈" model:value="{{groupForm.memberNames}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">职责说明与工作范围</text>
+          <textarea class="fancy-textarea" placeholder="例如：负责舞团大型演出、舞台试妆、高盘头丸子头发型打造..." model:value="{{groupForm.dutyDesc}}"></textarea>
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="btn-cancel" bindtap="closeWorkGroupModal">取消</view>
+        <view class="btn-confirm" bindtap="submitWorkGroup">💾 保存小组信息</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 弹窗 2：🚩 管理员 & 家委【发布大型活动招募任务 Modal】 ==================== -->
+  <view class="modal-mask" wx:if="{{showPublishTaskModal}}">
+    <view class="modal-box">
+      <view class="modal-header">
+        <text class="modal-title">🚩 发布舞团大型活动专项招募令</text>
+        <text class="close-icon" bindtap="closePublishTaskModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="form-item">
+          <text class="field-label">大型活动名称 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：国家大剧院首演《舞动金帆》" model:value="{{taskForm.activityName}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">招募任务组名称 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：后台盘头妆造组 / 急救与后勤组" model:value="{{taskForm.taskName}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">组别类别</text>
+          <picker bindchange="onTaskGroupTypeChange" value="{{taskGroupIndex}}" range="{{taskGroupTypeOptions}}">
+            <view class="fancy-picker">
+              <text class="picker-value">{{taskGroupTypeOptions[taskGroupIndex]}}</text>
+              <text class="picker-arrow">▾</text>
+            </view>
+          </picker>
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">服务日期</text>
+          <input class="fancy-input" placeholder="2026-08-25" model:value="{{taskForm.taskDate}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">服务时间段 (支持时间段选择) <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：13:30 - 17:30 (4小时段)" model:value="{{taskForm.serviceTime}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">所需招募人数 (人)</text>
+          <input class="fancy-input" type="number" placeholder="4" model:value="{{taskForm.quotaCount}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">任务补充说明</text>
+          <textarea class="fancy-textarea" placeholder="请输入具体协助内容、集合地点及注意事项..." model:value="{{taskForm.description}}"></textarea>
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="btn-cancel" bindtap="closePublishTaskModal">取消</view>
+        <view class="btn-confirm" bindtap="submitPublishTask">🚀 确认发布招募令</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 弹窗 3：📦 管理员 & 家委【发布物品选购计划 Modal】 ==================== -->
+  <view class="modal-mask" wx:if="{{showItemDemandModal}}">
+    <view class="modal-box">
+      <view class="modal-header">
+        <text class="modal-title">📦 发布物品选购计划</text>
+        <text class="close-icon" bindtap="closeItemModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="fancy-notice-tip" style="background: #ecfdf5; border-color: #a7f3d0; color: #047857;">
+          <text class="tip-icon">💡</text>
+          <text>家委发布说明：发布选购计划无需填写数量，家长报名时自行勾选尺码与数量。截止后页面自动置灰。</text>
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">物品名称 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：双皮头芭蕾练功软鞋 (粉色)" model:value="{{itemForm.itemName}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">报名截止日期 (到期自动置灰)</text>
+          <input class="fancy-input" placeholder="2026-08-30" model:value="{{itemForm.deadline}}" />
+        </view>
+        <view class="form-item margin-top-12">
+          <text class="field-label">预计到货时间</text>
+          <input class="fancy-input" placeholder="2026-09-05" model:value="{{itemForm.expectedArrivalDate}}" />
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="btn-cancel" bindtap="closeItemModal">取消</view>
+        <view class="btn-confirm" bindtap="submitItemDemand">🚀 确认发布选购计划</view>
+      </view>
+    </view>
+  </view>
+</view>

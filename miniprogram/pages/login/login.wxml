@@ -1,0 +1,119 @@
+<view class="login-container">
+  <!-- 1. 舞团高定 Logo 区域 -->
+  <view class="logo-box">
+    <view class="logo-circle">💃</view>
+    <view class="title">劲松金帆舞团</view>
+    <view class="subtitle">教务管理与家委协同平台</view>
+  </view>
+
+  <!-- 2. 页面主按钮：微信一键授权登录 -->
+  <view class="main-action-box" wx:if="{{!showRegisterForm}}">
+    <button class="wx-primary-login-btn" open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber" loading="{{loading}}">
+      <text class="wx-icon">💬</text> 微信一键授权登录
+    </button>
+  </view>
+
+  <!-- 3. 极致华丽高定申请卡片 -->
+  <view class="card-box apply-card-fancy" wx:if="{{showRegisterForm}}">
+    <view class="fancy-card-header">
+      <view class="header-badge">✨ 权限开通申请</view>
+      <text class="header-title">填写资料申请小程序权限</text>
+      <text class="header-sub">请选择您的班级与真实身份信息提交审核</text>
+    </view>
+
+    <!-- 身份类型三元切片 Pills Selector -->
+    <view class="form-item margin-top-12">
+      <text class="field-label">申请身份类别 <text class="required">*</text></text>
+      <view class="role-pills-container">
+        <view class="role-pill {{selectedRole === 'STUDENT' ? 'active' : ''}}" bindtap="selectRole" data-role="STUDENT">
+          <text class="pill-icon">👨‍👩‍👧</text>
+          <text class="pill-text">学员/家长</text>
+        </view>
+        <view class="role-pill {{selectedRole === 'COMMITTEE' ? 'active' : ''}}" bindtap="selectRole" data-role="COMMITTEE">
+          <text class="pill-icon">📜</text>
+          <text class="pill-text">家委干部</text>
+        </view>
+        <view class="role-pill {{selectedRole === 'TEACHER' ? 'active' : ''}}" bindtap="selectRole" data-role="TEACHER">
+          <text class="pill-icon">👩‍🏫</text>
+          <text class="pill-text">专业老师</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 🅰️ 教师专属表单 -->
+    <block wx:if="{{selectedRole === 'TEACHER'}}">
+      <view class="fancy-notice-tip">
+        <text class="tip-icon">💡</text>
+        <text>老师权限：请填写您的真实姓名，提交后开启全校排课与协同管理。</text>
+      </view>
+
+      <view class="form-item margin-top-12">
+        <text class="field-label">教师姓名 <text class="required">*</text></text>
+        <input class="fancy-input" placeholder="例如：林依依老师" model:value="{{teacherName}}" />
+      </view>
+
+      <view class="form-item margin-top-12">
+        <text class="field-label">任教班级 / 舞种 (可选)</text>
+        <input class="fancy-input" placeholder="例如：芭蕾高级班 / 中国舞" model:value="{{danceClassName}}" />
+      </view>
+    </block>
+
+    <!-- 🅱️ 家长 / 家委专属表单 -->
+    <block wx:else>
+      <view class="fancy-notice-tip">
+        <text class="tip-icon">💡</text>
+        <text>家长权限：请选择学生所属班级，提交后由该班级家委与老师审批。</text>
+      </view>
+
+      <view class="form-item margin-top-12">
+        <text class="field-label">所属舞团班级 <text class="required">*</text></text>
+        <picker bindchange="onClassChange" value="{{classIndex}}" range="{{classRange}}">
+          <view class="fancy-picker">
+            <text class="picker-value">🏫 {{classRange[classIndex]}}</text>
+            <text class="picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-item margin-top-12">
+        <text class="field-label">学生姓名 <text class="required">*</text></text>
+        <input class="fancy-input" placeholder="例如：李小桐" model:value="{{studentName}}" />
+      </view>
+
+      <view class="form-item margin-top-12">
+        <text class="field-label">与学生关系 <text class="required">*</text></text>
+        <picker bindchange="onRelationChange" value="{{relationIndex}}" range="{{relationOptions}}">
+          <view class="fancy-picker">
+            <text class="picker-value">👨‍👩‍👧 {{relationOptions[relationIndex]}}</text>
+            <text class="picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-item margin-top-12">
+        <text class="field-label">家长真实称谓</text>
+        <input class="fancy-input" placeholder="例如：李妈妈 / 李先生" model:value="{{parentName}}" />
+      </view>
+    </block>
+
+    <!-- 通用联系手机号 -->
+    <view class="form-item margin-top-12">
+      <text class="field-label">联系手机号 <text class="required">*</text></text>
+      <view class="fancy-input disabled-phone-input" wx:if="{{phone}}">
+        <text class="phone-text">📱 {{phone}}</text>
+        <text class="lock-tag">🔒 已锁定</text>
+      </view>
+      <input class="fancy-input" type="number" maxlength="11" placeholder="请输入您的11位手机号" model:value="{{phone}}" wx:else />
+    </view>
+
+    <!-- 底部 1:1 对称美学高定按钮组 -->
+    <view class="btn-group-row margin-top-20">
+      <button class="fancy-btn btn-cancel" bindtap="cancelRegisterForm">
+        <text class="btn-icon">↩</text> 返回登录
+      </button>
+      <button class="fancy-btn btn-submit" bindtap="handleApplyLoginPermission" loading="{{applying}}">
+        <text class="btn-icon">✨</text> 提交申请
+      </button>
+    </view>
+  </view>
+</view>

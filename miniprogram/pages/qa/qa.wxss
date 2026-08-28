@@ -1,0 +1,6 @@
+.sec-title { font-size: 14px; font-weight: 700; color: #ea580c; margin-bottom: 10px; }
+.f-badge { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.t-name { font-size: 11px; color: #969799; font-weight: 600; }
+.f-title { font-size: 14px; font-weight: 700; color: #ea580c; margin-bottom: 4px; }
+.f-q { font-size: 12px; color: #64748b; margin-bottom: 6px; }
+.f-a { background: #ecfdf5; padding: 8px 10px; border-radius: 6px; font-size: 12px; color: #047857; border-left: 3px solid #059669; }

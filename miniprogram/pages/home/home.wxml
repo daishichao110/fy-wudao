@@ -1,0 +1,193 @@
+<!-- 舞蹈学校数字化综合管理小程序 —— 首页视图 -->
+<view class="container">
+  <!-- 1. 顶部大型演出与风采展示 Swiper 轮播 Banner -->
+  <view class="banner-wrapper">
+    <swiper class="banner-swiper" indicator-dots autoplay circular interval="4000" duration="500">
+      <block wx:for="{{bannerList}}" wx:key="bannerId">
+        <swiper-item bindtap="handleBannerClick" data-banner="{{item}}">
+          <view class="banner-card">
+            <image class="banner-img" src="{{item.imageUrl}}" mode="aspectFill"></image>
+            <view class="banner-overlay">
+              <view class="banner-badge">{{item.badge || '🎪 大型演出'}}</view>
+              <text class="banner-title">{{item.title}}</text>
+              <text class="banner-sub">{{item.subtitle || '点击查看演出与风采展示完整详情 ➔'}}</text>
+            </view>
+          </view>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+
+  <!-- 2. 最新公告跑马灯 (点击任意公告进入详情) -->
+  <view class="notice-bar">
+    <text class="notice-tag">📢 公告</text>
+    <swiper class="notice-swiper" vertical autoplay circular interval="3500">
+      <block wx:for="{{noticeList}}" wx:key="id">
+        <swiper-item bindtap="handleNoticeClick" data-notice="{{item}}">
+          <text class="notice-text">{{item.title}}</text>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+
+  <!-- 3. 🏛️ 舞团品牌与办学特色 (精简保留干净标题与详情跳转，去除重复图片与下方赘余) -->
+  <view class="section-header-row margin-top-12" style="background: #ffffff; border-radius: 16px; padding: 16px; border: 1px solid #f1f5f9; box-shadow: 0 4px 16px rgba(0,0,0,0.02);">
+    <text class="section-title">🏛️ 舞团品牌与办学特色</text>
+    <text class="section-more" bindtap="openSchoolIntroModal">了解详情 ➔</text>
+  </view>
+
+  <!-- 4. 👩‍🏫 顶级名师团队 preview 列表 -->
+  <view class="section-header-row margin-top-16">
+    <text class="section-title">👩‍🏫 舞团名师团队</text>
+    <navigator url="/pages/teachers/teachers" class="section-more">全校名师 ➔</navigator>
+  </view>
+
+  <view class="teacher-preview-list">
+    <block wx:for="{{previewTeachers}}" wx:key="teacherId">
+      <view class="tp-card" bindtap="openTeacherModal" data-teacher="{{item}}">
+        <image class="tp-avatar" src="{{item.avatarUrl || 'http://172.20.10.4:8080/image/teacher1.jpg'}}" mode="aspectFill"></image>
+        <view class="tp-content">
+          <view class="tp-name-line">
+            <text class="tp-name">{{item.name}}</text>
+            <text class="tp-badge">{{item.title}}</text>
+          </view>
+          <text class="tp-tag">💃 擅长舞种: {{item.danceType}} · {{item.experienceYears}}</text>
+          <text class="tp-bio">{{item.bio}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- ==================== 5. 🎪 Banner 演出/风采活动全屏长文报道页面 (取代框，全屏沉浸阅读) ==================== -->
+  <view class="full-page-article-view" wx:if="{{showBannerDetailModal}}">
+    <!-- 长文页顶部导航栏 -->
+    <view class="article-nav-bar">
+      <view class="nav-back-btn" bindtap="closeBannerDetailModal">
+        <text class="back-arrow">←</text>
+        <text class="back-text">返回首页</text>
+      </view>
+      <text class="nav-title">活动风采展播长文报道</text>
+      <view class="nav-placeholder"></view>
+    </view>
+
+    <!-- 沉浸长文内容滚动区 -->
+    <scroll-view scroll-y class="article-scroll-body">
+      <view class="article-container">
+        <!-- 封面巨幅大图 -->
+        <image class="article-hero-img" src="{{selectedBanner.imageUrl}}" mode="widthFix"></image>
+
+        <!-- 文章头部元数据区 -->
+        <view class="article-header">
+          <view class="article-badge-row">
+            <text class="tag-badge tag-orange">{{selectedBanner.badge || '🎪 大型演出'}}</text>
+            <text class="article-date" wx:if="{{selectedBanner.eventDate}}">📅 举办时间: {{selectedBanner.eventDate}}</text>
+          </view>
+          
+          <text class="article-main-title">{{selectedBanner.title}}</text>
+
+          <view class="article-meta-box">
+            <text class="meta-item" wx:if="{{selectedBanner.location}}">📍 举办地点: {{selectedBanner.location}}</text>
+            <text class="meta-item">✨ 报道发布: {{selectedBanner.creatorName || '劲松金帆舞团组委会'}}</text>
+          </view>
+        </view>
+
+        <view class="article-divider"></view>
+
+        <!-- 正文长文区 -->
+        <view class="article-content-body">
+          <text class="content-paragraph">{{selectedBanner.content || selectedBanner.subtitle || '活动精彩回顾与报道展播'}}</text>
+        </view>
+
+        <!-- 长文页底部优雅落款 -->
+        <view class="article-footer-stamp">
+          <text class="stamp-brand">💃 劲松金帆舞团 · 少儿舞蹈艺术中心</text>
+          <text class="stamp-tip">记录每一次舞台上的优雅蜕变与闪耀绽放</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 6. 🏛️ 舞团详情 Modal 弹窗 (了解详情点击弹窗) -->
+  <view class="modal-mask" wx:if="{{showSchoolIntroModal}}">
+    <view class="modal-box">
+      <view class="modal-header">
+        <text class="modal-title">🏛️ 劲松金帆舞团 办学特色与风采</text>
+        <text class="close-icon" bindtap="closeSchoolIntroModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="school-full-card">
+          <text class="sf-title">🏆 权威资质与艺术成果</text>
+          <text class="sf-desc">劲松金帆舞团是经教委备案批准的少儿舞蹈教育品牌，荣获中国舞蹈家协会考级指定考场、北京舞蹈学院考级指定承办单位。</text>
+          
+          <view class="td-divider"></view>
+          
+          <text class="sf-title">🩰 专业特色课程体系</text>
+          <text class="sf-desc">舞团开设古典芭蕾舞、中国舞身韵、毯技软开度、剧目变奏及大型展演精品班。实行家校数据协同，打造每位少儿专属 10 维身材量体与练功档案。</text>
+
+          <view class="td-divider"></view>
+
+          <text class="sf-title">📍 舞团排练厅校区地址</text>
+          <text class="sf-desc">北京市朝阳区劲松街道金帆文化大厦 3 层（1号芭蕾排练厅 200㎡、2号中国舞多功能厅 160㎡）。</text>
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="btn-confirm" bindtap="closeSchoolIntroModal">了解并返回</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 7. 👩‍🏫 教师详情 Modal 弹窗 -->
+  <view class="modal-mask" wx:if="{{showHomeTeacherModal}}">
+    <view class="modal-box">
+      <view class="modal-header">
+        <text class="modal-title">👩‍🏫 导师详细档案</text>
+        <text class="close-icon" bindtap="closeHomeTeacherModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="t-detail-card" wx:if="{{selectedTeacher}}">
+          <view class="td-header">
+            <image class="td-avatar" src="{{selectedTeacher.avatarUrl || 'http://172.20.10.4:8080/image/teacher1.jpg'}}" mode="aspectFill"></image>
+            <view class="td-meta">
+              <text class="td-name">{{selectedTeacher.name}}</text>
+              <text class="td-title">{{selectedTeacher.title}}</text>
+              <view class="td-tags">
+                <text class="tag-badge tag-orange">💃 {{selectedTeacher.danceType}}</text>
+                <text class="tag-badge tag-emerald">🏅 {{selectedTeacher.experienceYears}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="td-divider"></view>
+          <text class="td-sec-title">📖 个人资历与教学理念</text>
+          <text class="td-sec-content">{{selectedTeacher.bio}}</text>
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="btn-confirm" bindtap="closeHomeTeacherModal">关闭</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 8. 📢 动态公告详情 Modal 弹窗 -->
+  <view class="modal-mask" wx:if="{{showNoticeDetailModal}}">
+    <view class="modal-box">
+      <view class="modal-header">
+        <text class="modal-title">📢 舞团通知公告详情</text>
+        <text class="close-icon" bindtap="closeNoticeDetailModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="notice-detail-card" wx:if="{{selectedNotice}}">
+          <view class="nd-tag-row margin-bottom-8">
+            <text class="tag-badge tag-emerald">{{selectedNotice.tag || '【通知】'}}</text>
+            <text class="nd-date">{{selectedNotice.createdAt || '2026-08-22'}}</text>
+          </view>
+          <text class="nd-title">{{selectedNotice.title}}</text>
+          <view class="td-divider"></view>
+          <text class="td-sec-content">{{selectedNotice.content || selectedNotice.title}}</text>
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="btn-confirm" bindtap="closeNoticeDetailModal">关闭并返回</view>
+      </view>
+    </view>
+  </view>
+</view>

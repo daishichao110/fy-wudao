@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.QaMessageMapper">
+
+    <select id="selectByUserId" resultType="com.wudao.entity.QaMessage">
+        SELECT msg_id, student_id, student_name, teacher_id, teacher_name, question_content, reply_content, is_featured, featured_title, created_at
+        FROM qa_message
+        WHERE student_id = #{userId} OR teacher_id = #{userId}
+        ORDER BY msg_id DESC
+    </select>
+
+    <select id="selectFeatured" resultType="com.wudao.entity.QaMessage">
+        SELECT msg_id, student_id, student_name, teacher_id, teacher_name, question_content, reply_content, is_featured, featured_title, created_at
+        FROM qa_message
+        WHERE is_featured = 1
+        ORDER BY msg_id DESC
+    </select>
+
+    <select id="selectById" resultType="com.wudao.entity.QaMessage">
+        SELECT msg_id, student_id, student_name, teacher_id, teacher_name, question_content, reply_content, is_featured, featured_title, created_at
+        FROM qa_message
+        WHERE msg_id = #{msgId}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO qa_message(msg_id, student_id, student_name, teacher_id, teacher_name, question_content, reply_content, is_featured, featured_title)
+        VALUES(#{msgId}, #{studentId}, #{studentName}, #{teacherId}, #{teacherName}, #{questionContent}, #{replyContent}, #{isFeatured}, #{featuredTitle})
+    </insert>
+
+    <update id="updateReply">
+        UPDATE qa_message
+        SET reply_content = #{replyContent}
+        WHERE msg_id = #{msgId}
+    </update>
+
+    <update id="updateFeatured">
+        UPDATE qa_message
+        SET is_featured = 1, featured_title = #{featuredTitle}
+        WHERE msg_id = #{msgId}
+    </update>
+
+</mapper>

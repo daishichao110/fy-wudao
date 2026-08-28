@@ -1,0 +1,313 @@
+/* login.wxss - 爱马仕橙 + 翡翠绿 + 洁白空灵奢华高定主题 */
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 35%, #ffffff 100%);
+  padding: 30px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Helvetica Neue", sans-serif;
+}
+
+/* 1. 舞团高定 Logo 区域 */
+.logo-box {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.logo-circle {
+  width: 76px;
+  height: 76px;
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff;
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  box-shadow: 0 10px 25px rgba(234, 88, 12, 0.35);
+  border: 3px solid #ffffff;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* 2. 核心微信一键授权按钮 (爱马仕橙主色) */
+.main-action-box {
+  width: 100%;
+  max-width: 320px;
+}
+
+.wx-primary-login-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+  border-radius: 28px;
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 22px rgba(234, 88, 12, 0.35);
+  border: none;
+}
+
+.wx-icon {
+  font-size: 22px;
+}
+
+/* 3. 极致奢华高定申请卡片 */
+.apply-card-fancy {
+  width: 100%;
+  max-width: 380px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px 20px;
+  box-shadow: 0 16px 40px rgba(234, 88, 12, 0.08);
+  border: 1px solid #fed7aa;
+  box-sizing: border-box;
+}
+
+.fancy-card-header {
+  text-align: center;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-badge {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+}
+
+.header-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.header-sub {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* 4. 身份类型 Pills 切换器 */
+.role-pills-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.role-pill {
+  flex: 1;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.pill-icon {
+  font-size: 18px;
+}
+
+.pill-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+/* 激活状态：爱马仕橙 */
+.role-pill.active {
+  background: #fff7ed;
+  border-color: #ea580c;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
+}
+
+.role-pill.active .pill-text {
+  color: #c2410c;
+}
+
+/* 提示通知条：翡翠绿柔柔色调 */
+.fancy-notice-tip {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  color: #047857;
+  line-height: 1.4;
+  margin-top: 10px;
+}
+
+.tip-icon {
+  font-size: 14px;
+}
+
+/* 表单通用控件 */
+.form-item {
+  width: 100%;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.required {
+  color: #ea580c;
+}
+
+.fancy-input {
+  width: 100%;
+  height: 44px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0 14px;
+  font-size: 13px;
+  color: #0f172a;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.fancy-input:focus {
+  background: #ffffff;
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+}
+
+/* 锁定手机号输入框 */
+.disabled-phone-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.phone-text {
+  font-weight: 800;
+  color: #ea580c;
+}
+
+.lock-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #c2410c;
+  background: #ffedd5;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.fancy-picker {
+  width: 100%;
+  height: 44px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.picker-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.picker-arrow {
+  color: #ea580c;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* 1:1 对称美学黄金按钮组 */
+.btn-group-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.fancy-btn {
+  flex: 1;
+  height: 48px;
+  line-height: 48px;
+  border-radius: 24px;
+  font-size: 15px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+/* 【返回】按钮：爱马仕橙淡柔边框 */
+.btn-cancel {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1.5px solid #fed7aa;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.08);
+}
+
+.btn-cancel:active {
+  background: #ffedd5;
+}
+
+/* 【提交】按钮：翡翠绿渐变 */
+.btn-submit {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+}
+
+.btn-submit:active {
+  transform: scale(0.98);
+}
+
+.margin-top-20 { margin-top: 20px; }
+.margin-top-12 { margin-top: 12px; }
+.margin-top-8 { margin-top: 8px; }

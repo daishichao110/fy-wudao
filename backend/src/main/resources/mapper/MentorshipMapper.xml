@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.MentorshipMapper">
+
+    <select id="selectAll" resultType="com.wudao.entity.Mentorship">
+        SELECT pair_id, senior_student_id, senior_student_name, junior_student_id, junior_student_name, dance_class_name AS term_name, star_points, checkin_count, created_at
+        FROM student_mentorship
+        ORDER BY pair_id ASC
+    </select>
+
+    <select id="selectById" resultType="com.wudao.entity.Mentorship">
+        SELECT pair_id, senior_student_id, senior_student_name, junior_student_id, junior_student_name, dance_class_name AS term_name, star_points, checkin_count, created_at
+        FROM student_mentorship
+        WHERE pair_id = #{pairId}
+    </select>
+
+    <update id="incrementStarAndCheckin">
+        UPDATE student_mentorship
+        SET star_points = star_points + #{addStars}, checkin_count = checkin_count + 1
+        WHERE pair_id = #{pairId}
+    </update>
+
+    <insert id="insert" parameterType="com.wudao.entity.Mentorship">
+        INSERT INTO student_mentorship (
+            pair_id, senior_student_id, senior_student_name, junior_student_id, junior_student_name, dance_class_name, star_points, checkin_count
+        ) VALUES (
+            #{pairId}, #{seniorStudentId}, #{seniorStudentName}, #{juniorStudentId}, #{juniorStudentName}, #{termName}, #{starPoints}, #{checkinCount}
+        )
+    </insert>
+
+</mapper>

@@ -1,0 +1,65 @@
+<view class="container">
+  <!-- 教师 / 管理员视角：可查看全校所有学员的量体档案 -->
+  <block wx:if="{{isTeacherOrAdmin}}">
+    <view class="dance-card teacher-header flex-between">
+      <view>
+        <text class="t-badge tag-badge tag-purple">教师专权视角</text>
+        <text class="t-title">全校学员身材量体档案总览</text>
+      </view>
+      <button class="btn-primary mini-btn" bindtap="exportSheet">批量导出演出服订购单</button>
+    </view>
+
+    <block wx:for="{{allMetrics}}" wx:key="metricId">
+      <view class="dance-card">
+        <view class="flex-between m-head">
+          <text class="student-name">👤 {{item.studentName}} (ID: {{item.studentId}})</text>
+          <text class="tag-badge tag-rose">舞鞋: {{item.shoeSize}}码</text>
+        </view>
+        <view class="metric-grid">
+          <view class="m-item"><text class="m-label">身高</text><text class="m-val">{{item.heightCm}} cm</text></view>
+          <view class="m-item"><text class="m-label">体重</text><text class="m-val">{{item.weightKg}} kg</text></view>
+          <view class="m-item"><text class="m-label">胸围</text><text class="m-val">{{item.bustCm}} cm</text></view>
+          <view class="m-item"><text class="m-label">腰围</text><text class="m-val">{{item.waistCm}} cm</text></view>
+          <view class="m-item"><text class="m-label">臀围</text><text class="m-val">{{item.hipCm}} cm</text></view>
+          <view class="m-item"><text class="m-label">胴长</text><text class="m-val">{{item.torsoLengthCm}} cm</text></view>
+        </view>
+        <view class="m-date">更新日期：{{item.measuredDate}}</view>
+      </view>
+    </block>
+  </block>
+
+  <!-- 普通学员视角：录入与查看个人量体档案 -->
+  <block wx:else>
+    <view class="dance-card flex-between">
+      <view><text class="label">当前学员：</text><text class="name">{{currentUser.realName || '学员'}}</text></view>
+      <button class="btn-outline" bindtap="exportSheet">导出个人定制尺码</button>
+    </view>
+
+    <view class="dance-card" wx:if="{{metric}}">
+      <view class="card-title">📏 我的最新身材档案 ({{metric.measuredDate}})</view>
+      <view class="metric-grid">
+        <view class="m-item"><text class="m-label">身高</text><text class="m-val">{{metric.heightCm}} cm</text></view>
+        <view class="m-item"><text class="m-label">体重</text><text class="m-val">{{metric.weightKg}} kg</text></view>
+        <view class="m-item"><text class="m-label">胸围</text><text class="m-val">{{metric.bustCm}} cm</text></view>
+        <view class="m-item"><text class="m-label">腰围</text><text class="m-val">{{metric.waistCm}} cm</text></view>
+        <view class="m-item"><text class="m-label">臀围</text><text class="m-val">{{metric.hipCm}} cm</text></view>
+        <view class="m-item"><text class="m-label">胴长</text><text class="m-val">{{metric.torsoLengthCm}} cm</text></view>
+        <view class="m-item highlight"><text class="m-label">舞鞋码</text><text class="m-val">{{metric.shoeSize}} 码</text></view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 真实导出 CSV 预览与下载 Modal 弹窗 -->
+  <view class="modal-mask" wx:if="{{showExportModal}}">
+    <view class="modal-box">
+      <view class="modal-title">📊 演出服订购单导出成功！</view>
+      <view class="modal-subtitle">已自动生成带有 UTF-8 BOM 的标准 Excel CSV 报表</view>      
+      <textarea class="csv-preview" value="{{csvData}}" readonly></textarea>
+      
+      <view class="modal-btns">
+        <button class="btn-outline" bindtap="closeExportModal">关闭</button>
+        <button class="btn-primary" bindtap="copyCsvContent">复制 CSV 数据 (粘贴至Excel)</button>
+      </view>
+    </view>
+  </view>
+</view>

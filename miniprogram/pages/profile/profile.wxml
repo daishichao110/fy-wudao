@@ -1,0 +1,236 @@
+<!-- 舞蹈学校数字化综合管理小程序 —— 个人中心与配置管理视图 -->
+<view class="container">
+  <!-- 1. 👑 个人信息卡片 Header (爱马仕橙渐变尊享风) -->
+  <view class="profile-header-card">
+    <view class="user-info-row">
+      <image class="user-avatar" src="{{currentUser.avatarUrl || 'http://172.20.10.4:8080/image/teacher1.jpg'}}" mode="aspectFill"></image>
+      <view class="user-meta">
+        <view class="name-line">
+          <text class="u-name">{{currentUser.realName}}</text>
+          <text class="u-role-pill">{{currentUser.roleName}}</text>
+        </view>
+        <text class="u-sub">🏫 所在班级: {{currentUser.danceClassName}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 2. 📊 全校学员成绩总览 (默认按总分从高到低排名，支持年级与全校切换) -->
+  <view class="section-header-row margin-top-12">
+    <view class="sh-left">
+      <text class="menu-group-title">📊 全校学员成绩总览</text>
+      <text class="group-tip">默认按总分由高到低排名</text>
+    </view>
+    <picker bindchange="onScoreGradeChange" value="{{scoreGradeIndex}}" range="{{scoreGradeOptions}}">
+      <view class="picker-pill-orange">
+        <text class="ppo-text">{{scoreGradeOptions[scoreGradeIndex]}}</text>
+        <text class="ppo-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <view class="score-rank-list">
+    <block wx:for="{{displayStudentScores}}" wx:key="id">
+      <view class="score-card">
+        <view class="sc-header">
+          <view class="sch-left">
+            <view class="rank-badge {{index === 0 ? 'rank-1' : (index === 1 ? 'rank-2' : (index === 2 ? 'rank-3' : 'rank-normal'))}}">
+              <text>{{index === 0 ? '🥇 1' : (index === 1 ? '🥈 2' : (index === 2 ? '🥉 3' : index + 1))}}</text>
+            </view>
+            <text class="sc-name">{{item.studentName}}</text>
+            <text class="sc-grade-tag">{{item.gradeLevel}}</text>
+          </view>
+          <view class="sc-total-box">
+            <text class="sct-label">总分</text>
+            <text class="sct-num">{{item.totalScore}} 分</text>
+          </view>
+        </view>
+
+        <view class="sc-body margin-top-6">
+          <view class="sub-score-pills">
+            <text class="s-pill">语文: {{item.chineseScore}}分</text>
+            <text class="s-pill">数学: {{item.mathScore}}分</text>
+            <text class="s-pill">英语: {{item.englishScore}}分</text>
+          </view>
+          <text class="sc-resume" wx:if="{{item.resumeBio}}">📜 艺术简历: {{item.resumeBio}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 3. ⚙️ 管理员与教务管理工具箱 -->
+  <block wx:if="{{hasManagePermission}}">
+    <view class="section-header-row margin-top-14">
+      <text class="menu-group-title">⚙️ 教务与家委协同配置中心</text>
+      <text class="group-tip">权限专用配置项</text>
+    </view>
+
+    <view class="action-tools-grid">
+      <!-- 1. 角色审批 (仅管理员可见) -->
+      <view class="action-item" bindtap="openModal" data-modal="approval" wx:if="{{isAdmin}}">
+        <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
+          <text style="font-size: 20px;">🛡️</text>
+          <text wx:if="{{pendingList.length > 0}}" class="badge-dot">{{pendingList.length}}</text>
+        </view>
+        <text class="action-label">角色审批</text>
+      </view>
+
+      <!-- 2. 发布招募任务 -->
+      <view class="action-item" bindtap="openModal" data-modal="createTask">
+        <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
+          <text style="font-size: 20px;">🚩</text>
+        </view>
+        <text class="action-label">发布招募任务</text>
+      </view>
+
+      <!-- 3. 档案数据导出模版 -->
+      <view class="action-item" bindtap="downloadStudentInfo">
+        <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
+          <text style="font-size: 20px;">📜</text>
+        </view>
+        <text class="action-label">档案数据导出</text>
+      </view>
+
+      <!-- 4. 发布大型演出与风采展播 (仅管理员与家委会可见) -->
+      <view class="action-item" bindtap="openPublishBannerModal">
+        <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
+          <text style="font-size: 20px;">🎪</text>
+        </view>
+        <text class="action-label" style="font-weight: 700; color: #ea580c;">发布活动展播</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- 4. 📝 学员信息档案与简历录入中心 -->
+  <view class="section-header-row margin-top-14">
+    <text class="menu-group-title">📝 学员信息档案与简历录入</text>
+    <text class="group-tip">档案信息维护</text>
+  </view>
+
+  <view class="action-tools-grid">
+    <!-- 学员信息档案与简历录入 -->
+    <view class="action-item" bindtap="openModal" data-modal="studentProfile">
+      <view class="action-icon-box" style="background: #ecfdf5; border-color: #a7f3d0;">
+        <text style="font-size: 20px;">📜</text>
+      </view>
+      <text class="action-label">学员档案与简历录入</text>
+    </view>
+  </view>
+
+  <!-- ==================== 5. 弹窗：学员信息档案与简历录入 Modal ==================== -->
+  <view class="modal-overlay" wx:if="{{showStudentProfileModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">📜 学员信息档案与艺术简历录入</text>
+        <text class="close-btn" bindtap="closeModals">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="form-group">
+          <text class="field-label">学员姓名 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：李小桐" model:value="{{studentProfileForm.studentName}}" />
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">班级年级</text>
+          <input class="fancy-input" placeholder="例如：二年级 / 三年级" model:value="{{studentProfileForm.gradeLevel}}" />
+        </view>
+
+        <view class="form-row-2 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">语文成绩</text>
+            <input class="fancy-input" type="digit" placeholder="96" model:value="{{studentProfileForm.chineseScore}}" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">数学成绩</text>
+            <input class="fancy-input" type="digit" placeholder="98" model:value="{{studentProfileForm.mathScore}}" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">英语成绩</text>
+            <input class="fancy-input" type="digit" placeholder="97" model:value="{{studentProfileForm.englishScore}}" />
+          </view>
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">家长姓名与电话</text>
+          <input class="fancy-input" placeholder="李爸爸 (18911800655)" model:value="{{studentProfileForm.parentPhone}}" />
+        </view>
+
+        <!-- 自定义框：学员艺术简历/履历 -->
+        <view class="form-group margin-top-8">
+          <text class="field-label">🎨 学员艺术简历与获奖履历 (自定义维护)</text>
+          <textarea class="fancy-textarea" placeholder="例如：2024年获得全区少儿舞蹈展演金奖；2025年通过芭蕾舞4级考级..." model:value="{{studentProfileForm.resumeBio}}"></textarea>
+        </view>
+      </scroll-view>
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closeModals">取消</view>
+        <view class="act-btn btn-pass" bindtap="submitStudentProfile">💾 保存档案与简历</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== ✨ 管理员与家委【发布大型演出/风采展示】 Modal 弹窗 ==================== -->
+  <view class="modal-overlay" wx:if="{{showPublishBannerModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">✨ 发布大型演出与风采展示</text>
+        <text class="close-btn" bindtap="closePublishBannerModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="fancy-notice-tip" style="background: #ecfdf5; border-color: #a7f3d0; color: #047857;">
+          <text class="tip-icon">💡</text>
+          <text>管理员与家委权限：发布的活动将生成首页 Swiper 滚动播放海报，全校学员与家长点击可查看报道详情。</text>
+        </view>
+
+        <view class="form-item margin-top-12">
+          <text class="field-label">活动类别 <text class="required">*</text></text>
+          <picker bindchange="onBadgeChange" value="{{badgeIndex}}" range="{{badgeOptions}}">
+            <view class="fancy-picker">
+              <text class="picker-value">{{badgeOptions[badgeIndex]}}</text>
+              <text class="picker-arrow">▾</text>
+            </view>
+          </picker>
+        </view>
+
+        <view class="form-item margin-top-12">
+          <text class="field-label">活动名称 / 剧目标题 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：国家大剧院首演《睡美人》" model:value="{{publishBannerForm.title}}" />
+        </view>
+
+        <view class="form-item margin-top-12">
+          <text class="field-label">活动简述 / 副标题</text>
+          <input class="fancy-input" placeholder="例如：全团学员斩获金奖荣誉演出记录" model:value="{{publishBannerForm.subtitle}}" />
+        </view>
+
+        <view class="form-item margin-top-12">
+          <text class="field-label">演出 / 完成日期</text>
+          <input class="fancy-input" placeholder="2026-08-25" model:value="{{publishBannerForm.eventDate}}" />
+        </view>
+
+        <view class="form-item margin-top-12">
+          <text class="field-label">演出 / 活动地点</text>
+          <input class="fancy-input" placeholder="例如：国家大剧院歌剧院 / 金帆排练厅" model:value="{{publishBannerForm.location}}" />
+        </view>
+
+        <view class="form-item margin-top-12">
+          <text class="field-label">活动封面照片 (1张照片) <text class="required">*</text></text>
+          <view class="banner-upload-box" bindtap="chooseBannerImage">
+            <image class="bu-img" src="{{publishBannerForm.imageUrl}}" mode="aspectFill"></image>
+            <view class="bu-overlay">
+              <text class="bu-icon">📷</text>
+              <text class="bu-text">点击上传/更换封面照片</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="form-item margin-top-12">
+          <text class="field-label">精彩回顾与报道文字 <text class="required">*</text></text>
+          <textarea class="fancy-textarea" placeholder="请输入详细的演出盛况、奖项荣誉与感谢分享报道文字..." model:value="{{publishBannerForm.content}}"></textarea>
+        </view>
+      </scroll-view>
+
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closePublishBannerModal">取消</view>
+        <view class="act-btn btn-pass" bindtap="submitPublishBanner">🚀 确认发布海报展播</view>
+      </view>
+    </view>
+  </view>
+</view>

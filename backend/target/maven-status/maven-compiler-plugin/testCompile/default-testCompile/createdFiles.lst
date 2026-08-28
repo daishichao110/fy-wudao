@@ -1,0 +1,8 @@
+com/wudao/controller/PurchaseControllerTest.class
+com/wudao/controller/VolunteerControllerTest.class
+com/wudao/controller/UserControllerTest.class
+com/wudao/controller/BodyMetricControllerTest.class
+com/wudao/controller/MentorshipControllerTest.class
+com/wudao/controller/AuthControllerTest.class
+com/wudao/controller/QaMessageControllerTest.class
+com/wudao/controller/ScheduleControllerTest.class

@@ -1,0 +1,344 @@
+{
+  "generated_at": "2026-08-21T12:04:05.002041+00:00",
+  "project_dir": "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao",
+  "status": "ok",
+  "install_scope": "project-only",
+  "framework_playbook": {},
+  "targets": [
+    {
+      "target": "gemini-cli",
+      "host_name": "Gemini CLI",
+      "status": "ready",
+      "include_user_surfaces": false,
+      "standard_flow_first_prompt": "/super-dev 你的需求",
+      "competition_flow_first_prompt": "/super-dev-seeai 比赛需求",
+      "post_onboard_self_check": [
+        "Gemini CLI 接入后先确认入口可用: /super-dev 你的需求 / /super-dev-seeai 比赛需求",
+        "Gemini CLI 接入后再确认 SEEAI 项目补充面已写入: .gemini/commands/super-dev-seeai.toml",
+        "Gemini CLI 接入后再确认 SEEAI 用户级补充面已写入: ~/.gemini/skills/super-dev-seeai/SKILL.md"
+      ],
+      "official_workflow_checks": [
+        "确认 Gemini CLI 按 official-context 官方协议面真实加载 Super Dev，而不是只检测到文件存在。",
+        "确认官方接入面真实生效: 项目侧 GEMINI.md / .gemini/commands/super-dev.toml",
+        "如启用当前增强接入面，再确认: 项目侧 .gemini/settings.json；用户侧 ~/.gemini/GEMINI.md / ~/.gemini/settings.json",
+        "确认 SEEAI 项目补充面真实生效: .gemini/commands/super-dev-seeai.toml",
+        "确认 SEEAI 用户级补充面真实生效: ~/.gemini/skills/super-dev-seeai/SKILL.md",
+        "确认当前 Gemini CLI 会话真实加载 GEMINI.md、可选 .gemini/settings.json 与 .gemini/commands，并把 /super-dev 视为注入出来的 custom command；skills 仅作增强层核对。"
+      ],
+      "official_pass_criteria": [
+        "Gemini CLI 官方工作流面、入口链、恢复链与 SEEAI 补充面均已真人验收通过。",
+        "确认 Gemini CLI 按 official-context 官方协议面真实加载 Super Dev，而不是只检测到文件存在。",
+        "确认官方接入面真实生效: 项目侧 GEMINI.md / .gemini/commands/super-dev.toml",
+        "如启用当前增强接入面，再确认: 项目侧 .gemini/settings.json；用户侧 ~/.gemini/GEMINI.md / ~/.gemini/settings.json"
+      ],
+      "start_playbook": [
+        "起手建议: 优先在当前 Gemini CLI 项目会话里使用注入出来的 /super-dev，并确认 GEMINI.md、settings 与 custom commands 已加载。",
+        "避免动作: 不要把 /super-dev 误当成宿主原生命令，也不要先把需求丢回普通聊天，再手工追流程状态。"
+      ],
+      "resume_guidance": [
+        "优先入口: /super-dev 你的需求 / /super-dev-seeai 比赛需求",
+        "原生恢复: /super-dev 继续当前流程 / 回当前 Gemini CLI 会话继续",
+        "优先沿用当前宿主会话恢复，不要先走新的普通聊天入口。"
+      ],
+      "repair_playbook": "",
+      "managed_competition_project_surfaces": [
+        ".gemini/commands/super-dev-seeai.toml"
+      ],
+      "managed_competition_user_surfaces": [
+        "~/.gemini/skills/super-dev-seeai/SKILL.md"
+      ],
+      "framework_playbook": {},
+      "manifest_paths": [
+        "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/.gemini/commands/super-dev-seeai.toml",
+        "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/.gemini/commands/super-dev.toml",
+        "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/GEMINI.md"
+      ],
+      "contract_failures": [],
+      "auto_repair_actions": {},
+      "adaptation_contract": {
+        "score": 100,
+        "level": "elite",
+        "summary": "gemini-cli 宿主适配成熟度 100/100（elite），协议面、触发面、恢复面、比赛面和官方文档验证已统一建模。",
+        "official_alignment": {
+          "status": "official_documented",
+          "label": "官方明确",
+          "summary": "当前宿主协议已按官方说明收敛。",
+          "protocol_mode": "official-context",
+          "protocol_summary": "官方 GEMINI.md + settings + custom commands",
+          "docs_verified": true,
+          "official_reference_count": 5
+        },
+        "official_surface_count": 2,
+        "flow_probe_enabled": true,
+        "supports_slash": true,
+        "supports_slash_entry": true,
+        "dimensions": {
+          "official_protocol": {
+            "status": "ready",
+            "evidence": [
+              "官方 GEMINI.md + settings + custom commands",
+              "official surfaces: 2"
+            ],
+            "gaps": []
+          },
+          "entry_experience": {
+            "status": "ready",
+            "evidence": [
+              "/super-dev <需求描述>（在该 CLI 宿主会话内）",
+              "entry variants: 2",
+              "supports slash entry"
+            ],
+            "gaps": []
+          },
+          "continuity": {
+            "status": "ready",
+            "evidence": [
+              "Gemini CLI 标准流恢复验收",
+              "smoke steps: 2"
+            ],
+            "gaps": []
+          },
+          "competition": {
+            "status": "ready",
+            "evidence": [
+              "competition smoke steps: 2",
+              "competition evidence sections: 4"
+            ],
+            "gaps": []
+          },
+          "docs": {
+            "status": "ready",
+            "evidence": [
+              "https://google-gemini.github.io/gemini-cli/docs/",
+              "official references: 5"
+            ],
+            "gaps": []
+          }
+        }
+      }
+    },
+    {
+      "target": "antigravity",
+      "host_name": "Antigravity",
+      "status": "ready",
+      "include_user_surfaces": false,
+      "standard_flow_first_prompt": "/super-dev 你的需求",
+      "competition_flow_first_prompt": "/super-dev-seeai 比赛需求",
+      "post_onboard_self_check": [
+        "Antigravity 接入后先确认入口可用: /super-dev 你的需求 / /super-dev-seeai 比赛需求",
+        "Antigravity 接入后再确认 SEEAI 项目补充面已写入: .gemini/commands/super-dev-seeai.toml",
+        "Antigravity 接入后再确认 SEEAI 用户级补充面已写入: ~/.gemini/skills/super-dev-seeai/SKILL.md"
+      ],
+      "official_workflow_checks": [
+        "确认 Antigravity 按 recommended-gemini-workflow 当前推荐接入模型真实加载 Super Dev，而不是只检测到文件存在。",
+        "确认官方接入面真实生效: 项目侧 GEMINI.md / .gemini/commands/super-dev.toml",
+        "如启用当前增强接入面，再确认: 项目侧 .agent/workflows/super-dev.md；用户侧 ~/.gemini/GEMINI.md / ~/.gemini/commands/super-dev.toml",
+        "确认 SEEAI 项目补充面真实生效: .gemini/commands/super-dev-seeai.toml",
+        "确认 SEEAI 用户级补充面真实生效: ~/.gemini/skills/super-dev-seeai/SKILL.md",
+        "确认当前 Antigravity Agent Chat 真实加载 GEMINI.md、.gemini/commands 与当前推荐 `.agent/workflows/`；skills 只按兼容增强层核对。"
+      ],
+      "official_pass_criteria": [
+        "Antigravity 当前推荐接入模型、入口链、恢复链与 SEEAI 补充面均已真人验收通过。",
+        "确认 Antigravity 按 recommended-gemini-workflow 当前推荐接入模型真实加载 Super Dev，而不是只检测到文件存在。",
+        "确认官方接入面真实生效: 项目侧 GEMINI.md / .gemini/commands/super-dev.toml",
+        "如启用当前增强接入面，再确认: 项目侧 .agent/workflows/super-dev.md；用户侧 ~/.gemini/GEMINI.md / ~/.gemini/commands/super-dev.toml"
+      ],
+      "start_playbook": [
+        "起手建议: 优先在当前 Antigravity Agent Chat 里直接用 /super-dev，保持同一条工作流连续性。",
+        "避免动作: 不要先切回普通聊天再补一大段背景。"
+      ],
+      "resume_guidance": [
+        "优先入口: /super-dev 你的需求 / /super-dev-seeai 比赛需求",
+        "原生恢复: /super-dev 继续当前流程 / 回当前 Agent Chat 会话继续",
+        "优先沿用当前 Agent Chat 连续性，不要切到新的聊天线程。"
+      ],
+      "repair_playbook": "",
+      "managed_competition_project_surfaces": [
+        ".gemini/commands/super-dev-seeai.toml"
+      ],
+      "managed_competition_user_surfaces": [
+        "~/.gemini/skills/super-dev-seeai/SKILL.md"
+      ],
+      "framework_playbook": {},
+      "manifest_paths": [
+        "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/.agent/workflows/super-dev.md"
+      ],
+      "contract_failures": [],
+      "auto_repair_actions": {},
+      "adaptation_contract": {
+        "score": 100,
+        "level": "elite",
+        "summary": "antigravity 宿主适配成熟度 100/100（elite），协议面、触发面、恢复面、比赛面和官方文档验证已统一建模。",
+        "official_alignment": {
+          "status": "recommended_model",
+          "label": "当前推荐模型",
+          "summary": "当前宿主按推荐接入模型收敛，增强面与兼容层不会被误报成默认官方合同。",
+          "protocol_mode": "recommended-gemini-workflow",
+          "protocol_summary": "当前推荐接入模型: GEMINI.md + custom commands + optional workflows",
+          "docs_verified": true,
+          "official_reference_count": 1
+        },
+        "official_surface_count": 2,
+        "flow_probe_enabled": true,
+        "supports_slash": true,
+        "supports_slash_entry": true,
+        "dimensions": {
+          "official_protocol": {
+            "status": "ready",
+            "evidence": [
+              "当前推荐接入模型: GEMINI.md + custom commands + optional workflows",
+              "official surfaces: 2"
+            ],
+            "gaps": []
+          },
+          "entry_experience": {
+            "status": "ready",
+            "evidence": [
+              "在 Antigravity Agent Chat 输入 `/super-dev <需求描述>`（由 GEMINI.md + custom commands 主面承接；`.agent/workflows` 与 `~/.gemini/skills/` 只作为增强层）",
+              "entry variants: 2",
+              "supports slash entry"
+            ],
+            "gaps": []
+          },
+          "continuity": {
+            "status": "ready",
+            "evidence": [
+              "Antigravity 标准流恢复验收",
+              "smoke steps: 3"
+            ],
+            "gaps": []
+          },
+          "competition": {
+            "status": "ready",
+            "evidence": [
+              "competition smoke steps: 3",
+              "competition evidence sections: 4"
+            ],
+            "gaps": []
+          },
+          "docs": {
+            "status": "ready",
+            "evidence": [
+              "https://antigravity.im/documentation",
+              "official references: 1"
+            ],
+            "gaps": []
+          }
+        }
+      }
+    },
+    {
+      "target": "workbuddy",
+      "host_name": "WorkBuddy",
+      "status": "ready",
+      "include_user_surfaces": false,
+      "standard_flow_first_prompt": "super-dev: 你的需求",
+      "competition_flow_first_prompt": "super-dev-seeai: 比赛需求",
+      "post_onboard_self_check": [
+        "WorkBuddy 接入后先确认入口可用: super-dev: 你的需求 / super-dev-seeai: 比赛需求",
+        "WorkBuddy 接入后再确认 SEEAI 用户级补充面已写入: ~/.workbuddy/skills/super-dev-seeai/SKILL.md",
+        "确认 WorkBuddy 按 manual-task-workbench-mcp 当前推荐接入模型真实加载 Super Dev，而不是只检测到文件存在。"
+      ],
+      "official_workflow_checks": [
+        "确认 WorkBuddy 按 manual-task-workbench-mcp 当前推荐接入模型真实加载 Super Dev，而不是只检测到文件存在。",
+        "如启用当前增强接入面，再确认: 用户侧 ~/.workbuddy/skills/super-dev/SKILL.md",
+        "确认 SEEAI 用户级补充面真实生效: ~/.workbuddy/skills/super-dev-seeai/SKILL.md",
+        "确认当前 WorkBuddy 任务工作台已启用 Skills、MCP 与项目目录授权；若使用文件侧 Skill 导入面，应把它视为当前接入模型的补充面而不是唯一官方合同。"
+      ],
+      "official_pass_criteria": [
+        "WorkBuddy 当前推荐接入模型、入口链、恢复链与 SEEAI 补充面均已真人验收通过。",
+        "确认 WorkBuddy 按 manual-task-workbench-mcp 当前推荐接入模型真实加载 Super Dev，而不是只检测到文件存在。",
+        "如启用当前增强接入面，再确认: 用户侧 ~/.workbuddy/skills/super-dev/SKILL.md",
+        "确认 SEEAI 用户级补充面真实生效: ~/.workbuddy/skills/super-dev-seeai/SKILL.md"
+      ],
+      "start_playbook": [
+        "起手建议: 优先在当前任务线程里触发 super-dev:，保持任务上下文完整。",
+        "避免动作: 不要在新线程里重新开一个平行任务流。"
+      ],
+      "resume_guidance": [
+        "优先入口: super-dev: 你的需求 / super-dev-seeai: 比赛需求",
+        "原生恢复: 回当前任务线程继续 / super-dev: 继续当前流程",
+        "优先沿用当前任务线程，不要重新开一个新的任务流。"
+      ],
+      "repair_playbook": "",
+      "managed_competition_project_surfaces": [],
+      "managed_competition_user_surfaces": [
+        "~/.workbuddy/skills/super-dev-seeai/SKILL.md"
+      ],
+      "framework_playbook": {},
+      "manifest_paths": [
+        "/Users/daishichao110/.workbuddy/skills/super-dev-seeai/SKILL.md",
+        "/Users/daishichao110/.workbuddy/skills/super-dev/SKILL.md"
+      ],
+      "contract_failures": [],
+      "auto_repair_actions": {},
+      "adaptation_contract": {
+        "score": 88,
+        "level": "strong",
+        "summary": "workbuddy 宿主适配成熟度 88/100（strong），协议面、触发面、恢复面、比赛面和官方文档验证已统一建模。",
+        "official_alignment": {
+          "status": "recommended_model",
+          "label": "当前推荐模型",
+          "summary": "当前宿主按推荐接入模型收敛，增强面与兼容层不会被误报成默认官方合同。",
+          "protocol_mode": "manual-task-workbench-mcp",
+          "protocol_summary": "当前推荐任务工作台模型: Skills + MCP + task continuity",
+          "docs_verified": true,
+          "official_reference_count": 3
+        },
+        "official_surface_count": 0,
+        "flow_probe_enabled": true,
+        "supports_slash": false,
+        "supports_slash_entry": false,
+        "dimensions": {
+          "official_protocol": {
+            "status": "partial",
+            "evidence": [
+              "当前推荐任务工作台模型: Skills + MCP + task continuity",
+              "official surfaces: 0"
+            ],
+            "gaps": [
+              "official host surfaces not fully closed"
+            ]
+          },
+          "entry_experience": {
+            "status": "ready",
+            "evidence": [
+              "在 WorkBuddy 当前任务/对话会话中输入 `super-dev: <需求描述>`；比赛模式使用 `super-dev-seeai: <需求描述>`。接入方式为手动启用 Skills，而不是自动写项目规则文件。",
+              "entry variants: 2",
+              "text-first trigger"
+            ],
+            "gaps": []
+          },
+          "continuity": {
+            "status": "ready",
+            "evidence": [
+              "WorkBuddy 标准流恢复验收",
+              "smoke steps: 3"
+            ],
+            "gaps": []
+          },
+          "competition": {
+            "status": "ready",
+            "evidence": [
+              "competition smoke steps: 5",
+              "competition evidence sections: 4"
+            ],
+            "gaps": []
+          },
+          "docs": {
+            "status": "ready",
+            "evidence": [
+              "https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Product-Guide",
+              "official references: 3"
+            ],
+            "gaps": []
+          }
+        }
+      }
+    }
+  ],
+  "report_files": {
+    "json": "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/output/maintenance/host-onboard-smoke-20260821-120405.json",
+    "markdown": "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/output/maintenance/host-onboard-smoke-20260821-120405.md"
+  }
+}

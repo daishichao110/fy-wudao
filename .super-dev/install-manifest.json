@@ -1,0 +1,48 @@
+{
+  "targets": {
+    "antigravity": {
+      "family": "antigravity",
+      "host": "antigravity",
+      "installed_at": "2026-08-21T12:04:04.984115+00:00",
+      "paths": [
+        "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/.agent/workflows/super-dev.md"
+      ],
+      "scopes": {
+        "global": false,
+        "project": true,
+        "runtime": false
+      }
+    },
+    "gemini-cli": {
+      "family": "gemini",
+      "host": "gemini-cli",
+      "installed_at": "2026-08-21T12:04:04.952417+00:00",
+      "paths": [
+        "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/.gemini/commands/super-dev-seeai.toml",
+        "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/.gemini/commands/super-dev.toml",
+        "/Users/daishichao110/Documents/my_study/workspace/super-fy/wudao/GEMINI.md"
+      ],
+      "scopes": {
+        "global": false,
+        "project": true,
+        "runtime": false
+      }
+    },
+    "workbuddy": {
+      "family": "workbuddy",
+      "host": "workbuddy",
+      "installed_at": "2026-08-21T12:04:05.000788+00:00",
+      "paths": [
+        "/Users/daishichao110/.workbuddy/skills/super-dev-seeai/SKILL.md",
+        "/Users/daishichao110/.workbuddy/skills/super-dev/SKILL.md"
+      ],
+      "scopes": {
+        "global": true,
+        "project": false,
+        "runtime": false
+      }
+    }
+  },
+  "updated_at": "2026-08-21T12:04:05.000907+00:00",
+  "version": 1
+}

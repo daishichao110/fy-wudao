@@ -1,0 +1,15 @@
+{
+  "mode": "competition",
+  "phase": "delivery",
+  "project_name": "wudao_miniprogram",
+  "docs": {
+    "research": "output/dance-school-research.md",
+    "prd": "output/dance-school-prd.md",
+    "architecture": "output/dance-school-architecture.md",
+    "uiux": "output/dance-school-uiux.md"
+  },
+  "docs_confirmed": true,
+  "frontend_tested": true,
+  "backend_tested": true,
+  "completed_at": "2026-08-21T20:21:50+08:00"
+}

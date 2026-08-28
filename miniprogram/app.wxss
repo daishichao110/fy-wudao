@@ -1,0 +1,120 @@
+/** app.wxss - 爱马仕橙 + 翡翠绿 + 洁白空灵高奢设计系统 (Hermes Orange & Emerald Green Design System) **/
+
+page {
+  background-color: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', STHeiti, sans-serif;
+  color: #0f172a;
+  font-size: 14px;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.container {
+  padding: 14px;
+}
+
+/* 1. 爱马仕橙 + 翡翠绿 极简卡片与微光影 */
+.dance-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 10px 30px -4px rgba(234, 88, 12, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f1f5f9;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 2. 专属双主色 Tag Badges (爱马仕橙 & 翡翠绿) */
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+/* 爱马仕橙 Tag */
+.tag-orange, .tag-hermes, .tag-purple, .tag-rose, .tag-fuchsia, .tag-amber {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+/* 翡翠绿 Tag */
+.tag-green, .tag-emerald, .tag-cyan, .tag-blue, .tag-indigo {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+/* 3. 高奢渐变按钮系统 (爱马仕橙主色 / 翡翠绿辅色) */
+.btn-primary {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 6px 18px rgba(234, 88, 12, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-emerald {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-outline {
+  background: #ffffff;
+  color: #ea580c;
+  border: 1.5px solid #fdba74;
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.08);
+}
+
+/* 4. 遮罩与模态框极简高洁风格 */
+.modal-overlay, .modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-card, .modal-box {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.2);
+  border: 1px solid #f1f5f9;
+}

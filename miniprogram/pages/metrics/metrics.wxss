@@ -1,0 +1,33 @@
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.name { font-weight: 700; color: #ea580c; }
+.card-title { font-weight: 700; color: #ea580c; margin-bottom: 12px; font-size: 14px; }
+.metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.m-item { background: #f8fafc; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; border: 1px solid #f1f5f9; }
+.m-label { font-size: 11px; color: #64748b; margin-bottom: 2px; }
+.m-val { font-size: 15px; font-weight: 700; color: #0f172a; }
+.m-item.highlight { background: #fff7ed; border-color: #fed7aa; }
+.m-item.highlight .m-val { color: #ea580c; }
+
+.teacher-header { background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%); border-left: 4px solid #ea580c; }
+.t-title { font-size: 15px; font-weight: 800; color: #c2410c; display: block; margin-top: 4px; }
+.mini-btn { font-size: 11px; padding: 4px 10px; border-radius: 14px; margin: 0; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff; }
+.m-head { margin-bottom: 8px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 6px; }
+.student-name { font-size: 14px; font-weight: 700; color: #1e293b; }
+.m-date { font-size: 11px; color: #94a3b8; text-align: right; margin-top: 6px; }
+
+.modal-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.6); z-index: 999;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-box {
+  background: #ffffff; border-radius: 16px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 20px; box-sizing: border-box;
+}
+.modal-title { font-size: 16px; font-weight: 800; color: #ea580c; margin-bottom: 4px; text-align: center; }
+.modal-subtitle { font-size: 11px; color: #64748b; margin-bottom: 12px; text-align: center; }
+.csv-preview {
+  background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 11px;
+  width: 100%; height: 160px; border-radius: 8px; padding: 10px; margin-bottom: 12px; box-sizing: border-box;
+}
+.modal-btns { display: flex; justify-content: flex-end; gap: 8px; }
+.modal-btns button { margin: 0; font-size: 12px; }

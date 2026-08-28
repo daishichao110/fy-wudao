@@ -1,0 +1,12 @@
+<view class="container">
+  <view class="sec-title">🌟 舞蹈知识百宝箱 (精选问答库)</view>
+
+  <block wx:for="{{featuredList}}" wx:key="msgId">
+    <view class="dance-card">
+      <view class="f-badge"><text class="tag-badge tag-rose">官方精选</text><text class="t-name">导师: {{item.teacherName}}</text></view>
+      <view class="f-title">{{item.featuredTitle}}</view>
+      <view class="f-q">问：{{item.questionContent}}</view>
+      <view class="f-a">答：{{item.replyContent}}</view>
+    </view>
+  </block>
+</view>

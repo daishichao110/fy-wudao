@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.TeacherMapper">
+
+    <select id="selectAllTeachers" resultType="com.wudao.entity.Teacher">
+        SELECT teacher_id, name, title, dance_type, experience_years, avatar_url, bio, created_at
+        FROM sys_teacher
+        ORDER BY teacher_id ASC
+    </select>
+
+    <insert id="insertTeacher" parameterType="com.wudao.entity.Teacher">
+        INSERT INTO sys_teacher (teacher_id, name, title, dance_type, experience_years, avatar_url, bio)
+        VALUES (#{teacherId}, #{name}, #{title}, #{danceType}, #{experienceYears}, #{avatarUrl}, #{bio})
+    </insert>
+
+</mapper>

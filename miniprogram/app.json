@@ -1,0 +1,45 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/home/home",
+    "pages/schedule/schedule",
+    "pages/teachers/teachers",
+    "pages/metrics/metrics",
+    "pages/volunteers/volunteers",
+    "pages/profile/profile",
+    "pages/qa/qa",
+    "pages/purchase/purchase"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "劲松金帆舞团",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#969799",
+    "selectedColor": "#ea580c",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页指南"
+      },
+      {
+        "pagePath": "pages/schedule/schedule",
+        "text": "教务课表"
+      },
+      {
+        "pagePath": "pages/volunteers/volunteers",
+        "text": "家委协同"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

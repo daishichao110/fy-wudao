@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.DutyScheduleMapper">
+
+    <select id="selectAllDuties" resultType="com.wudao.entity.DutySchedule">
+        SELECT duty_id, duty_date, assignee_name, user_id, dance_class_name, status, created_at
+        FROM duty_schedule
+        <where>
+            <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理'">
+                dance_class_name = #{danceClassName}
+            </if>
+        </where>
+        ORDER BY duty_date ASC
+    </select>
+
+    <select id="selectByDate" resultType="com.wudao.entity.DutySchedule">
+        SELECT duty_id, duty_date, assignee_name, user_id, dance_class_name, status, created_at
+        FROM duty_schedule
+        WHERE duty_date = #{dutyDate}
+        <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理'">
+            AND dance_class_name = #{danceClassName}
+        </if>
+        LIMIT 1
+    </select>
+
+    <insert id="insertOrUpdateDuty" parameterType="com.wudao.entity.DutySchedule">
+        INSERT INTO duty_schedule(duty_id, duty_date, assignee_name, user_id, dance_class_name, status)
+        VALUES(#{dutyId}, #{dutyDate}, #{assigneeName}, #{userId}, #{danceClassName}, #{status})
+        ON DUPLICATE KEY UPDATE
+            assignee_name = VALUES(assignee_name),
+            user_id = VALUES(user_id),
+            status = VALUES(status)
+    </insert>
+
+</mapper>

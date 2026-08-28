@@ -1,0 +1,106 @@
+<!-- 舞蹈学校数字化综合管理小程序 —— 教务课表视图 -->
+<view class="container">
+  <!-- 1. 顶部班级年级切换 Header -->
+  <view class="header-card">
+    <view class="class-picker-row">
+      <view class="class-title-group">
+        <text class="class-label">🎓 适用年级排课</text>
+        <picker bindchange="onClassPickerChange" value="{{classPickerIndex}}" range="{{classPickerOptions}}">
+          <view class="picker-pill">
+            <text class="picker-value">{{currentClassName}}</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+      <text class="filter-tip" wx:if="{{selectedDateStr}}" bindtap="clearDateFilter">重置日期 ✖</text>
+    </view>
+  </view>
+
+  <!-- 2. 📅 14天滚动日历视图 (有课橙底/黑字/橙点，无课白底) -->
+  <view class="calendar-wrapper">
+    <scroll-view scroll-x class="calendar-scroll" enable-flex>
+      <block wx:for="{{calendarDays}}" wx:key="dateStr">
+        <view class="day-card {{item.isSelected ? 'selected-day' : (item.hasCourse ? 'has-course' : 'no-course')}}" bindtap="onSelectCalendarDate" data-date="{{item.dateStr}}">
+          <text class="day-month">{{item.monthNum}}月</text>
+          <text class="day-num">{{item.dayNum}}日</text>
+          <text class="day-week">{{item.weekDayStr}}</text>
+          <view class="day-dot-status">
+            <text wx:if="{{item.hasCourse}}" class="dot-orange">● 有课</text>
+            <text wx:else class="dot-white"></text>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <!-- 3. 排课列表区域 (点击日历切至明细) -->
+  <view class="schedule-list">
+    <block wx:for="{{displayScheduleList}}" wx:key="scheduleId">
+      <view class="course-card">
+        <!-- 卡片头部: 左侧双色饰条，时间、课程名、教室 -->
+        <view class="card-header" bindtap="toggleCollapse" data-id="{{item.scheduleId}}">
+          <view class="left-accent-bar"></view>
+
+          <view class="header-main">
+            <view class="time-badge-row">
+              <view class="time-tag">
+                <text class="time-icon">📅</text>
+                <text class="time-text">{{item.classDate}} ({{item.startTime}}-{{item.endTime}})</text>
+              </view>
+              <view class="class-scope-tag">{{item.danceClassName === 'GRADE_ALL' ? '全校公共' : item.danceClassName}}</view>
+            </view>
+
+            <view class="title-row margin-top-4">
+              <text class="course-title">{{item.courseName}}</text>
+              <text class="collapse-btn">{{item.isCollapsed ? '展开着装 ▾' : '收起着装 ▴'}}</text>
+            </view>
+
+            <view class="meta-info-row margin-top-6">
+              <text class="meta-item">📍 {{item.classroomName}}</text>
+              <text class="meta-item">👩‍🏫 导师: {{item.teacherName}}</text>
+              <text class="meta-item">💃 舞种: {{item.danceType}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 卡片折叠内容: 统一清晰配色服装、教具、其他物品、备注与参与学员 -->
+        <view class="card-body" wx:if="{{!item.isCollapsed}}">
+          <view class="divider"></view>
+          <text class="section-sub-title">👗 服装与着装规范 (爱马仕橙统一色调)</text>
+          
+          <view class="req-grid-orange margin-bottom-8">
+            <view class="req-pill-orange" wx:if="{{item.topsReq}}"><text class="req-label">👕 上装:</text> {{item.topsReq}}</view>
+            <view class="req-pill-orange" wx:if="{{item.bottomsReq}}"><text class="req-label">🩳 下装:</text> {{item.bottomsReq}}</view>
+            <view class="req-pill-orange" wx:if="{{item.skirtReq}}"><text class="req-label">🩰 短裙:</text> {{item.skirtReq}}</view>
+            <view class="req-pill-orange" wx:if="{{item.shoesReq}}"><text class="req-label">👟 舞鞋:</text> {{item.shoesReq}}</view>
+            <view class="req-pill-orange" wx:if="{{item.hairReq}}"><text class="req-label">💇 发型:</text> {{item.hairReq}}</view>
+          </view>
+
+          <text class="section-sub-title margin-top-12">🎒 教具与其他物品 (翡翠绿统一色调)</text>
+          <view class="req-grid-emerald margin-bottom-8">
+            <view class="req-pill-emerald" wx:if="{{item.propsReq}}"><text class="req-label">🧱 教具:</text> {{item.propsReq}}</view>
+            <view class="req-pill-emerald" wx:if="{{item.otherReq}}"><text class="req-label">🎒 其他带拿:</text> {{item.otherReq}}</view>
+          </view>
+
+          <!-- 💡 特殊交代与备注 -->
+          <view class="remark-box margin-top-8" wx:if="{{item.remark}}">
+            <text class="remark-icon">💡</text>
+            <text class="remark-text"><text class="remark-title">特殊交代: </text>{{item.remark}}</text>
+          </view>
+
+          <!-- 👥 参与剧目/课程学员名单 -->
+          <view class="participants-box margin-top-8" wx:if="{{item.participantNames}}">
+            <text class="part-title">👥 参与本作品学员:</text>
+            <text class="part-names">{{item.participantNames}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空列表提示 -->
+    <view class="empty-box" wx:if="{{displayScheduleList.length === 0}}">
+      <text class="empty-icon">📅</text>
+      <text class="empty-text">该日期/年级暂无排课记录</text>
+    </view>
+  </view>
+</view>

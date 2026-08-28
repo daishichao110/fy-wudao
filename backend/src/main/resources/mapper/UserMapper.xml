@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.UserMapper">
+
+    <select id="selectAll" resultType="com.wudao.entity.User">
+        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        FROM sys_user
+        ORDER BY user_id ASC
+    </select>
+
+    <select id="selectById" resultType="com.wudao.entity.User">
+        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        FROM sys_user
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectByUsername" resultType="com.wudao.entity.User">
+        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        FROM sys_user
+        WHERE username = #{username} OR phone = #{username}
+        LIMIT 1
+    </select>
+
+    <select id="selectFirstByRole" resultType="com.wudao.entity.User">
+        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        FROM sys_user
+        WHERE role_type = #{roleType} AND status = 1
+        ORDER BY user_id ASC
+        LIMIT 1
+    </select>
+
+    <select id="selectPendingUsers" resultType="com.wudao.entity.User">
+        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        FROM sys_user
+        WHERE status = 0
+        <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理'">
+            AND dance_class_name = #{danceClassName}
+        </if>
+        ORDER BY user_id DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE sys_user
+        SET status = #{status}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updatePoints">
+        UPDATE sys_user
+        SET volunteer_points = volunteer_points + #{points}
+        WHERE user_id = #{userId}
+    </update>
+
+    <insert id="insertUser" parameterType="com.wudao.entity.User">
+        INSERT INTO sys_user (
+            user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status
+        ) VALUES (
+            #{userId}, #{username}, #{realName}, #{studentName}, #{relationship}, #{phone}, #{avatarUrl}, #{roleType}, #{danceClassName}, #{remainingHours}, #{volunteerPoints}, #{status}
+        )
+    </insert>
+
+</mapper>

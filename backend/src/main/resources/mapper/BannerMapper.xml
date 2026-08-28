@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.BannerMapper">
+
+    <select id="selectActiveBanners" resultType="com.wudao.entity.Banner">
+        SELECT banner_id, title, subtitle, badge, image_url, content, event_date, location, creator_name, creator_role, status, sort_order, created_at
+        FROM sys_banner
+        WHERE status = 1
+        ORDER BY sort_order ASC, created_at DESC
+    </select>
+
+    <insert id="insertBanner">
+        INSERT INTO sys_banner (banner_id, title, subtitle, badge, image_url, content, event_date, location, creator_name, creator_role, status, sort_order, created_at)
+        VALUES (#{bannerId}, #{title}, #{subtitle}, #{badge}, #{imageUrl}, #{content}, #{eventDate}, #{location}, #{creatorName}, #{creatorRole}, #{status}, #{sortOrder}, NOW())
+    </insert>
+
+</mapper>
