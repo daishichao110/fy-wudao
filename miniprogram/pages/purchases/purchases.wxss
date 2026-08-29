@@ -1,0 +1,378 @@
+/* purchases.wxss - 物品选购与集中采购管理样式表 (爱马仕橙主题风) */
+.container {
+  padding: 14px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 1. Header Banner */
+.permission-banner-card {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  border-radius: 18px;
+  padding: 16px;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.25);
+}
+
+.pbc-left {
+  flex: 1;
+  margin-right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pbc-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.pbc-desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+}
+
+.pbc-badge {
+  flex-shrink: 0;
+  background: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pbc-badge text {
+  font-size: 12px;
+  font-weight: 800;
+  color: #ea580c;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* 2. Action Header Bar */
+.action-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sh-left {
+  flex: 1;
+  margin-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.menu-group-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e293b;
+  white-space: nowrap;
+}
+
+.group-tip {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.header-btn-group {
+  flex-shrink: 0;
+  display: flex;
+  gap: 6px;
+}
+
+.h-btn {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  white-space: nowrap;
+}
+
+.btn-orange {
+  background: #ea580c;
+  color: #ffffff;
+}
+
+.btn-green {
+  background: #10b981;
+  color: #ffffff;
+}
+
+/* 3. Item Cards */
+.item-demand-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+
+.expired-card {
+  opacity: 0.75;
+  background: #f8fafc;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-name {
+  flex: 1;
+  margin-right: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-status-tag {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.tag-emerald {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.tag-gray {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.item-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.im-pill {
+  font-size: 11px;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+
+.status-click {
+  color: #ea580c;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  font-weight: 700;
+}
+
+.size-summary-box {
+  background: #fff7ed;
+  border: 1px solid #ffedd5;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ss-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #c2410c;
+}
+
+.ss-content {
+  font-size: 12px;
+  font-weight: 700;
+  color: #9a3412;
+  line-height: 1.5;
+}
+
+.item-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.export-btn {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ea580c;
+  background: #fff7ed;
+  border: 1px dashed #ea580c;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.empty-box {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.empty-icon {
+  font-size: 32px;
+}
+
+.empty-text {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-head {
+  padding: 16px;
+  background: #fff7ed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ffedd5;
+}
+
+.m-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #9a3412;
+}
+
+.close-btn {
+  font-size: 18px;
+  color: #94a3b8;
+  padding: 4px;
+}
+
+.modal-body {
+  max-height: 60vh;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.fancy-notice-tip {
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  display: flex;
+  gap: 6px;
+  line-height: 1.4;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.fancy-input {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.export-textarea {
+  width: 100%;
+  height: 220px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 12px;
+  color: #334155;
+  font-family: monospace;
+  box-sizing: border-box;
+}
+
+.modal-foot {
+  padding: 12px 16px;
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.act-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.btn-reject {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.btn-pass {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+}
+
+.margin-top-4 { margin-top: 4px; }
+.margin-top-6 { margin-top: 6px; }
+.margin-top-8 { margin-top: 8px; }
+.margin-top-10 { margin-top: 10px; }
+.margin-top-12 { margin-top: 12px; }

@@ -12,6 +12,7 @@ public class WorkGroup implements Serializable {
     private String leaderName;
     private String memberNames;
     private String dutyDesc;
+    private String danceClassName;
     private Integer sortOrder;
     private Date createdAt;
 
@@ -23,6 +24,9 @@ public class WorkGroup implements Serializable {
 
     public String getIcon() { return icon; }
     public void setIcon(String icon) { this.icon = icon; }
+
+    public String getDanceClassName() { return danceClassName; }
+    public void setDanceClassName(String danceClassName) { this.danceClassName = danceClassName; }
 
     public Long getLeaderUserId() { return leaderUserId; }
     public void setLeaderUserId(Long leaderUserId) { this.leaderUserId = leaderUserId; }

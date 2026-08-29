@@ -3,19 +3,19 @@
 <mapper namespace="com.wudao.mapper.WorkGroupMapper">
 
     <select id="selectAll" resultType="com.wudao.entity.WorkGroup">
-        SELECT group_id, group_name, icon, leader_user_id, member_user_ids, leader_name, member_names, duty_desc, sort_order, created_at
+        SELECT group_id AS groupId, group_name AS groupName, icon, dance_class_name AS danceClassName, leader_user_id AS leaderUserId, member_user_ids AS memberUserIds, leader_name AS leaderName, member_names AS memberNames, duty_desc AS dutyDesc, sort_order AS sortOrder, created_at AS createdAt
         FROM sys_work_group
         ORDER BY sort_order ASC, group_id ASC
     </select>
 
     <insert id="insert">
-        INSERT INTO sys_work_group (group_id, group_name, icon, leader_user_id, member_user_ids, leader_name, member_names, duty_desc, sort_order, created_at)
-        VALUES (#{groupId}, #{groupName}, #{icon}, #{leaderUserId}, #{memberUserIds}, #{leaderName}, #{memberNames}, #{dutyDesc}, #{sortOrder}, NOW())
+        INSERT INTO sys_work_group (group_id, group_name, icon, dance_class_name, leader_user_id, member_user_ids, leader_name, member_names, duty_desc, sort_order, created_at)
+        VALUES (#{groupId}, #{groupName}, #{icon}, #{danceClassName}, #{leaderUserId}, #{memberUserIds}, #{leaderName}, #{memberNames}, #{dutyDesc}, #{sortOrder}, NOW())
     </insert>
 
     <update id="update">
         UPDATE sys_work_group
-        SET group_name = #{groupName}, icon = #{icon}, leader_user_id = #{leaderUserId}, member_user_ids = #{memberUserIds}, leader_name = #{leaderName}, member_names = #{memberNames}, duty_desc = #{dutyDesc}, sort_order = #{sortOrder}
+        SET group_name = #{groupName}, icon = #{icon}, dance_class_name = #{danceClassName}, leader_user_id = #{leaderUserId}, member_user_ids = #{memberUserIds}, leader_name = #{leaderName}, member_names = #{memberNames}, duty_desc = #{dutyDesc}, sort_order = #{sortOrder}
         WHERE group_id = #{groupId}
     </update>
 

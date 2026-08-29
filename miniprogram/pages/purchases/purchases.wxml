@@ -1,0 +1,108 @@
+<!-- 📦 劲松金帆舞团 —— 独立物品选购与集中采购管理页面 -->
+<view class="container">
+  <!-- 1. 👑 权限视角 Header Banner -->
+  <view class="permission-banner-card">
+    <view class="pbc-left">
+      <text class="pbc-title">{{roleTitle}}</text>
+      <text class="pbc-desc">{{permissionTip}}</text>
+    </view>
+    <view class="pbc-badge">
+      <text>{{userRoleName}}</text>
+    </view>
+  </view>
+
+  <!-- 2. 📦 选购计划管理操作栏 -->
+  <view class="action-header-row margin-top-12">
+    <view class="sh-left">
+      <text class="menu-group-title">📦 全校物品选购计划</text>
+      <text class="group-tip">家委采购与尺码汇总</text>
+    </view>
+    <view class="header-btn-group">
+      <view class="h-btn btn-orange" bindtap="openItemModal" wx:if="{{hasManagePermission}}">＋ 新增选购计划</view>
+      <view class="h-btn btn-green" bindtap="exportAllPurchaseData">📥 导出全量数据</view>
+    </view>
+  </view>
+
+  <!-- 3. 📋 物品选购计划列表 -->
+  <view class="item-demand-list margin-top-10">
+    <block wx:for="{{itemDemandList}}" wx:key="itemId">
+      <view class="item-card {{item.isExpired ? 'expired-card' : ''}}">
+        <view class="item-header">
+          <text class="item-name">📦 {{item.itemName}}</text>
+          <text class="item-status-tag {{item.isExpired ? 'tag-gray' : 'tag-emerald'}}">{{item.isExpired ? '⏰ 报名已截止' : '🔥 选购报名中'}}</text>
+        </view>
+
+        <view class="item-meta-row margin-top-6">
+          <text class="im-pill">📅 截止时间: {{item.deadlineStr}}</text>
+          <text class="im-pill">🚚 预计到货: {{item.expectedArrivalDate}}</text>
+          <text class="im-pill status-click" bindtap="updateArrivalStatus" data-item="{{item}}" wx:if="{{hasManagePermission}}">📦 到货状态: {{item.arrivalStatus}} ▾</text>
+          <text class="im-pill" wx:else>📦 到货状态: {{item.arrivalStatus}}</text>
+        </view>
+
+        <!-- 尺码汇总统计 (家委实时汇总发给供应商) -->
+        <view class="size-summary-box margin-top-8">
+          <text class="ss-title">📊 各尺码报名总数统计 (家委实时汇总):</text>
+          <text class="ss-content">{{item.sizeSummaryStr}}</text>
+        </view>
+
+        <view class="item-footer margin-top-10">
+          <view class="export-btn" bindtap="exportPlanForSupplier" data-item="{{item}}">📥 导出单项采购单</view>
+        </view>
+      </view>
+    </block>
+
+    <view class="empty-box" wx:if="{{itemDemandList.length === 0}}">
+      <text class="empty-icon">📦</text>
+      <text class="empty-text">暂无物品选购计划</text>
+    </view>
+  </view>
+
+  <!-- ==================== 弹窗 1：📦 发布/新增物品选购计划 Modal ==================== -->
+  <view class="modal-overlay" wx:if="{{showItemDemandModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">📦 发布/新增物品选购计划</text>
+        <text class="close-btn" bindtap="closeItemModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="fancy-notice-tip">
+          <text class="tip-icon">💡</text>
+          <text>家委发布说明：发布选购计划无需填写数量，家长报名时自行勾选尺码与数量。截止后页面自动置灰。</text>
+        </view>
+        <view class="form-group margin-top-12">
+          <text class="field-label">物品名称 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：双皮头芭蕾练功软鞋 (粉色)" model:value="{{itemForm.itemName}}" />
+        </view>
+        <view class="form-group margin-top-12">
+          <text class="field-label">报名截止日期 (到期自动置灰)</text>
+          <input class="fancy-input" placeholder="2026-08-30" model:value="{{itemForm.deadline}}" />
+        </view>
+        <view class="form-group margin-top-12">
+          <text class="field-label">预计到货时间</text>
+          <input class="fancy-input" placeholder="2026-09-05" model:value="{{itemForm.expectedArrivalDate}}" />
+        </view>
+      </scroll-view>
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closeItemModal">取消</view>
+        <view class="act-btn btn-pass" bindtap="submitItemDemand">🚀 确认发布选购计划</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 弹窗 2：📜 导出全量采购数据预览 Modal ==================== -->
+  <view class="modal-overlay" wx:if="{{showExportModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">📜 全量物品选购数据导出预览</text>
+        <text class="close-btn" bindtap="closeExportModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <textarea class="export-textarea" value="{{exportTextData}}" disabled readonly></textarea>
+      </scroll-view>
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closeExportModal">关闭</view>
+        <view class="act-btn btn-pass" bindtap="copyExportTextData">📋 一键复制文本</view>
+      </view>
+    </view>
+  </view>
+</view>

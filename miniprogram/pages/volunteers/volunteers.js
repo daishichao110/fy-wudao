@@ -30,6 +30,7 @@ Page({
     classPickerOptions: ['全校/公共', '二年级', '三年级', '四年级', '五年级', '六年级'],
     classPickerIndex: 1,
 
+    activeTab: 'duty', // 'duty' | 'recruit' | 'team'
     weekDaysList: [],
     taskList: [],
     workGroupList: [],
@@ -75,6 +76,13 @@ Page({
     this.initFutureSevenDays();
     this.loadWorkGroups();
     this.loadItemPlans();
+  },
+
+  switchTab(e) {
+    const tab = e.currentTarget.dataset.tab;
+    if (tab) {
+      this.setData({ activeTab: tab });
+    }
   },
 
   onShow() {
@@ -132,6 +140,7 @@ Page({
     });
     this.initFutureSevenDays();
     this.loadVolunteerTasks();
+    this.filterWorkGroups();
   },
 
   // 1. 📅 7天家长活动与看护排班
@@ -221,6 +230,7 @@ Page({
       const list = (res && res.data) ? res.data : [];
       const mapped = list.map(item => ({
         ...item,
+        taskDate: item.taskDate || '2026-08-30',
         isCollapsed: false,
         enrolledList: item.enrolledList || []
       }));
@@ -261,10 +271,22 @@ Page({
   loadWorkGroups() {
     api.getWorkGroups().then(res => {
       const list = (res && res.data) ? res.data : [];
-      this.setData({ workGroupList: list });
+      this.allWorkGroupList = list;
+      this.filterWorkGroups();
     }).catch(err => {
       console.log('读取工作小组 API 异常:', err);
     });
+  },
+
+  filterWorkGroups() {
+    const list = this.allWorkGroupList || [];
+    const currentClass = this.data.currentClassName || '全校/公共';
+    if (!currentClass || currentClass === '全校/公共') {
+      this.setData({ workGroupList: list });
+    } else {
+      const filtered = list.filter(g => (!g.danceClassName || g.danceClassName === '全校/公共' || g.danceClassName === currentClass));
+      this.setData({ workGroupList: filtered });
+    }
   },
 
   openWorkGroupModal(e) {

@@ -1,0 +1,15 @@
+# Target build directory
+target/
+backend/target/
+*.class
+
+# Log & Runtime PID files
+*.log
+*.pid
+backend/app.log
+backend/app.pid
+
+# Node dependencies & dist
+node_modules/
+dist/
+.DS_Store

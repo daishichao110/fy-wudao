@@ -50,6 +50,52 @@
   gap: 6px;
 }
 
+/* 🔀 分栏 Segment Tab 切换控制条 */
+.tab-switcher-bar {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 5px;
+  display: flex;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 0;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.active-tab {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(234, 88, 12, 0.25);
+  font-weight: 800;
+}
+
+.tab-icon {
+  font-size: 14px;
+}
+
+.tab-badge {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 2px;
+}
+
 .picker-value {
   font-size: 13px;
   font-weight: 800;

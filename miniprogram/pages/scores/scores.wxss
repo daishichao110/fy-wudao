@@ -10,16 +10,18 @@
 /* 1. Header Banner */
 .permission-banner-card {
   background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
-  border-radius: 16px;
-  padding: 16px 14px;
+  border-radius: 18px;
+  padding: 16px;
   color: #ffffff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.2);
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.25);
 }
 
 .pbc-left {
+  flex: 1;
+  margin-right: 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -28,21 +30,32 @@
 .pbc-title {
   font-size: 16px;
   font-weight: 800;
+  color: #ffffff;
 }
 
 .pbc-desc {
   font-size: 11px;
-  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+}
+
+.pbc-badge {
+  flex-shrink: 0;
+  background: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pbc-badge text {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   color: #ea580c;
-  background: #ffffff;
-  padding: 3px 10px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  line-height: 1;
 }
 
 /* 2. Filter & Action Bar */

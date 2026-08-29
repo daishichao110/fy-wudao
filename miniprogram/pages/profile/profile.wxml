@@ -34,7 +34,27 @@
     </view>
   </view>
 
-  <!-- 3. ⚙️ 教务与家委协同配置中心 (统一配置集约管理) -->
+  <!-- 3. 📦 物品选购与集中采购管理入口 (独立新页面，包含进度与集中导出) -->
+  <view class="score-entrance-card margin-top-12" bindtap="goToPurchasePage">
+    <view class="sec-left">
+      <view class="sec-icon-box">
+        <text class="sec-icon">📦</text>
+      </view>
+      <view class="sec-text-col">
+        <view class="sec-title-row">
+          <text class="sec-title">物品选购与集中采购管理</text>
+          <text class="sec-tag-pill tag-pill-orange">集中采购</text>
+        </view>
+        <text class="sec-sub">支持选购计划发布、到货状态维护与数据导出</text>
+      </view>
+    </view>
+    <view class="sec-arrow-box">
+      <text class="sec-arrow">进入</text>
+      <text class="sec-arrow-icon">➔</text>
+    </view>
+  </view>
+
+  <!-- 4. ⚙️ 教务与家委协同配置中心 (统一配置集约管理) -->
   <block wx:if="{{hasManagePermission}}">
     <view class="section-header-row margin-top-14">
       <view class="sh-left">
@@ -69,15 +89,7 @@
         <text class="action-label">工作小组配置</text>
       </view>
 
-      <!-- 4. 新增选购计划 -->
-      <view class="action-item" bindtap="openItemModal">
-        <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
-          <text style="font-size: 20px;">📦</text>
-        </view>
-        <text class="action-label">发布选购计划</text>
-      </view>
-
-      <!-- 5. 发布活动展播 -->
+      <!-- 4. 发布活动展播 -->
       <view class="action-item" bindtap="openPublishBannerModal">
         <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
           <text style="font-size: 20px;">🎪</text>
@@ -95,62 +107,29 @@
     </view>
   </block>
 
-  <!-- 4. 📦 物品选购计划整体模块 (完整集成于【我的】页面) -->
+  <!-- 6. 💬 家长/学员交流与反馈通道 (💭有感而发 & 💖说说心里话) -->
   <view class="section-header-row margin-top-14">
     <view class="sh-left">
-      <text class="menu-group-title">📦 物品选购计划与采购需求</text>
-      <text class="group-tip">家委采购选购方案管理</text>
+      <text class="menu-group-title">💬 家长/学员交流与反馈通道</text>
+      <text class="group-tip">随感互动与私密心里话倾诉</text>
     </view>
-    <view class="header-btn-group">
-      <view class="h-btn btn-orange" bindtap="openItemModal" wx:if="{{hasManagePermission}}">＋ 新增选购计划</view>
-      <view class="h-btn btn-green" bindtap="exportAllPurchaseData">📥 导出/下载选购数据</view>
-    </view>
-  </view>
-
-  <view class="item-demand-list">
-    <block wx:for="{{itemDemandList}}" wx:key="itemId">
-      <view class="item-card {{item.isExpired ? 'expired-card' : ''}}">
-        <view class="item-header">
-          <text class="item-name">📦 {{item.itemName}}</text>
-          <text class="item-status-tag {{item.isExpired ? 'tag-gray' : 'tag-emerald'}}">{{item.isExpired ? '⏰ 报名已截止' : '🔥 选购报名中'}}</text>
-        </view>
-
-        <view class="item-meta-row margin-top-4">
-          <text class="im-pill">📅 截止时间: {{item.deadlineStr}}</text>
-          <text class="im-pill">🚚 预计到货: {{item.expectedArrivalDate}}</text>
-          <text class="im-pill status-click" bindtap="updateArrivalStatus" data-item="{{item}}">📦 到货状态: {{item.arrivalStatus}} ▾</text>
-        </view>
-
-        <!-- 尺码汇总统计 (发给供应商) -->
-        <view class="size-summary-box margin-top-8">
-          <text class="ss-title">📊 各尺码报名总数统计 (家委实时汇总):</text>
-          <text class="ss-content">{{item.sizeSummaryStr}}</text>
-        </view>
-
-        <view class="item-footer margin-top-8">
-          <view class="export-btn" bindtap="exportPlanForSupplier" data-item="{{item}}">📥 导出单项采购单</view>
-        </view>
-      </view>
-    </block>
-
-    <view class="empty-box" wx:if="{{itemDemandList.length === 0}}">
-      <text class="empty-icon">📦</text>
-      <text class="empty-text">暂无物品选购计划</text>
-    </view>
-  </view>
-
-  <!-- 5. 📝 学员信息档案与简历录入中心 -->
-  <view class="section-header-row margin-top-14">
-    <text class="menu-group-title">📝 学员信息档案与简历录入</text>
-    <text class="group-tip">档案信息维护</text>
   </view>
 
   <view class="action-tools-grid">
-    <view class="action-item" bindtap="openModal" data-modal="studentProfile">
-      <view class="action-icon-box" style="background: #ecfdf5; border-color: #a7f3d0;">
-        <text style="font-size: 20px;">📜</text>
+    <!-- 💭 有感而发 (当前年级+老师+管理员可见) -->
+    <view class="action-item" bindtap="openThoughtModal" data-type="THOUGHT">
+      <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
+        <text style="font-size: 20px;">💭</text>
       </view>
-      <text class="action-label">学员档案与简历录入</text>
+      <text class="action-label">有感而发</text>
+    </view>
+
+    <!-- 💖 说说心里话 (仅老师+管理员可见) -->
+    <view class="action-item" bindtap="openThoughtModal" data-type="HEART">
+      <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
+        <text style="font-size: 20px;">💖</text>
+      </view>
+      <text class="action-label">说说心里话</text>
     </view>
   </view>
 
@@ -169,6 +148,15 @@
         <view class="form-group margin-top-8">
           <text class="field-label">小组图标 (例如: 💄/👗/🥗/📷/🚗)</text>
           <input class="fancy-input" placeholder="💄" model:value="{{groupForm.icon}}" />
+        </view>
+        <view class="form-group margin-top-8">
+          <text class="field-label">所属年级/班级</text>
+          <picker bindchange="onWorkGroupClassChange" value="{{workGroupClassIndex}}" range="{{danceClassNameOptions}}">
+            <view class="fancy-picker">
+              <text class="picker-value">{{danceClassNameOptions[workGroupClassIndex]}}</text>
+              <text class="picker-arrow">▾</text>
+            </view>
+          </picker>
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">小组组长姓名</text>
@@ -190,35 +178,7 @@
     </view>
   </view>
 
-  <!-- ==================== 弹窗 2：📦 发布/新增物品选购计划 Modal ==================== -->
-  <view class="modal-overlay" wx:if="{{showItemDemandModal}}">
-    <view class="modal-card">
-      <view class="modal-head">
-        <text class="m-title">📦 发布/新增物品选购计划</text>
-        <text class="close-btn" bindtap="closeItemModal">✕</text>
-      </view>
-      <scroll-view scroll-y class="modal-body">
-        <view class="form-group">
-          <text class="field-label">物品选购名称 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：双皮头芭蕾练功软鞋 / 演出连体服" model:value="{{itemForm.itemName}}" />
-        </view>
-        <view class="form-group margin-top-8">
-          <text class="field-label">选购报名截止时间</text>
-          <input class="fancy-input" placeholder="2026-08-30" model:value="{{itemForm.deadline}}" />
-        </view>
-        <view class="form-group margin-top-8">
-          <text class="field-label">预计统一到货时间</text>
-          <input class="fancy-input" placeholder="2026-09-05" model:value="{{itemForm.expectedArrivalDate}}" />
-        </view>
-      </scroll-view>
-      <view class="modal-foot">
-        <view class="act-btn btn-reject" bindtap="closeItemModal">取消</view>
-        <view class="act-btn btn-pass" bindtap="submitItemDemand">🚀 确认发布选购计划</view>
-      </view>
-    </view>
-  </view>
-
-  <!-- ==================== 弹窗 3：🚩 发布大型活动专项招募令 Modal ==================== -->
+  <!-- ==================== 弹窗 2：🚩 发布大型活动专项招募令 Modal ==================== -->
   <view class="modal-overlay" wx:if="{{showPublishTaskModal}}">
     <view class="modal-card">
       <view class="modal-head">
@@ -235,7 +195,11 @@
           <input class="fancy-input" placeholder="例如：后台化妆发型兼看护家长" model:value="{{taskForm.taskName}}" />
         </view>
         <view class="form-group margin-top-8">
-          <text class="field-label">服务时间段说明</text>
+          <text class="field-label">服务日期 (活动开展日期) <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：2026-08-30" model:value="{{taskForm.taskDate}}" />
+        </view>
+        <view class="form-group margin-top-8">
+          <text class="field-label">服务具体时间段说明</text>
           <input class="fancy-input" placeholder="例如：13:30 - 17:30 (4小时)" model:value="{{taskForm.serviceTime}}" />
         </view>
         <view class="form-group margin-top-8">
@@ -254,25 +218,7 @@
     </view>
   </view>
 
-  <!-- ==================== 弹窗 4：📥 导出/下载全量选购数据 Modal ==================== -->
-  <view class="modal-overlay" wx:if="{{showExportModal}}">
-    <view class="modal-card">
-      <view class="modal-head">
-        <text class="m-title">📥 选购计划数据导出与下载</text>
-        <text class="close-btn" bindtap="closeExportModal">✕</text>
-      </view>
-      <scroll-view scroll-y class="modal-body">
-        <text class="field-label">采购清单明细数据预览 (CSV/文本格式):</text>
-        <textarea class="fancy-textarea" style="height: 180px; font-family: monospace;" value="{{exportTextData}}" readonly></textarea>
-      </scroll-view>
-      <view class="modal-foot">
-        <view class="act-btn btn-reject" bindtap="closeExportModal">关闭</view>
-        <view class="act-btn btn-pass" bindtap="copyExportTextData">📋 一键复制导出数据</view>
-      </view>
-    </view>
-  </view>
-
-  <!-- ==================== 弹窗 5：学员信息档案与简历录入 Modal ==================== -->
+  <!-- ==================== 弹窗 3：学员信息档案与简历录入 Modal ==================== -->
   <view class="modal-overlay" wx:if="{{showStudentProfileModal}}">
     <view class="modal-card">
       <view class="modal-head">
@@ -314,7 +260,7 @@
     </view>
   </view>
 
-  <!-- ==================== 弹窗 6：角色审批 Modal ==================== -->
+  <!-- ==================== 弹窗 4：角色审批 Modal ==================== -->
   <view class="modal-overlay" wx:if="{{showApprovalModal}}">
     <view class="modal-card">
       <view class="modal-head">
@@ -342,6 +288,48 @@
           </view>
         </block>
       </scroll-view>
+    </view>
+  </view>
+
+  <!-- ==================== 弹窗 5：💬 发布【有感而发】/【说说心里话】 Modal ==================== -->
+  <view class="modal-overlay" wx:if="{{showThoughtModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">{{activeThoughtType === 'THOUGHT' ? '💭 有感而发 · 随感互动' : '💖 说说心里话 · 私密倾诉'}}</text>
+        <text class="close-btn" bindtap="closeThoughtModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="form-group">
+          <text class="field-label">发布内容正文 <text class="required">*</text></text>
+          <textarea class="fancy-textarea" style="height: 100px;" placeholder="{{activeThoughtType === 'THOUGHT' ? '分享孩子的舞蹈练习收获、喜悦与点滴成就...' : '写下您对教务管理、课程设置或孩子学习的心里话...'}}" model:value="{{thoughtContent}}"></textarea>
+        </view>
+
+        <view class="act-btn btn-pass margin-top-10" bindtap="submitThought">🚀 确认发布{{activeThoughtType === 'THOUGHT' ? '随感' : '心里话'}}</view>
+
+        <!-- 历史发布与互动列表 -->
+        <view class="history-thoughts-box margin-top-14">
+          <text class="field-label">📋 互动与反馈历史记录:</text>
+          <block wx:for="{{thoughtList}}" wx:key="id">
+            <view class="item-card margin-top-8" style="padding: 10px; background: #f8fafc;">
+              <view class="item-header">
+                <text class="item-name" style="font-size: 13px;">{{item.studentName}}</text>
+                <text class="item-status-tag {{item.type === 'THOUGHT' ? 'tag-emerald' : 'tag-gray'}}">{{item.type === 'THOUGHT' ? '💭 年级公开' : '🔒 私密心里话'}}</text>
+              </view>
+              <text class="sec-sub margin-top-4" style="color: #334155; font-size: 12px; line-height: 1.5;">{{item.content}}</text>
+              <view class="item-header margin-top-6">
+                <text class="group-tip" style="font-size: 10px;">{{item.createdAt}}</text>
+                <view class="im-pill status-click" bindtap="likeThought" data-id="{{item.id}}">❤️ {{item.likesCount || 0}} 点赞</view>
+              </view>
+            </view>
+          </block>
+          <view class="empty-box margin-top-8" wx:if="{{thoughtList.length === 0}}">
+            <text class="empty-text">暂无互动记录</text>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closeThoughtModal">关闭</view>
+      </view>
     </view>
   </view>
 </view>

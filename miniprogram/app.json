@@ -8,6 +8,7 @@
     "pages/volunteers/volunteers",
     "pages/profile/profile",
     "pages/scores/scores",
+    "pages/purchases/purchases",
     "pages/qa/qa",
     "pages/purchase/purchase"
   ],

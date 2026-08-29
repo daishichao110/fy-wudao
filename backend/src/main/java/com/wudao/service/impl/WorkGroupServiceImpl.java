@@ -65,6 +65,9 @@ public class WorkGroupServiceImpl implements WorkGroupService {
             if (group.getIcon() == null || group.getIcon().trim().isEmpty()) {
                 group.setIcon("👥");
             }
+            if (group.getDanceClassName() == null || group.getDanceClassName().trim().isEmpty()) {
+                group.setDanceClassName("全校/公共");
+            }
             if (group.getSortOrder() == null) {
                 group.setSortOrder(99);
             }

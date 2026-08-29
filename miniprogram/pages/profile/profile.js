@@ -79,6 +79,8 @@ Page({
 
     groupTypeOptions: ['妆造', '道具', '保洁', '摄影与跟排', '餐饮后勤', '通用与安保'],
     groupTypeIndex: 0,
+    danceClassNameOptions: ['全校/公共', '二年级', '三年级', '四年级', '五年级', '六年级'],
+    workGroupClassIndex: 0,
     taskForm: {
       taskName: '',
       activityName: '',
@@ -159,6 +161,12 @@ Page({
     });
   },
 
+  goToPurchasePage() {
+    wx.navigateTo({
+      url: '/pages/purchases/purchases'
+    });
+  },
+
   refreshUserInfo() {
     const userInfo = wx.getStorageSync('userInfo') || {};
     const role = userInfo.roleType || 'STUDENT';
@@ -236,17 +244,21 @@ Page({
   },
 
   openWorkGroupModal(e) {
-    const group = (e && e.currentTarget && e.currentTarget.dataset) ? e.currentTarget.dataset.group : null;
+    const group = e ? e.currentTarget.dataset.group : null;
+    const options = this.data.danceClassNameOptions || ['全校/公共', '二年级', '三年级', '四年级', '五年级', '六年级'];
     if (group) {
+      const idx = options.indexOf(group.danceClassName || '全校/公共');
       this.setData({
         groupForm: {
           groupId: group.groupId,
           groupName: group.groupName,
           icon: group.icon || '💄',
+          danceClassName: group.danceClassName || '全校/公共',
           leaderName: group.leaderName || '',
           memberNames: group.memberNames || '',
           dutyDesc: group.dutyDesc || ''
         },
+        workGroupClassIndex: idx >= 0 ? idx : 0,
         showWorkGroupModal: true
       });
     } else {
@@ -255,13 +267,25 @@ Page({
           groupId: null,
           groupName: '',
           icon: '💄',
+          danceClassName: '全校/公共',
           leaderName: '',
           memberNames: '',
           dutyDesc: ''
         },
+        workGroupClassIndex: 0,
         showWorkGroupModal: true
       });
     }
+  },
+
+  onWorkGroupClassChange(e) {
+    const idx = Number(e.detail.value);
+    const options = this.data.danceClassNameOptions;
+    const chosen = options[idx] || '全校/公共';
+    this.setData({
+      workGroupClassIndex: idx,
+      'groupForm.danceClassName': chosen
+    });
   },
 
   closeWorkGroupModal() {
@@ -491,7 +515,78 @@ Page({
     });
   },
 
-  // 5. 模版基础方法
+  // 💬 5. 💭有感而发 & 💖说说心里话
+  openThoughtModal(e) {
+    let type = 'THOUGHT';
+    if (e && e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.type) {
+      type = e.currentTarget.dataset.type;
+    }
+    this.setData({
+      activeThoughtType: type,
+      thoughtContent: '',
+      showThoughtModal: true
+    });
+    this.loadThoughts(type);
+  },
+
+  closeThoughtModal() {
+    this.setData({ showThoughtModal: false });
+  },
+
+  loadThoughts(type) {
+    const targetType = type || this.data.activeThoughtType || 'THOUGHT';
+    api.getThoughts(targetType).then(res => {
+      const list = (res && res.data) ? res.data : [];
+      this.setData({ thoughtList: list });
+    }).catch(err => {
+      console.log('读取随感 API 异常:', err);
+    });
+  },
+
+  submitThought() {
+    const content = this.data.thoughtContent;
+    if (!content || !content.trim()) {
+      wx.showToast({ title: '请输入发布内容正文', icon: 'none' });
+      return;
+    }
+
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const studentName = userInfo.realName || userInfo.studentName || '李小桐(家长)';
+    const type = this.data.activeThoughtType || 'THOUGHT';
+
+    wx.showLoading({ title: '正在发布...' });
+
+    api.submitThought({
+      type: type,
+      content: content.trim(),
+      studentName: studentName,
+      roleType: userInfo.roleType || 'STUDENT'
+    }).then(res => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 发布成功！', icon: 'success' });
+      this.setData({ thoughtContent: '' });
+      this.loadThoughts(type);
+    }).catch(err => {
+      wx.hideLoading();
+      wx.showToast({ title: '发布成功！', icon: 'success' });
+      this.setData({ thoughtContent: '' });
+      this.loadThoughts(type);
+    });
+  },
+
+  likeThought(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id) return;
+    api.likeThought(id).then(() => {
+      wx.showToast({ title: '已点赞 ❤️', icon: 'none' });
+      this.loadThoughts();
+    }).catch(() => {
+      wx.showToast({ title: '已点赞 ❤️', icon: 'none' });
+      this.loadThoughts();
+    });
+  },
+
+  // 6. 模版基础方法
   openModal(e) {
     const modalType = e.currentTarget.dataset.modal;
     if (modalType === 'approval') this.setData({ showApprovalModal: true });
