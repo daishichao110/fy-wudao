@@ -1,0 +1,43 @@
+# ------------------------------------------------------------------
+# 劲松金帆舞团教务数字化管理系统 —— 生产环境外部配置文件 (模板)
+# 使用说明：
+# 在生产服务器 backend 目录下将此文件重命名为 application-prod.yml 即可自动覆盖 JAR 内部默认配置！
+# 运行 ./server.sh start 时脚本会自动加载 --spring.config.location=./application-prod.yml
+# ------------------------------------------------------------------
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+
+spring:
+  application:
+    name: wudao-backend
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 生产环境 MySQL 数据库连接配置 (替换为您真实的服务器 IP 及强密码)
+    url: jdbc:mysql://127.0.0.1:3306/wudao_db?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: YourStrongProductionPassword!
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.wudao.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    # 生产环境关闭全量 SQL 刷屏日志，大幅提升吞吐性能
+    log-impl: org.apache.ibatis.logging.nologging.NoLogging
+
+logging:
+  level:
+    root: INFO
+    com.wudao: INFO
