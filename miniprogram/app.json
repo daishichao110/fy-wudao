@@ -9,8 +9,7 @@
     "pages/profile/profile",
     "pages/scores/scores",
     "pages/purchases/purchases",
-    "pages/qa/qa",
-    "pages/purchase/purchase"
+    "pages/qa/qa"
   ],
   "window": {
     "backgroundTextStyle": "light",

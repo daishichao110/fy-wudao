@@ -39,7 +39,7 @@ public class ThoughtController {
 
     @GetMapping({"/list", "/thought-list"})
     public Result<List<Map<String, Object>>> getThoughtList(@RequestParam(required = false) String type) {
-        if (type == null || type.isEmpty()) {
+        if (type == null || type.isEmpty() || "ALL".equalsIgnoreCase(type)) {
             return Result.success(thoughtList);
         }
         List<Map<String, Object>> filtered = new ArrayList<>();
@@ -57,22 +57,26 @@ public class ThoughtController {
         String content = String.valueOf(payload.getOrDefault("content", ""));
         String studentName = String.valueOf(payload.getOrDefault("studentName", "李小桐(家长)"));
         String roleType = String.valueOf(payload.getOrDefault("roleType", "STUDENT"));
+        String danceClassName = String.valueOf(payload.getOrDefault("danceClassName", "二年级"));
         String targetTeacherName = String.valueOf(payload.getOrDefault("targetTeacherName", ""));
 
         if (content.trim().isEmpty()) {
             return Result.error("发布内容不可为空");
         }
 
+        String nowStr = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date());
+
         Map<String, Object> item = new HashMap<>();
         item.put("id", System.currentTimeMillis());
         item.put("studentName", studentName);
         item.put("roleType", roleType);
         item.put("type", type);
+        item.put("danceClassName", danceClassName);
         item.put("targetTeacherName", targetTeacherName);
         item.put("title", "THOUGHT".equalsIgnoreCase(type) ? "💭 有感而发" : "💖 说说心里话");
         item.put("content", content.trim());
         item.put("likesCount", 0);
-        item.put("createdAt", "2026-08-23 20:50");
+        item.put("createdAt", nowStr);
 
         thoughtList.add(0, item);
         String label = "THOUGHT".equalsIgnoreCase(type) ? "【有感而发】" : "【说说心里话】";

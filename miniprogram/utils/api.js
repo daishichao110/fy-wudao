@@ -1,5 +1,5 @@
-// 微信小程序开发与真机调试配置: 支持局域网 IP 直连 (192.168.1.35) 解决真机/模拟器连接 Mac 本地 8080 端口问题
-const BASE_URL = 'http://192.168.1.35:8080/api';
+// 微信小程序开发与调试配置: 使用 127.0.0.1:8080 或 局域网 IP 直连
+const BASE_URL = 'http://127.0.0.1:8080/api';
 
 const request = (url, method = 'GET', data = {}, showErrorToast = false) => {
   const token = wx.getStorageSync('token') || '';

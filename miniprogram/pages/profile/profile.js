@@ -533,6 +533,12 @@ Page({
     this.setData({ showThoughtModal: false });
   },
 
+  switchThoughtTab(e) {
+    const type = (e && e.currentTarget && e.currentTarget.dataset) ? e.currentTarget.dataset.type : 'THOUGHT';
+    this.setData({ activeThoughtType: type });
+    this.loadThoughts(type);
+  },
+
   loadThoughts(type) {
     const targetType = type || this.data.activeThoughtType || 'THOUGHT';
     api.getThoughts(targetType).then(res => {
@@ -560,6 +566,7 @@ Page({
       type: type,
       content: content.trim(),
       studentName: studentName,
+      danceClassName: userInfo.danceClassName || '二年级',
       roleType: userInfo.roleType || 'STUDENT'
     }).then(res => {
       wx.hideLoading();

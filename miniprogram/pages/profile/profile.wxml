@@ -299,12 +299,18 @@
         <text class="close-btn" bindtap="closeThoughtModal">✕</text>
       </view>
       <scroll-view scroll-y class="modal-body">
-        <view class="form-group">
-          <text class="field-label">发布内容正文 <text class="required">*</text></text>
-          <textarea class="fancy-textarea" style="height: 100px;" placeholder="{{activeThoughtType === 'THOUGHT' ? '分享孩子的舞蹈练习收获、喜悦与点滴成就...' : '写下您对教务管理、课程设置或孩子学习的心里话...'}}" model:value="{{thoughtContent}}"></textarea>
+        <!-- 切换切卡 (有感而发 / 说说心里话 / 全部记录) -->
+        <view class="tab-switcher-bar" style="margin-bottom: 10px;">
+          <view class="tab-item {{activeThoughtType === 'THOUGHT' ? 'active-tab' : ''}}" bindtap="switchThoughtTab" data-type="THOUGHT">💭 有感而发</view>
+          <view class="tab-item {{activeThoughtType === 'HEART' ? 'active-tab' : ''}}" bindtap="switchThoughtTab" data-type="HEART">💖 说说心里话</view>
+          <view class="tab-item {{activeThoughtType === 'ALL' ? 'active-tab' : ''}}" bindtap="switchThoughtTab" data-type="ALL" wx:if="{{hasManagePermission}}">🌟 全部反馈</view>
         </view>
 
-        <view class="act-btn btn-pass margin-top-10" bindtap="submitThought">🚀 确认发布{{activeThoughtType === 'THOUGHT' ? '随感' : '心里话'}}</view>
+        <view class="form-group" wx:if="{{activeThoughtType !== 'ALL'}}">
+          <text class="field-label">发布{{activeThoughtType === 'THOUGHT' ? '【有感而发】' : '【说说心里话】'}}正文 <text class="required">*</text></text>
+          <textarea class="fancy-textarea" style="height: 90px;" placeholder="{{activeThoughtType === 'THOUGHT' ? '分享孩子的舞蹈练习收获、喜悦与点滴成就...' : '写下您对教务管理、课程设置或孩子学习的心里话...'}}" model:value="{{thoughtContent}}"></textarea>
+          <view class="act-btn btn-pass margin-top-8" bindtap="submitThought">🚀 确认发布</view>
+        </view>
 
         <!-- 历史发布与互动列表 -->
         <view class="history-thoughts-box margin-top-14">
