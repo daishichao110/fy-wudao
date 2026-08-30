@@ -576,11 +576,36 @@ Page({
 
   loadThoughts(type) {
     const targetType = type || this.data.activeThoughtType || 'THOUGHT';
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const role = userInfo.roleType || 'STUDENT';
+    const currentName = userInfo.realName || userInfo.studentName || userInfo.parentName || '';
+    const isAdminOrTeacher = (role === 'SUPER_ADMIN' || role === 'TEACHER');
+
     api.getThoughts(targetType).then(res => {
       const list = (res && res.data) ? res.data : [];
-      this.setData({ thoughtList: list });
+
+      const filtered = list.filter(item => {
+        if (targetType === 'THOUGHT') {
+          // 有感而发：全部成员均可见！
+          return item.type === 'THOUGHT' || !item.type;
+        } else if (targetType === 'HEART') {
+          // 说说心里话：管理员与老师可查全员倾诉；普通家长只看属于自己的心里话
+          if (isAdminOrTeacher) return true;
+          return item.studentName && currentName && (item.studentName.indexOf(currentName) !== -1 || currentName.indexOf(item.studentName) !== -1);
+        } else {
+          // 全部反馈（仅管理角色）：
+          if (isAdminOrTeacher) return true;
+          return item.type === 'THOUGHT' || (item.studentName && currentName && item.studentName.indexOf(currentName) !== -1);
+        }
+      });
+
+      this.setData({
+        thoughtList: list,
+        displayThoughtList: filtered
+      });
     }).catch(err => {
       console.log('读取随感 API 异常:', err);
+      this.setData({ displayThoughtList: [] });
     });
   },
 
@@ -705,6 +730,26 @@ Page({
 
   closePublishBannerModal() {
     this.setData({ showPublishBannerModal: false });
+  },
+
+  onBannerInput(e) {
+    const field = e.currentTarget.dataset.field;
+    const val = e.detail.value;
+    if (field) {
+      this.setData({
+        [`publishBannerForm.${field}`]: val
+      });
+    }
+  },
+
+  onNoticeInput(e) {
+    const field = e.currentTarget.dataset.field;
+    const val = e.detail.value;
+    if (field) {
+      this.setData({
+        [`publishNoticeForm.${field}`]: val
+      });
+    }
   },
 
   onBadgeChange(e) {

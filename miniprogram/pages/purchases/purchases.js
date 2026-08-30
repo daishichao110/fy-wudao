@@ -104,7 +104,8 @@ Page({
       hasManagePermission,
       isCommitteeLocked,
       itemClassOptions,
-      itemClassIndex
+      itemClassIndex,
+      todayDateStr: this.getTodayDate()
     });
   },
 
@@ -157,13 +158,33 @@ Page({
     });
   },
 
+  onItemNameInput(e) {
+    this.setData({
+      'itemForm.itemName': e.detail.value
+    });
+  },
+
+  onDeadlineDateChange(e) {
+    this.setData({
+      'itemForm.deadline': e.detail.value
+    });
+  },
+
+  onArrivalDateChange(e) {
+    this.setData({
+      'itemForm.expectedArrivalDate': e.detail.value
+    });
+  },
+
   openItemModal() {
     const chosenClass = this.data.itemClassOptions[this.data.itemClassIndex] || '全校/公共';
+    const today = this.getTodayDate();
     this.setData({
       showItemDemandModal: true,
+      todayDateStr: today,
       itemForm: {
         itemName: '',
-        deadline: this.getTodayDate(),
+        deadline: today,
         expectedArrivalDate: '',
         arrivalStatus: '未到货',
         danceClassName: chosenClass
@@ -177,8 +198,25 @@ Page({
 
   submitItemDemand() {
     const form = this.data.itemForm;
+    const today = this.getTodayDate();
+
     if (!form.itemName || !form.itemName.trim()) {
       wx.showToast({ title: '请输入物品名称', icon: 'none' });
+      return;
+    }
+
+    if (!form.deadline) {
+      wx.showToast({ title: '请选择报名截止日期', icon: 'none' });
+      return;
+    }
+
+    if (form.deadline < today) {
+      wx.showToast({ title: '截止日期不能早于今天', icon: 'none' });
+      return;
+    }
+
+    if (form.expectedArrivalDate && form.expectedArrivalDate < form.deadline) {
+      wx.showToast({ title: '预计到货日期不能早于截止日期', icon: 'none' });
       return;
     }
 
@@ -201,14 +239,18 @@ Page({
   },
 
   exportAllPurchaseData() {
+    if (!this.data.hasManagePermission) {
+      wx.showToast({ title: '权限不足，仅管理角色可导出全量数据', icon: 'none' });
+      return;
+    }
     api.exportItemDemands().then(res => {
       const csvStr = (res && res.data) ? res.data : '暂无数据';
       this.setData({
         exportTextData: csvStr,
         showExportModal: true
       });
-    }).catch(() => {
-      wx.showToast({ title: '已抓取最新选购数据', icon: 'none' });
+    }).catch(err => {
+      wx.showToast({ title: '导出数据异常', icon: 'none' });
     });
   },
 

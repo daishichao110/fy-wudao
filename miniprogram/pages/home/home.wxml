@@ -207,7 +207,7 @@
 
         <view class="form-group margin-top-8">
           <text class="field-label">公告标题 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：2026秋季开学前剧目排练与考级重要通知" model:value="{{publishNoticeForm.title}}" />
+          <input class="fancy-input" placeholder="例如：2026秋季开学前剧目排练与考级重要通知" value="{{publishNoticeForm.title}}" bindinput="onNoticeInput" data-field="title" />
         </view>
 
         <view class="form-row-2 margin-top-8">
@@ -222,13 +222,13 @@
           </view>
           <view class="form-group flex-1">
             <text class="field-label">发布单位署名</text>
-            <input class="fancy-input" placeholder="舞蹈学校教务处" model:value="{{publishNoticeForm.publisher}}" />
+            <input class="fancy-input" placeholder="舞蹈学校教务处" value="{{publishNoticeForm.publisher}}" bindinput="onNoticeInput" data-field="publisher" />
           </view>
         </view>
 
         <view class="form-group margin-top-8">
           <text class="field-label">公告正文详情内容 <text class="required">*</text></text>
-          <textarea class="fancy-textarea" style="height: 100px;" placeholder="请输入广播公告的具体通知正文内容、注意事项与具体安排..." model:value="{{publishNoticeForm.content}}"></textarea>
+          <textarea class="fancy-textarea" style="height: 100px;" placeholder="请输入广播公告的具体通知正文内容、注意事项与安排..." value="{{publishNoticeForm.content}}" bindinput="onNoticeInput" data-field="content"></textarea>
         </view>
       </scroll-view>
       <view class="modal-footer">

@@ -19,7 +19,7 @@
     </view>
     <view class="header-btn-group">
       <view class="h-btn btn-orange" bindtap="openItemModal" wx:if="{{hasManagePermission}}">＋ 新增选购计划</view>
-      <view class="h-btn btn-green" bindtap="exportAllPurchaseData">📥 导出全量数据</view>
+      <view class="h-btn btn-green" bindtap="exportAllPurchaseData" wx:if="{{hasManagePermission}}">📥 导出全量数据</view>
     </view>
   </view>
 
@@ -85,15 +85,27 @@
 
         <view class="form-group margin-top-12">
           <text class="field-label">物品名称 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：双皮头芭蕾练功软鞋 (粉色)" model:value="{{itemForm.itemName}}" />
+          <input class="fancy-input" placeholder="例如：双皮头芭蕾练功软鞋 (粉色)" value="{{itemForm.itemName}}" bindinput="onItemNameInput" />
         </view>
+
         <view class="form-group margin-top-12">
-          <text class="field-label">报名截止日期 (到期自动置灰)</text>
-          <input class="fancy-input" placeholder="2026-08-30" model:value="{{itemForm.deadline}}" />
+          <text class="field-label">报名截止日期 <text class="required">*</text></text>
+          <picker mode="date" start="{{todayDateStr}}" value="{{itemForm.deadline}}" bindchange="onDeadlineDateChange">
+            <view class="fancy-input picker-input">
+              <text>{{itemForm.deadline ? itemForm.deadline : '📅 请选择截止日期 (只能选今天及之后)'}}</text>
+              <text class="pi-arrow">📅</text>
+            </view>
+          </picker>
         </view>
+
         <view class="form-group margin-top-12">
           <text class="field-label">预计到货时间</text>
-          <input class="fancy-input" placeholder="2026-09-05" model:value="{{itemForm.expectedArrivalDate}}" />
+          <picker mode="date" start="{{todayDateStr}}" value="{{itemForm.expectedArrivalDate}}" bindchange="onArrivalDateChange">
+            <view class="fancy-input picker-input">
+              <text>{{itemForm.expectedArrivalDate ? itemForm.expectedArrivalDate : '📅 请选择到货日期 (只能选今天及之后)'}}</text>
+              <text class="pi-arrow">📅</text>
+            </view>
+          </picker>
         </view>
       </scroll-view>
       <view class="modal-foot">

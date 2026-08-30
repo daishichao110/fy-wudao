@@ -252,6 +252,16 @@ Page({
     });
   },
 
+  onNoticeInput(e) {
+    const field = e.currentTarget.dataset.field;
+    const val = e.detail.value;
+    if (field) {
+      this.setData({
+        [`publishNoticeForm.${field}`]: val
+      });
+    }
+  },
+
   closePublishNoticeModal() {
     this.setData({ showPublishNoticeModal: false });
   },

@@ -34,7 +34,7 @@
     <select id="selectAllProfiles" resultMap="StudentProfileResult">
         SELECT * FROM student_profile
         <where>
-            <if id="gradeLevel != null and gradeLevel != '' and gradeLevel != '全校全部'">
+            <if test="gradeLevel != null and gradeLevel != '' and gradeLevel != '全校全部'">
                 grade_level = #{gradeLevel}
             </if>
         </where>
@@ -58,20 +58,20 @@
     <update id="updateProfile">
         UPDATE student_profile
         <set>
-            <if id="studentName != null and studentName != ''">student_name = #{studentName},</if>
-            <if id="gradeLevel != null and gradeLevel != ''">grade_level = #{gradeLevel},</if>
-            <if id="chineseScore != null">chinese_score = #{chineseScore},</if>
-            <if id="mathScore != null">math_score = #{mathScore},</if>
-            <if id="englishScore != null">english_score = #{englishScore},</if>
-            <if id="heightCm != null">height_cm = #{heightCm},</if>
-            <if id="weightKg != null">weight_kg = #{weightKg},</if>
-            <if id="bustCm != null">bust_cm = #{bustCm},</if>
-            <if id="waistCm != null">waist_cm = #{waistCm},</if>
-            <if id="hipCm != null">hip_cm = #{hipCm},</if>
-            <if id="shoeSize != null">shoe_size = #{shoeSize},</if>
-            <if id="parentName != null">parent_name = #{parentName},</if>
-            <if id="parentPhone != null">parent_phone = #{parentPhone},</if>
-            <if id="resumeBio != null">resume_bio = #{resumeBio},</if>
+            <if test="studentName != null and studentName != ''">student_name = #{studentName},</if>
+            <if test="gradeLevel != null and gradeLevel != ''">grade_level = #{gradeLevel},</if>
+            <if test="chineseScore != null">chinese_score = #{chineseScore},</if>
+            <if test="mathScore != null">math_score = #{mathScore},</if>
+            <if test="englishScore != null">english_score = #{englishScore},</if>
+            <if test="heightCm != null">height_cm = #{heightCm},</if>
+            <if test="weightKg != null">weight_kg = #{weightKg},</if>
+            <if test="bustCm != null">bust_cm = #{bustCm},</if>
+            <if test="waistCm != null">waist_cm = #{waistCm},</if>
+            <if test="hipCm != null">hip_cm = #{hipCm},</if>
+            <if test="shoeSize != null">shoe_size = #{shoeSize},</if>
+            <if test="parentName != null">parent_name = #{parentName},</if>
+            <if test="parentPhone != null">parent_phone = #{parentPhone},</if>
+            <if test="resumeBio != null">resume_bio = #{resumeBio},</if>
             updated_at = NOW()
         </set>
         WHERE profile_id = #{profileId} OR student_id = #{studentId}

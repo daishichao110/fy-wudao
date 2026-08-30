@@ -218,9 +218,12 @@ CREATE TABLE sys_work_group (
     group_name VARCHAR(100) NOT NULL COMMENT '小组名称',
     icon VARCHAR(20) DEFAULT '💄' COMMENT '小组图标Emoji',
     dance_class_name VARCHAR(50) DEFAULT '二年级' COMMENT '所属班级/年级 (租户隔离)',
+    leader_user_id VARCHAR(64) DEFAULT '' COMMENT '组长用户ID',
+    member_user_ids TEXT COMMENT '组员用户ID列表(逗号分隔)',
     leader_name VARCHAR(50) DEFAULT '' COMMENT '组长姓名/家委称谓',
     member_names TEXT COMMENT '组员姓名列表(逗号分隔)',
     duty_desc TEXT COMMENT '工作职责与分工',
+    sort_order INT DEFAULT 0 COMMENT '排序权重',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='舞团工作小组风采表';
 

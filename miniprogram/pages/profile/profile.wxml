@@ -374,6 +374,33 @@
           <view class="act-btn btn-pass margin-top-8" bindtap="submitThought">🚀 确认发布</view>
         </view>
 
+        <!-- 📋 动态互动与反馈列表 (按角色与可见性规则展示) -->
+        <view class="history-thoughts-box margin-top-14">
+          <view style="display: flex; justify-content: space-between; align-items: center;">
+            <text class="field-label" style="font-size: 13px; font-weight: 800; color: #0f172a;">📋 动态互动与反馈列表:</text>
+            <text class="group-tip" style="font-size: 11px;" wx:if="{{activeThoughtType === 'HEART' && (isAdmin || isTeacher)}}">🔒 管理员/老师可查全员倾诉</text>
+          </view>
+          
+          <block wx:for="{{displayThoughtList}}" wx:key="id">
+            <view class="item-card margin-top-8" style="padding: 12px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+              <view class="item-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <text class="item-name" style="font-size: 13px; font-weight: 700; color: #0f172a;">👤 {{item.studentName || '匿名家长'}}</text>
+                <text class="item-status-tag {{item.type === 'THOUGHT' ? 'tag-emerald' : 'tag-rose'}}" style="font-size: 10px; padding: 2px 8px; border-radius: 10px;">{{item.type === 'THOUGHT' ? '💭 有感而发 (全员可见)' : '💖 说说心里话 (管理员/老师可见)'}}</text>
+              </view>
+              <text class="sec-sub margin-top-6" style="color: #334155; font-size: 13px; line-height: 1.6; display: block;">{{item.content}}</text>
+              <view class="item-header margin-top-8" style="display: flex; justify-content: space-between; align-items: center;">
+                <text class="group-tip" style="font-size: 11px; color: #94a3b8;">📅 {{item.createdAt}}</text>
+                <view style="display: flex; align-items: center; gap: 4px;" bindtap="likeThought" data-id="{{item.id}}">
+                  <text style="font-size: 13px;">❤️</text>
+                  <text style="font-size: 11px; color: #e11d48; font-weight: 700;">{{item.likesCount || 0}}</text>
+                </view>
+              </view>
+            </view>
+          </block>
+
+          <view class="empty-box margin-top-8" wx:if="{{displayThoughtList.length === 0}}" style="padding: 20px; text-align: center;">
+            <text class="empty-text" style="color: #94a3b8; font-size: 12px;">暂无互动留言记录</text>
+          </view>
         </view>
       </scroll-view>
       <view class="modal-foot">
@@ -392,12 +419,12 @@
       <scroll-view scroll-y class="modal-body">
         <view class="form-group margin-top-8">
           <text class="field-label">活动标题 / 剧名 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：2026金帆舞团大剧院年度展演" model:value="{{publishBannerForm.title}}" />
+          <input class="fancy-input" placeholder="例如：2026金帆舞团大剧院年度展演" value="{{publishBannerForm.title}}" bindinput="onBannerInput" data-field="title" />
         </view>
 
         <view class="form-group margin-top-8">
           <text class="field-label">宣传副标题</text>
-          <input class="fancy-input" placeholder="例如：劲松金帆舞团 · 华彩盛典" model:value="{{publishBannerForm.subtitle}}" />
+          <input class="fancy-input" placeholder="例如：劲松金帆舞团 · 华彩盛典" value="{{publishBannerForm.subtitle}}" bindinput="onBannerInput" data-field="subtitle" />
         </view>
 
         <view class="form-row-2 margin-top-8">
@@ -412,18 +439,18 @@
           </view>
           <view class="form-group flex-1">
             <text class="field-label">活动日期</text>
-            <input class="fancy-input" placeholder="yyyy-MM-dd" model:value="{{publishBannerForm.eventDate}}" />
+            <input class="fancy-input" placeholder="yyyy-MM-dd" value="{{publishBannerForm.eventDate}}" bindinput="onBannerInput" data-field="eventDate" />
           </view>
         </view>
 
         <view class="form-group margin-top-8">
           <text class="field-label">演出地点/剧场</text>
-          <input class="fancy-input" placeholder="例如：国家大剧院歌剧院 / 区文化馆大剧场" model:value="{{publishBannerForm.location}}" />
+          <input class="fancy-input" placeholder="例如：国家大剧院歌剧院 / 区文化馆大剧场" value="{{publishBannerForm.location}}" bindinput="onBannerInput" data-field="location" />
         </view>
 
         <view class="form-group margin-top-8">
           <text class="field-label">演出及风采正文报道 <text class="required">*</text></text>
-          <textarea class="fancy-textarea" style="height: 90px;" placeholder="撰写演出现场盛况、比赛获奖记录或精彩花絮文字报道..." model:value="{{publishBannerForm.content}}"></textarea>
+          <textarea class="fancy-textarea" style="height: 90px;" placeholder="撰写演出现场盛况、比赛获奖记录或精彩花絮文字报道..." value="{{publishBannerForm.content}}" bindinput="onBannerInput" data-field="content"></textarea>
         </view>
 
         <view class="form-group margin-top-8">
@@ -453,15 +480,15 @@
         </view>
         <view class="form-group margin-top-12">
           <text class="field-label">公告标题 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：2026秋季开学前剧目排练与考级重要通知" model:value="{{publishNoticeForm.title}}" />
+          <input class="fancy-input" placeholder="例如：2026秋季开学前剧目排练与考级重要通知" value="{{publishNoticeForm.title}}" bindinput="onNoticeInput" data-field="title" />
         </view>
         <view class="form-group margin-top-12">
           <text class="field-label">发布单位署名</text>
-          <input class="fancy-input" placeholder="舞蹈学校教务处" model:value="{{publishNoticeForm.publisher}}" />
+          <input class="fancy-input" placeholder="舞蹈学校教务处" value="{{publishNoticeForm.publisher}}" bindinput="onNoticeInput" data-field="publisher" />
         </view>
         <view class="form-group margin-top-12">
           <text class="field-label">公告正文内容 <text class="required">*</text></text>
-          <textarea class="fancy-textarea" style="height: 100px;" placeholder="请输入广播公告的具体通知正文内容、注意事项与安排..." model:value="{{publishNoticeForm.content}}"></textarea>
+          <textarea class="fancy-textarea" style="height: 100px;" placeholder="请输入广播公告的具体通知正文内容、注意事项与安排..." value="{{publishNoticeForm.content}}" bindinput="onNoticeInput" data-field="content"></textarea>
         </view>
       </scroll-view>
       <view class="modal-foot">
