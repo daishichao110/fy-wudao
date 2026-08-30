@@ -394,22 +394,32 @@
 }
 
 .fancy-input, .form-input {
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 13px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0 14px;
+  height: 44px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
   color: #0f172a;
   box-sizing: border-box;
   width: 100%;
 }
 
-.fancy-textarea, .form-textarea {
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  padding: 10px 12px;
+.ph-style {
+  color: #94a3b8;
   font-size: 13px;
+  font-weight: normal;
+}
+
+.fancy-textarea, .form-textarea {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
   color: #0f172a;
   width: 100%;
   box-sizing: border-box;

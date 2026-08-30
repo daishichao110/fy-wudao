@@ -422,12 +422,12 @@
       <scroll-view scroll-y class="modal-body">
         <view class="form-group margin-top-8">
           <text class="field-label">活动标题 / 剧名 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：2026金帆舞团大剧院年度展演" value="{{publishBannerForm.title}}" bindinput="onBannerInput" data-field="title" />
+          <input class="fancy-input" placeholder-class="ph-style" placeholder="例如：2026金帆舞团大剧院年度展演" value="{{publishBannerForm.title}}" bindinput="onBannerInput" data-field="title" />
         </view>
 
         <view class="form-group margin-top-8">
           <text class="field-label">宣传副标题</text>
-          <input class="fancy-input" placeholder="例如：劲松金帆舞团 · 华彩盛典" value="{{publishBannerForm.subtitle}}" bindinput="onBannerInput" data-field="subtitle" />
+          <input class="fancy-input" placeholder-class="ph-style" placeholder="例如：劲松金帆舞团 · 华彩盛典" value="{{publishBannerForm.subtitle}}" bindinput="onBannerInput" data-field="subtitle" />
         </view>
 
         <view class="form-row-2 margin-top-8">
@@ -453,12 +453,12 @@
 
         <view class="form-group margin-top-8">
           <text class="field-label">演出地点/剧场</text>
-          <input class="fancy-input" placeholder="例如：国家大剧院歌剧院 / 区文化馆大剧场" value="{{publishBannerForm.location}}" bindinput="onBannerInput" data-field="location" />
+          <input class="fancy-input" placeholder-class="ph-style" placeholder="例如：国家大剧院歌剧院 / 区文化馆大剧场" value="{{publishBannerForm.location}}" bindinput="onBannerInput" data-field="location" />
         </view>
 
         <view class="form-group margin-top-8">
           <text class="field-label">演出及风采正文报道 <text class="required">*</text></text>
-          <textarea class="fancy-textarea" style="height: 90px;" placeholder="撰写演出现场盛况、比赛获奖记录或精彩花絮文字报道..." value="{{publishBannerForm.content}}" bindinput="onBannerInput" data-field="content"></textarea>
+          <textarea class="fancy-textarea" placeholder-class="ph-style" style="height: 90px;" placeholder="撰写演出现场盛况、比赛获奖记录或精彩花絮文字报道..." value="{{publishBannerForm.content}}" bindinput="onBannerInput" data-field="content"></textarea>
         </view>
 
         <view class="form-group margin-top-8">
@@ -536,7 +536,7 @@
         </view>
 
         <view class="form-group margin-top-8">
-          <text class="field-label">课程/剧目名称 <text class="required">*</text></text>
+          <text class="field-label">课程名称 <text class="required">*</text></text>
           <input class="fancy-input" placeholder="例如：少儿芭蕾基训与软开度专项" value="{{publishScheduleForm.courseName}}" bindinput="onScheduleInput" data-field="courseName" />
         </view>
 

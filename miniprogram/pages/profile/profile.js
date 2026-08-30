@@ -732,11 +732,22 @@ Page({
 
   openPublishBannerModal() {
     const userInfo = wx.getStorageSync('userInfo') || {};
+    const today = this.getTodayDate();
     this.setData({
-      'publishBannerForm.creatorName': userInfo.realName || userInfo.parentName || '管理员/家委',
-      'publishBannerForm.creatorRole': userInfo.roleType || 'COMMITTEE',
-      'publishBannerForm.eventDate': this.getTodayDate(),
-      showPublishBannerModal: true
+      showPublishBannerModal: true,
+      todayDateStr: today,
+      badgeIndex: 0,
+      publishBannerForm: {
+        title: '',
+        subtitle: '',
+        badge: '🎪 大型演出',
+        eventDate: today,
+        location: '',
+        content: '',
+        imageUrl: '/image/banner1.jpg',
+        creatorName: userInfo.realName || userInfo.parentName || '管理员/家委',
+        creatorRole: userInfo.roleType || 'COMMITTEE'
+      }
     });
   },
 

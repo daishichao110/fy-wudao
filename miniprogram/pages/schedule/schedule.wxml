@@ -11,6 +11,7 @@
             <text class="picker-arrow" wx:if="{{isTeacherOrAdmin}}">▼</text>
           </view>
         </picker>
+      </view>
       <text class="filter-tip" wx:if="{{selectedDateStr}}" bindtap="clearDateFilter">重置日期 ✖</text>
     </view>
   </view>

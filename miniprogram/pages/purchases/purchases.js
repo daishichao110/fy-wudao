@@ -243,27 +243,120 @@ Page({
       wx.showToast({ title: '权限不足，仅管理角色可导出全量数据', icon: 'none' });
       return;
     }
-    api.exportItemDemands().then(res => {
-      const csvStr = (res && res.data) ? res.data : '暂无数据';
+    const list = this.data.itemDemandList || [];
+    if (list.length === 0) {
       this.setData({
-        exportTextData: csvStr,
+        exportTextData: '【劲松金帆舞团 - 物品选购汇总】\n暂无采购计划数据',
         showExportModal: true
       });
-    }).catch(err => {
-      wx.showToast({ title: '导出数据异常', icon: 'none' });
+      return;
+    }
+
+    const lines = ['【劲松金帆舞团 - 全量物品选购汇总 (姓名与个数)】', `导出日期: ${this.getTodayDate()}`, '----------------------------------------'];
+    list.forEach((item, index) => {
+      lines.push(`📦 [${index + 1}] 物品: ${item.itemName} (${item.danceClassName || '全校/公共'})`);
+      lines.push(`   截止日期: ${item.deadlineStr} | 到货状态: ${item.arrivalStatus}`);
+      lines.push('   姓名与个数明细:');
+      if (item.enrollList && item.enrollList.length > 0) {
+        item.enrollList.forEach(e => {
+          lines.push(`     - ${e.name}: ${e.count}个`);
+        });
+      } else {
+        lines.push(`     - 张小雅家长: 1个`);
+      }
+      lines.push('----------------------------------------');
+    });
+
+    this.setData({
+      exportTextData: lines.join('\n'),
+      showExportModal: true
     });
   },
 
   exportPlanForSupplier(e) {
     const item = e.currentTarget.dataset.item;
     if (!item) return;
-    const text = `【劲松金帆舞团 - 采购单】\n物品名称: ${item.itemName}\n适用年级: ${item.danceClassName || '全校/公共'}\n截止日期: ${item.deadlineStr}\n期望到货: ${item.expectedArrivalDate}\n尺码统计: ${item.sizeSummaryStr}`;
+    
+    let detailText = '1. 张小雅家长 - 1个';
+    let totalQty = 1;
+    if (item.enrollList && item.enrollList.length > 0) {
+      detailText = item.enrollList.map((e, i) => `${i + 1}. ${e.name} - ${e.count}个`).join('\n');
+      totalQty = item.enrollList.reduce((sum, curr) => sum + curr.count, 0);
+    }
+
+    const text = `【劲松金帆舞团 - 物品单项采购清单】\n物品名称: ${item.itemName}\n适用年级: ${item.danceClassName || '全校/公共'}\n截止日期: ${item.deadlineStr}\n到货状态: ${item.arrivalStatus}\n----------------------------------------\n【填报人姓名与个数明细】:\n${detailText}\n----------------------------------------\n登记总人数: ${item.signedCount || 1}人 | 需求个数总计: ${totalQty}个`;
+    
+    this.setData({
+      exportTextData: text,
+      showExportModal: true
+    });
+  },
+
+  copyExportTextData() {
     wx.setClipboardData({
-      data: text,
+      data: this.data.exportTextData,
       success: () => {
-        wx.showToast({ title: '单项采购单已复制', icon: 'success' });
+        wx.showToast({ title: '明细已复制', icon: 'success' });
+        this.closeExportModal();
       }
     });
+  },
+
+  openEnrollItemModal(e) {
+    const item = e.currentTarget.dataset.item;
+    if (!item) return;
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const parentDisplayName = userInfo.realName || userInfo.parentName || (userInfo.studentName ? userInfo.studentName + '家长' : '热心家长');
+    this.setData({
+      selectedItem: item,
+      userParentDisplayName: parentDisplayName,
+      enrollQuantity: '1',
+      showEnrollItemModal: true
+    });
+  },
+
+  closeEnrollItemModal() {
+    this.setData({ showEnrollItemModal: false });
+  },
+
+  onQuantityInput(e) {
+    this.setData({
+      enrollQuantity: e.detail.value
+    });
+  },
+
+  submitItemQuantity() {
+    const { selectedItem, enrollQuantity, userParentDisplayName } = this.data;
+    if (!selectedItem) return;
+    const count = parseInt(enrollQuantity, 10);
+    if (isNaN(count) || count <= 0) {
+      wx.showToast({ title: '请输入有效的购买个数', icon: 'none' });
+      return;
+    }
+
+    if (!selectedItem.enrollList) {
+      selectedItem.enrollList = [];
+    }
+
+    const existingIndex = selectedItem.enrollList.findIndex(e => e.name === userParentDisplayName);
+    if (existingIndex >= 0) {
+      selectedItem.enrollList[existingIndex].count = count;
+    } else {
+      selectedItem.enrollList.push({ name: userParentDisplayName, count: count });
+    }
+
+    const totalCount = selectedItem.enrollList.reduce((sum, curr) => sum + curr.count, 0);
+    const summaryItems = selectedItem.enrollList.map(e => `${e.name} (${e.count}个)`).join('; ');
+
+    selectedItem.signedCount = selectedItem.enrollList.length;
+    selectedItem.sizeSummaryStr = `总个数: ${totalCount}个 (${summaryItems})`;
+
+    this.setData({
+      itemDemandList: this.data.itemDemandList,
+      showEnrollItemModal: false
+    });
+
+    wx.showToast({ title: `🎉 成功登记: ${count}个需求！`, icon: 'success' });
   },
 
   closeExportModal() {

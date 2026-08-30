@@ -42,14 +42,15 @@
           <text class="im-pill" wx:else>📦 到货状态: {{item.arrivalStatus}}</text>
         </view>
 
-        <!-- 尺码汇总统计 (家委实时汇总发给供应商) -->
+        <!-- 需求与个数汇总统计 (实时汇总) -->
         <view class="size-summary-box margin-top-8">
-          <text class="ss-title">📊 各尺码报名总数统计 (家委实时汇总):</text>
+          <text class="ss-title">📊 采购需求与个数汇总 (已登记人次: {{item.signedCount || 0}}人):</text>
           <text class="ss-content">{{item.sizeSummaryStr}}</text>
         </view>
 
-        <view class="item-footer margin-top-10">
-          <view class="export-btn" bindtap="exportPlanForSupplier" data-item="{{item}}">📥 导出单项采购单</view>
+        <view class="item-footer margin-top-10" style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
+          <view class="act-btn btn-pass" style="font-size: 12px; padding: 6px 14px; background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); color: #ffffff; border-radius: 10px; box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);" bindtap="openEnrollItemModal" data-item="{{item}}">🛒 填写购买需求 (选个数)</view>
+          <view class="export-btn" bindtap="exportPlanForSupplier" data-item="{{item}}" wx:if="{{hasManagePermission}}">📥 导出明细(姓名/个数)</view>
         </view>
       </view>
     </block>
@@ -60,7 +61,7 @@
     </view>
   </view>
 
-  <!-- ==================== 弹窗 1：📦 发布/新增物品选购计划 Modal ==================== -->
+  <!-- ==================== 弹窗 1：📦 发布/新增物品选购计划 Modal (仅管理角色) ==================== -->
   <view class="modal-overlay" wx:if="{{showItemDemandModal}}">
     <view class="modal-card">
       <view class="modal-head">
@@ -123,11 +124,41 @@
         <text class="close-btn" bindtap="closeExportModal">✕</text>
       </view>
       <scroll-view scroll-y class="modal-body">
-        <textarea class="export-textarea" value="{{exportTextData}}" disabled readonly></textarea>
+        <textarea class="export-textarea" value="{{exportTextData}}" disabled readonly style="height: 180px; width: 100%; font-size: 12px; background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 10px;"></textarea>
       </scroll-view>
       <view class="modal-foot">
         <view class="act-btn btn-reject" bindtap="closeExportModal">关闭</view>
         <view class="act-btn btn-pass" bindtap="copyExportTextData">📋 一键复制文本</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 弹窗 3：🛒 填写购买需求 Modal (所有角色通用填报个数) ==================== -->
+  <view class="modal-overlay" wx:if="{{showEnrollItemModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">🛒 填写物品选购需求</text>
+        <text class="close-btn" bindtap="closeEnrollItemModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="fancy-notice-tip">
+          <text class="tip-icon">📦</text>
+          <text>选购项目：【{{selectedItem.itemName}}】</text>
+        </view>
+
+        <view class="form-group margin-top-12">
+          <text class="field-label">填报人称谓</text>
+          <input class="fancy-input" value="{{userParentDisplayName}}" disabled style="background: #f1f5f9; color: #64748b;" />
+        </view>
+
+        <view class="form-group margin-top-12">
+          <text class="field-label">购买个数 (件/双) <text class="required">*</text></text>
+          <input class="fancy-input" type="number" placeholder="例如：1" value="{{enrollQuantity}}" bindinput="onQuantityInput" />
+        </view>
+      </scroll-view>
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closeEnrollItemModal">取消</view>
+        <view class="act-btn btn-pass" bindtap="submitItemQuantity">🚀 确认提交需求</view>
       </view>
     </view>
   </view>
