@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class QaMessage implements Serializable {
-    private Long msgId;
-    private Long studentId;
+    private String msgId;
+    private String studentId;
     private String studentName;
-    private Long teacherId;
+    private String teacherId;
     private String teacherName;
     private String questionContent;
     private String replyContent;
@@ -15,17 +15,17 @@ public class QaMessage implements Serializable {
     private String featuredTitle;
     private Date createdAt;
 
-    public Long getMsgId() { return msgId; }
-    public void setMsgId(Long msgId) { this.msgId = msgId; }
+    public String getMsgId() { return msgId; }
+    public void setMsgId(String msgId) { this.msgId = msgId; }
 
-    public Long getStudentId() { return studentId; }
-    public void setStudentId(Long studentId) { this.studentId = studentId; }
+    public String getStudentId() { return studentId; }
+    public void setStudentId(String studentId) { this.studentId = studentId; }
 
     public String getStudentName() { return studentName; }
     public void setStudentName(String studentName) { this.studentName = studentName; }
 
-    public Long getTeacherId() { return teacherId; }
-    public void setTeacherId(Long teacherId) { this.teacherId = teacherId; }
+    public String getTeacherId() { return teacherId; }
+    public void setTeacherId(String teacherId) { this.teacherId = teacherId; }
 
     public String getTeacherName() { return teacherName; }
     public void setTeacherName(String teacherName) { this.teacherName = teacherName; }

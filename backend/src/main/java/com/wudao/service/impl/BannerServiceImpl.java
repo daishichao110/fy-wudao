@@ -21,8 +21,8 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     public Banner createBanner(Banner banner) {
-        if (banner.getBannerId() == null) {
-            banner.setBannerId(SnowflakeIdWorker.generateId());
+        if (!org.springframework.util.StringUtils.hasText(banner.getBannerId())) {
+            banner.setBannerId(SnowflakeIdWorker.generateIdStr());
         }
         if (banner.getStatus() == null) {
             banner.setStatus(1);

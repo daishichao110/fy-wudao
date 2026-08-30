@@ -73,9 +73,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         // 2. 教师身份与自动兼容保护 (支持教师及管理员发布排课)
-        Long targetTeacherId = schedule.getTeacherId();
-        if (targetTeacherId == null || targetTeacherId <= 0) {
-            targetTeacherId = 2L; // 默认挂载在林依依老师名下
+        String targetTeacherId = schedule.getTeacherId();
+        if (!StringUtils.hasText(targetTeacherId)) {
+            targetTeacherId = "2"; // 默认挂载在林依依老师名下
         }
 
         User teacher = userMapper.selectById(targetTeacherId);
@@ -84,7 +84,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             schedule.setTeacherName(teacher.getRealName());
         } else {
             // 若该 ID 对应用户未查询到，自动降级挂载至 2号教师 (林依依老师)
-            schedule.setTeacherId(2L);
+            schedule.setTeacherId("2");
             schedule.setTeacherName(StringUtils.hasText(schedule.getTeacherName()) ? schedule.getTeacherName() : "林依依老师");
         }
 
@@ -101,8 +101,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         schedule.setBookedCount(0);
 
-        if (schedule.getScheduleId() == null || schedule.getScheduleId() <= 0) {
-            schedule.setScheduleId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!StringUtils.hasText(schedule.getScheduleId())) {
+            schedule.setScheduleId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
 
         scheduleMapper.insert(schedule);
@@ -119,11 +119,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (leaveRecord == null) {
             throw new IllegalArgumentException("请假记录参数不可为空");
         }
-        if (leaveRecord.getStudentId() == null || leaveRecord.getStudentId() <= 0) {
-            throw new IllegalArgumentException("学员ID不合法");
+        if (!StringUtils.hasText(leaveRecord.getStudentId())) {
+            throw new IllegalArgumentException("学员ID不可为空");
         }
-        if (leaveRecord.getScheduleId() == null || leaveRecord.getScheduleId() <= 0) {
-            throw new IllegalArgumentException("排课ID不合法");
+        if (!StringUtils.hasText(leaveRecord.getScheduleId())) {
+            throw new IllegalArgumentException("排课ID不可为空");
         }
 
         // 2. 学员与课程存在性校验
@@ -156,8 +156,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         leaveRecord.setRecordType("LEAVE");
         leaveRecord.setStatus("EFFECTIVE");
 
-        if (leaveRecord.getRecordId() == null || leaveRecord.getRecordId() <= 0) {
-            leaveRecord.setRecordId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!StringUtils.hasText(leaveRecord.getRecordId())) {
+            leaveRecord.setRecordId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
 
         leaveMakeUpMapper.insert(leaveRecord);
@@ -176,11 +176,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (makeupRecord == null) {
             throw new IllegalArgumentException("补课预约参数不可为空");
         }
-        if (makeupRecord.getStudentId() == null || makeupRecord.getStudentId() <= 0) {
-            throw new IllegalArgumentException("补课学员ID不合法");
+        if (!StringUtils.hasText(makeupRecord.getStudentId())) {
+            throw new IllegalArgumentException("补课学员ID不可为空");
         }
-        if (makeupRecord.getScheduleId() == null || makeupRecord.getScheduleId() <= 0) {
-            throw new IllegalArgumentException("补课排课ID不合法");
+        if (!StringUtils.hasText(makeupRecord.getScheduleId())) {
+            throw new IllegalArgumentException("补课排课ID不可为空");
         }
 
         // 2. 学员与课程存在性校验
@@ -218,8 +218,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         makeupRecord.setRecordType("MAKE_UP");
         makeupRecord.setStatus("EFFECTIVE");
 
-        if (makeupRecord.getRecordId() == null || makeupRecord.getRecordId() <= 0) {
-            makeupRecord.setRecordId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!StringUtils.hasText(makeupRecord.getRecordId())) {
+            makeupRecord.setRecordId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
 
         leaveMakeUpMapper.insert(makeupRecord);

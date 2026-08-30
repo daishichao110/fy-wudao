@@ -62,8 +62,8 @@ public class PurchaseServiceImpl implements PurchaseService {
             purchase.setProofUrl("/image/banner1.jpg");
         }
 
-        if (purchase.getPurchaseId() == null || purchase.getPurchaseId() <= 0) {
-            purchase.setPurchaseId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!StringUtils.hasText(purchase.getPurchaseId())) {
+            purchase.setPurchaseId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
 
         purchaseMapper.insert(purchase);

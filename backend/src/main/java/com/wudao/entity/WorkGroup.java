@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class WorkGroup implements Serializable {
-    private Long groupId;
+    private String groupId;
     private String groupName;
     private String icon;
-    private Long leaderUserId;
+    private String leaderUserId;
     private String memberUserIds;
     private String leaderName;
     private String memberNames;
@@ -16,8 +16,8 @@ public class WorkGroup implements Serializable {
     private Integer sortOrder;
     private Date createdAt;
 
-    public Long getGroupId() { return groupId; }
-    public void setGroupId(Long groupId) { this.groupId = groupId; }
+    public String getGroupId() { return groupId; }
+    public void setGroupId(String groupId) { this.groupId = groupId; }
 
     public String getGroupName() { return groupName; }
     public void setGroupName(String groupName) { this.groupName = groupName; }
@@ -28,8 +28,8 @@ public class WorkGroup implements Serializable {
     public String getDanceClassName() { return danceClassName; }
     public void setDanceClassName(String danceClassName) { this.danceClassName = danceClassName; }
 
-    public Long getLeaderUserId() { return leaderUserId; }
-    public void setLeaderUserId(Long leaderUserId) { this.leaderUserId = leaderUserId; }
+    public String getLeaderUserId() { return leaderUserId; }
+    public void setLeaderUserId(String leaderUserId) { this.leaderUserId = leaderUserId; }
 
     public String getMemberUserIds() { return memberUserIds; }
     public void setMemberUserIds(String memberUserIds) { this.memberUserIds = memberUserIds; }

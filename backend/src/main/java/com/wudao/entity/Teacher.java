@@ -6,7 +6,7 @@ import java.util.Date;
 public class Teacher implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long teacherId;
+    private String teacherId;
     private String name;
     private String title;
     private String danceType;
@@ -15,11 +15,11 @@ public class Teacher implements Serializable {
     private String bio;
     private Date createdAt;
 
-    public Long getTeacherId() {
+    public String getTeacherId() {
         return teacherId;
     }
 
-    public void setTeacherId(Long teacherId) {
+    public void setTeacherId(String teacherId) {
         this.teacherId = teacherId;
     }
 

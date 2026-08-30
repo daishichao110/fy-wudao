@@ -3,7 +3,7 @@ package com.wudao.entity;
 import java.util.Date;
 
 public class Banner {
-    private Long bannerId;
+    private String bannerId;
     private String title;
     private String subtitle;
     private String badge;
@@ -17,11 +17,11 @@ public class Banner {
     private Integer sortOrder;
     private Date createdAt;
 
-    public Long getBannerId() {
+    public String getBannerId() {
         return bannerId;
     }
 
-    public void setBannerId(Long bannerId) {
+    public void setBannerId(String bannerId) {
         this.bannerId = bannerId;
     }
 

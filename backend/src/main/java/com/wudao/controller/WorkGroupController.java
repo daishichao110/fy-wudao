@@ -37,7 +37,7 @@ public class WorkGroupController {
     }
 
     @PostMapping("/delete")
-    public Result<String> deleteWorkGroup(@RequestParam Long groupId) {
+    public Result<String> deleteWorkGroup(@RequestParam String groupId) {
         log.info("[REST API POST /api/work-group/delete] Deleting work group: groupId={}", groupId);
         workGroupService.deleteGroup(groupId);
         return Result.success("删除工作小组成功");

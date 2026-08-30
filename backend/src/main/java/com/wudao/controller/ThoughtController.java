@@ -67,7 +67,7 @@ public class ThoughtController {
         String nowStr = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date());
 
         Map<String, Object> item = new HashMap<>();
-        item.put("id", System.currentTimeMillis());
+        item.put("id", com.wudao.common.SnowflakeIdWorker.generateIdStr());
         item.put("studentName", studentName);
         item.put("roleType", roleType);
         item.put("type", type);
@@ -85,9 +85,9 @@ public class ThoughtController {
 
     @PostMapping("/like")
     public Result<String> likeThought(@RequestBody Map<String, Object> payload) {
-        Long id = Long.valueOf(String.valueOf(payload.get("id")));
+        String id = String.valueOf(payload.get("id"));
         for (Map<String, Object> item : thoughtList) {
-            if (id.equals(item.get("id"))) {
+            if (id.equals(String.valueOf(item.get("id")))) {
                 int count = Integer.parseInt(String.valueOf(item.getOrDefault("likesCount", 0)));
                 item.put("likesCount", count + 1);
                 break;

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface MentorshipMapper {
     List<Mentorship> selectAll();
-    Mentorship selectById(@Param("pairId") Long pairId);
-    int incrementStarAndCheckin(@Param("pairId") Long pairId, @Param("addStars") Integer addStars);
+    Mentorship selectById(@Param("pairId") String pairId);
+    int incrementStarAndCheckin(@Param("pairId") String pairId, @Param("addStars") Integer addStars);
     int insert(Mentorship mentorship);
 }

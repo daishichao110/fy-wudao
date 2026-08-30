@@ -45,8 +45,8 @@ public class TeacherController {
         }
 
         log.info("[REST API POST /api/teacher/create] Adding new teacher bio: Name={}, Title={}", teacher.getName(), teacher.getTitle());
-        if (teacher.getTeacherId() == null || teacher.getTeacherId() <= 0) {
-            teacher.setTeacherId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!org.springframework.util.StringUtils.hasText(teacher.getTeacherId())) {
+            teacher.setTeacherId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
         teacherMapper.insertTeacher(teacher);
         log.info("[REST API POST /api/teacher/create] Saved teacher ID: {}", teacher.getTeacherId());

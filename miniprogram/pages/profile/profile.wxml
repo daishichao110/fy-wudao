@@ -269,31 +269,66 @@
     </view>
   </view>
 
-  <!-- ==================== 弹窗 4：角色审批 Modal ==================== -->
+  <!-- ==================== 弹窗 4：管理员全量角色注册审批 Modal ==================== -->
   <view class="modal-overlay" wx:if="{{showApprovalModal}}">
-    <view class="modal-card">
+    <view class="modal-card approval-modal-fancy">
       <view class="modal-head">
-        <text class="m-title">🛡️ 家长/学员注册申请统一审批</text>
+        <view class="header-badge-row">
+          <text class="header-icon">👑</text>
+          <text class="m-title">注册申请统一审批</text>
+        </view>
         <text class="close-btn" bindtap="closeModals">✕</text>
       </view>
-      <scroll-view scroll-y class="modal-body">
+
+      <view class="approval-tips-banner">
+        <text class="tip-icon">💡</text>
+        <text class="tip-text">通过后该账号即可进行小程序身份判定并登录。</text>
+      </view>
+
+      <scroll-view scroll-y class="modal-body approval-modal-body">
         <block wx:if="{{pendingList.length > 0}}">
           <block wx:for="{{pendingList}}" wx:key="userId">
-            <view class="pending-user-card margin-top-8">
-              <view class="puc-info">
-                <text class="puc-name">{{item.realName}} (学生: {{item.studentName}})</text>
-                <text class="puc-phone">📱 电话: {{item.phone}}</text>
+            <view class="approval-card-item margin-top-8">
+              <view class="ac-top-row">
+                <view class="ac-user-meta">
+                  <text class="ac-real-name">{{item.realName}}</text>
+                  <text class="ac-role-badge {{item.roleType === 'TEACHER' ? 'badge-teacher' : (item.roleType === 'COMMITTEE' ? 'badge-committee' : 'badge-student')}}">
+                    {{item.roleType === 'TEACHER' ? '👩‍🏫 申请教师' : (item.roleType === 'COMMITTEE' ? '📜 申请家委' : '👨‍👩‍👧 申请学员/家长')}}
+                  </text>
+                </view>
               </view>
-              <view class="puc-actions">
-                <view class="act-btn btn-reject-sm" bindtap="handleApprove" data-userid="{{item.userId}}" data-status="2">驳回</view>
-                <view class="act-btn btn-pass-sm" bindtap="handleApprove" data-userid="{{item.userId}}" data-status="1">同意</view>
+
+              <view class="ac-detail-box">
+                <view class="detail-row" wx:if="{{item.studentName}}">
+                  <text class="detail-label">🎓 关联学生：</text>
+                  <text class="detail-val">{{item.studentName}} <text class="rel-tag">({{item.relationship || '家长'}})</text></text>
+                </view>
+                <view class="detail-row" wx:if="{{item.danceClassName}}">
+                  <text class="detail-label">🏫 所属班级：</text>
+                  <text class="detail-val">{{item.danceClassName}}</text>
+                </view>
+                <view class="detail-row" wx:if="{{item.phone}}">
+                  <text class="detail-label">📱 联系电话：</text>
+                  <text class="detail-val phone-val">{{item.phone}}</text>
+                </view>
+              </view>
+
+              <!-- 超清晰 1:1 对称双色高亮操作按钮组 -->
+              <view class="ac-action-group margin-top-12">
+                <button class="approval-btn btn-reject-action" bindtap="handleApprove" data-userid="{{item.userId}}" data-status="2">
+                  <text class="btn-icon">✖</text> 驳回申请
+                </button>
+                <button class="approval-btn btn-pass-action" bindtap="handleApprove" data-userid="{{item.userId}}" data-status="1">
+                  <text class="btn-icon">✔</text> 同意开通
+                </button>
               </view>
             </view>
           </block>
         </block>
         <block wx:else>
           <view class="empty-box">
-            <text class="empty-text">🎉 暂无待审批的新账号申请</text>
+            <view class="empty-icon">🎉</view>
+            <text class="empty-text">暂无待审批的开通申请，所有账号处于正常状态</text>
           </view>
         </block>
       </scroll-view>

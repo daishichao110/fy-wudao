@@ -38,8 +38,8 @@ public class VolunteerController {
         if (duty.getAssigneeName() == null || duty.getAssigneeName().trim().isEmpty()) {
             return Result.error("认领称谓不可为空");
         }
-        if (duty.getDutyId() == null || duty.getDutyId() <= 0) {
-            duty.setDutyId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!org.springframework.util.StringUtils.hasText(duty.getDutyId())) {
+            duty.setDutyId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
         if (!org.springframework.util.StringUtils.hasText(duty.getDanceClassName())) {
             duty.setDanceClassName("二年级");

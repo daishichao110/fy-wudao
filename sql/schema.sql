@@ -9,7 +9,7 @@ USE wudao_db;
 -- 1. 系统用户表 (sys_user)
 DROP TABLE IF EXISTS sys_user;
 CREATE TABLE sys_user (
-    user_id BIGINT PRIMARY KEY COMMENT '用户ID (雪花算法 64位分布式ID)',
+    user_id VARCHAR(64) PRIMARY KEY COMMENT '用户ID (字符串雪花算法唯一标识)',
     username VARCHAR(50) NOT NULL UNIQUE COMMENT '账号名/手机号/标识',
     open_id VARCHAR(128) DEFAULT '' COMMENT '微信OpenID',
     real_name VARCHAR(50) NOT NULL COMMENT '真实姓名/家长姓名',
@@ -28,10 +28,10 @@ CREATE TABLE sys_user (
 -- 2. 课程排期与装备规范表 (dance_schedule)
 DROP TABLE IF EXISTS dance_schedule;
 CREATE TABLE dance_schedule (
-    schedule_id BIGINT PRIMARY KEY COMMENT '排期ID (雪花算法 ID)',
+    schedule_id VARCHAR(64) PRIMARY KEY COMMENT '排期ID (字符串雪花算法 ID)',
     course_name VARCHAR(100) NOT NULL COMMENT '课程名称',
     dance_type VARCHAR(50) NOT NULL COMMENT '舞种:中国舞/芭蕾/拉丁/现代舞等',
-    teacher_id BIGINT NOT NULL COMMENT '任课教师ID',
+    teacher_id VARCHAR(64) NOT NULL COMMENT '任课教师ID',
     teacher_name VARCHAR(50) NOT NULL COMMENT '任课教师姓名',
     classroom_name VARCHAR(50) NOT NULL COMMENT '教室名称',
     class_date DATE NOT NULL COMMENT '上课日期',
@@ -45,16 +45,17 @@ CREATE TABLE dance_schedule (
     props_req VARCHAR(100) NOT NULL COMMENT '携带教具',
     capacity INT DEFAULT 15 COMMENT '班级容量',
     booked_count INT DEFAULT 0 COMMENT '已预约/在读人数',
+    dance_class_name VARCHAR(50) DEFAULT '二年级' COMMENT '所在班级',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='课程排期表';
 
 -- 3. 请假与补课核销表 (leave_make_up)
 DROP TABLE IF EXISTS leave_make_up;
 CREATE TABLE leave_make_up (
-    record_id BIGINT PRIMARY KEY COMMENT '记录ID (雪花算法 ID)',
-    student_id BIGINT NOT NULL COMMENT '学员ID',
+    record_id VARCHAR(64) PRIMARY KEY COMMENT '记录ID (字符串雪花算法 ID)',
+    student_id VARCHAR(64) NOT NULL COMMENT '学员ID',
     student_name VARCHAR(50) NOT NULL COMMENT '学员姓名',
-    schedule_id BIGINT NOT NULL COMMENT '关联排期ID',
+    schedule_id VARCHAR(64) NOT NULL COMMENT '关联排期ID',
     course_name VARCHAR(100) NOT NULL COMMENT '课程名称',
     record_type VARCHAR(20) NOT NULL COMMENT 'LEAVE-请假 / MAKE_UP-补课',
     reason VARCHAR(255) DEFAULT '' COMMENT '请假/补课说明',
@@ -65,8 +66,8 @@ CREATE TABLE leave_make_up (
 -- 4. 身材量体档案表 (student_body_metric)
 DROP TABLE IF EXISTS student_body_metric;
 CREATE TABLE student_body_metric (
-    metric_id BIGINT PRIMARY KEY COMMENT '量体记录ID (雪花算法 ID)',
-    student_id BIGINT NOT NULL COMMENT '学员ID',
+    metric_id VARCHAR(64) PRIMARY KEY COMMENT '量体记录ID (字符串雪花算法 ID)',
+    student_id VARCHAR(64) NOT NULL COMMENT '学员ID',
     student_name VARCHAR(50) NOT NULL COMMENT '学员姓名',
     height_cm DECIMAL(5,2) NOT NULL COMMENT '身高(cm)',
     weight_kg DECIMAL(5,2) NOT NULL COMMENT '体重(kg)',
@@ -82,7 +83,7 @@ CREATE TABLE student_body_metric (
 -- 5. 家委志愿任务招募表 (volunteer_task)
 DROP TABLE IF EXISTS volunteer_task;
 CREATE TABLE volunteer_task (
-    task_id BIGINT PRIMARY KEY COMMENT '任务ID (雪花算法 ID)',
+    task_id VARCHAR(64) PRIMARY KEY COMMENT '任务ID (字符串雪花算法 ID)',
     task_name VARCHAR(100) NOT NULL COMMENT '任务名称',
     group_type VARCHAR(50) NOT NULL COMMENT '后勤保障/化妆道具/安全看护/跟拍宣传',
     activity_name VARCHAR(100) NOT NULL COMMENT '关联演出活动名称',
@@ -100,9 +101,9 @@ CREATE TABLE volunteer_task (
 -- 6. 家委志愿认领记录表 (volunteer_enrollment)
 DROP TABLE IF EXISTS volunteer_enrollment;
 CREATE TABLE volunteer_enrollment (
-    enrollment_id BIGINT PRIMARY KEY COMMENT '认领记录ID (雪花算法 ID)',
-    task_id BIGINT NOT NULL COMMENT '志愿任务ID',
-    user_id BIGINT NOT NULL COMMENT '家委/家长用户ID',
+    enrollment_id VARCHAR(64) PRIMARY KEY COMMENT '认领记录ID (字符串雪花算法 ID)',
+    task_id VARCHAR(64) NOT NULL COMMENT '志愿任务ID',
+    user_id VARCHAR(64) NOT NULL COMMENT '家委/家长用户ID',
     user_name VARCHAR(50) NOT NULL COMMENT '家长姓名/称谓 (如 李小桐的爸爸)',
     status VARCHAR(20) DEFAULT 'COMPLETED' COMMENT 'COMPLETED-已自动核销确认',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '认领时间'
@@ -111,10 +112,10 @@ CREATE TABLE volunteer_enrollment (
 -- 7. 高低年级结对子互助表 (student_mentorship)
 DROP TABLE IF EXISTS student_mentorship;
 CREATE TABLE student_mentorship (
-    pair_id BIGINT PRIMARY KEY COMMENT '结对ID (雪花算法 ID)',
-    senior_student_id BIGINT NOT NULL COMMENT '高年级学姐ID',
+    pair_id VARCHAR(64) PRIMARY KEY COMMENT '结对ID (字符串雪花算法 ID)',
+    senior_student_id VARCHAR(64) NOT NULL COMMENT '高年级学姐ID',
     senior_student_name VARCHAR(50) NOT NULL COMMENT '学姐姓名',
-    junior_student_id BIGINT NOT NULL COMMENT '低年级学妹ID',
+    junior_student_id VARCHAR(64) NOT NULL COMMENT '低年级学妹ID',
     junior_student_name VARCHAR(50) NOT NULL COMMENT '学妹姓名',
     dance_class_name VARCHAR(50) NOT NULL COMMENT '关联班级',
     star_points INT DEFAULT 0 COMMENT '姐妹星积分',
@@ -125,10 +126,10 @@ CREATE TABLE student_mentorship (
 -- 8. 1对1私信与知识库表 (qa_message)
 DROP TABLE IF EXISTS qa_message;
 CREATE TABLE qa_message (
-    msg_id BIGINT PRIMARY KEY COMMENT '消息ID (雪花算法 ID)',
-    student_id BIGINT NOT NULL COMMENT '学员/家长ID',
+    msg_id VARCHAR(64) PRIMARY KEY COMMENT '消息ID (字符串雪花算法 ID)',
+    student_id VARCHAR(64) NOT NULL COMMENT '学员/家长ID',
     student_name VARCHAR(50) NOT NULL COMMENT '学员姓名',
-    teacher_id BIGINT NOT NULL COMMENT '导师ID',
+    teacher_id VARCHAR(64) NOT NULL COMMENT '导师ID',
     teacher_name VARCHAR(50) NOT NULL COMMENT '导师姓名',
     question_content TEXT NOT NULL COMMENT '咨询问题',
     reply_content TEXT COMMENT '导师专业解答',
@@ -140,7 +141,7 @@ CREATE TABLE qa_message (
 -- 9. 集中采购与费用公示表 (purchase_record)
 DROP TABLE IF EXISTS purchase_record;
 CREATE TABLE purchase_record (
-    purchase_id BIGINT PRIMARY KEY COMMENT '采购ID (雪花算法 ID)',
+    purchase_id VARCHAR(64) PRIMARY KEY COMMENT '采购ID (字符串雪花算法 ID)',
     item_name VARCHAR(100) NOT NULL COMMENT '采购物品名称',
     category VARCHAR(50) NOT NULL COMMENT '道具/演出服/剧场租用/跟拍费',
     unit_price DECIMAL(10,2) NOT NULL COMMENT '单价',
@@ -154,7 +155,7 @@ CREATE TABLE purchase_record (
 -- 10. 官方通知公告表 (sys_notice)
 DROP TABLE IF EXISTS sys_notice;
 CREATE TABLE sys_notice (
-    notice_id BIGINT PRIMARY KEY COMMENT '公告ID (雪花算法 ID)',
+    notice_id VARCHAR(64) PRIMARY KEY COMMENT '公告ID (字符串雪花算法 ID)',
     tag VARCHAR(30) DEFAULT '【通知】' COMMENT '标签',
     title VARCHAR(200) NOT NULL COMMENT '标题',
     content TEXT COMMENT '公告内容',
@@ -165,7 +166,7 @@ CREATE TABLE sys_notice (
 -- 11. 名师团队档案表 (sys_teacher)
 DROP TABLE IF EXISTS sys_teacher;
 CREATE TABLE sys_teacher (
-    teacher_id BIGINT PRIMARY KEY COMMENT '教师ID (雪花算法 ID)',
+    teacher_id VARCHAR(64) PRIMARY KEY COMMENT '教师ID (字符串雪花算法 ID)',
     name VARCHAR(50) NOT NULL COMMENT '教师姓名',
     title VARCHAR(100) NOT NULL COMMENT '职称头衔',
     dance_type VARCHAR(50) NOT NULL COMMENT '专业舞种',
@@ -178,10 +179,10 @@ CREATE TABLE sys_teacher (
 -- 12. 未来7天家委轮值看护排班表 (duty_schedule)
 DROP TABLE IF EXISTS duty_schedule;
 CREATE TABLE duty_schedule (
-    duty_id BIGINT PRIMARY KEY COMMENT '轮值看护ID (雪花算法 ID)',
+    duty_id VARCHAR(64) PRIMARY KEY COMMENT '轮值看护ID (字符串雪花算法 ID)',
     duty_date DATE NOT NULL COMMENT '轮值日期',
     assignee_name VARCHAR(64) NOT NULL COMMENT '认领家委称谓 (如 李小桐的爸爸)',
-    user_id BIGINT DEFAULT NULL COMMENT '关联用户ID',
+    user_id VARCHAR(64) DEFAULT NULL COMMENT '关联用户ID',
     dance_class_name VARCHAR(50) NOT NULL DEFAULT '二年级' COMMENT '关联班级 (租户隔离)',
     status VARCHAR(20) DEFAULT 'SCHEDULED' COMMENT '状态',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '申请时间',
@@ -191,8 +192,8 @@ CREATE TABLE duty_schedule (
 -- 13. 学员全量综合档案与成绩表 (student_profile)
 DROP TABLE IF EXISTS student_profile;
 CREATE TABLE student_profile (
-    profile_id BIGINT PRIMARY KEY COMMENT '档案ID (雪花算法 ID)',
-    student_id BIGINT NOT NULL UNIQUE COMMENT '学员用户ID',
+    profile_id VARCHAR(64) PRIMARY KEY COMMENT '档案ID (字符串雪花算法 ID)',
+    student_id VARCHAR(64) NOT NULL UNIQUE COMMENT '学员用户ID',
     student_name VARCHAR(50) NOT NULL COMMENT '学员姓名',
     grade_level VARCHAR(50) DEFAULT '二年级' COMMENT '年级/班级 (租户隔离)',
     chinese_score DECIMAL(5,2) DEFAULT 0 COMMENT '语文成绩',
@@ -213,7 +214,7 @@ CREATE TABLE student_profile (
 -- 14. 舞团工作小组风采表 (sys_work_group)
 DROP TABLE IF EXISTS sys_work_group;
 CREATE TABLE sys_work_group (
-    group_id BIGINT PRIMARY KEY COMMENT '小组ID (雪花算法 ID)',
+    group_id VARCHAR(64) PRIMARY KEY COMMENT '小组ID (字符串雪花算法 ID)',
     group_name VARCHAR(100) NOT NULL COMMENT '小组名称',
     icon VARCHAR(20) DEFAULT '💄' COMMENT '小组图标Emoji',
     dance_class_name VARCHAR(50) DEFAULT '二年级' COMMENT '所属班级/年级 (租户隔离)',
@@ -226,7 +227,7 @@ CREATE TABLE sys_work_group (
 -- 15. 大型演出与风采展播表 (sys_banner)
 DROP TABLE IF EXISTS sys_banner;
 CREATE TABLE sys_banner (
-    banner_id BIGINT PRIMARY KEY COMMENT '展播ID (雪花算法 ID)',
+    banner_id VARCHAR(64) PRIMARY KEY COMMENT '展播ID (字符串雪花算法 ID)',
     title VARCHAR(100) NOT NULL COMMENT '展播标题',
     subtitle VARCHAR(100) DEFAULT '' COMMENT '副标题',
     badge VARCHAR(30) DEFAULT '🎪 大型演出' COMMENT '标签类型',
@@ -244,7 +245,7 @@ CREATE TABLE sys_banner (
 -- 16. 物品选购与集中采购需求表 (sys_item_demand)
 DROP TABLE IF EXISTS sys_item_demand;
 CREATE TABLE sys_item_demand (
-    item_id BIGINT PRIMARY KEY COMMENT '选购物品ID (雪花算法 ID)',
+    item_id VARCHAR(64) PRIMARY KEY COMMENT '选购物品ID (字符串雪花算法 ID)',
     item_name VARCHAR(100) NOT NULL COMMENT '物品选购名称',
     spec VARCHAR(100) DEFAULT '' COMMENT '规格要求说明',
     unit_price VARCHAR(20) DEFAULT '￥0.00' COMMENT '预估单价',
@@ -259,10 +260,10 @@ CREATE TABLE sys_item_demand (
 -- 17. 随感与心里话交流表 (sys_thought)
 DROP TABLE IF EXISTS sys_thought;
 CREATE TABLE sys_thought (
-    thought_id BIGINT PRIMARY KEY COMMENT '随感ID (雪花算法 ID)',
+    thought_id VARCHAR(64) PRIMARY KEY COMMENT '随感ID (字符串雪花算法 ID)',
     type VARCHAR(20) NOT NULL COMMENT 'THOUGHT(有感而发)/HEART(说说心里话)',
     author_name VARCHAR(50) NOT NULL COMMENT '发布人姓名/称谓',
-    user_id BIGINT NOT NULL COMMENT '发布人用户ID',
+    user_id VARCHAR(64) NOT NULL COMMENT '发布人用户ID',
     dance_class_name VARCHAR(50) DEFAULT '二年级' COMMENT '所在年级/班级 (租户隔离)',
     content TEXT NOT NULL COMMENT '发布内容',
     likes_count INT DEFAULT 0 COMMENT '获赞数',

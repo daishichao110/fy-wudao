@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class BodyMetric implements Serializable {
-    private Long metricId;
-    private Long studentId;
+    private String metricId;
+    private String studentId;
     private String studentName;
     private BigDecimal heightCm;
     private BigDecimal weightKg;
@@ -18,11 +18,11 @@ public class BodyMetric implements Serializable {
     private String measuredDate;
     private Date createdAt;
 
-    public Long getMetricId() { return metricId; }
-    public void setMetricId(Long metricId) { this.metricId = metricId; }
+    public String getMetricId() { return metricId; }
+    public void setMetricId(String metricId) { this.metricId = metricId; }
 
-    public Long getStudentId() { return studentId; }
-    public void setStudentId(Long studentId) { this.studentId = studentId; }
+    public String getStudentId() { return studentId; }
+    public void setStudentId(String studentId) { this.studentId = studentId; }
 
     public String getStudentName() { return studentName; }
     public void setStudentName(String studentName) { this.studentName = studentName; }

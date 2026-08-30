@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface UserMapper {
     List<User> selectAll();
-    User selectById(@Param("userId") Long userId);
+    User selectById(@Param("userId") String userId);
     User selectByUsername(@Param("username") String username);
     User selectFirstByRole(@Param("roleType") String roleType);
     List<User> selectPendingUsers(@Param("danceClassName") String danceClassName);
-    int updateStatus(@Param("userId") Long userId, @Param("status") Integer status);
-    int updatePoints(@Param("userId") Long userId, @Param("points") Integer points);
+    int updateStatus(@Param("userId") String userId, @Param("status") Integer status);
+    int updatePoints(@Param("userId") String userId, @Param("points") Integer points);
     int insertUser(User user);
 }

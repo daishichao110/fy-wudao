@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/info/{id}")
-    public Result<User> getUserInfo(@PathVariable("id") Long id) {
+    public Result<User> getUserInfo(@PathVariable("id") String id) {
         log.info("[REST API GET /api/user/info/{}] Querying user info", id);
         User user = userService.getUserById(id);
         return Result.success(user);
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @PostMapping("/approve")
-    public Result<User> approveUser(@RequestParam("userId") Long userId, @RequestParam("status") Integer status) {
+    public Result<User> approveUser(@RequestParam("userId") String userId, @RequestParam("status") Integer status) {
         log.info("[REST API POST /api/user/approve] userId: {}, status: {}", userId, status);
         User user = userService.approveUser(userId, status);
         String actionStr = (status == 1) ? "审批通过" : "已驳回";

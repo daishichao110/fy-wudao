@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class VolunteerTask implements Serializable {
-    private Long taskId;
+    private String taskId;
     private String activityName;
     private String groupType;
     private String taskName;
@@ -21,8 +21,8 @@ public class VolunteerTask implements Serializable {
     public String getDanceClassName() { return danceClassName; }
     public void setDanceClassName(String danceClassName) { this.danceClassName = danceClassName; }
 
-    public Long getTaskId() { return taskId; }
-    public void setTaskId(Long taskId) { this.taskId = taskId; }
+    public String getTaskId() { return taskId; }
+    public void setTaskId(String taskId) { this.taskId = taskId; }
 
     public String getActivityName() { return activityName; }
     public void setActivityName(String activityName) { this.activityName = activityName; }

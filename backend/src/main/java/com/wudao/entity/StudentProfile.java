@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class StudentProfile implements Serializable {
-    private Long profileId;
-    private Long studentId;
+    private String profileId;
+    private String studentId;
     private String studentName;
     private String gradeLevel;
     private Double chineseScore;
@@ -21,11 +21,11 @@ public class StudentProfile implements Serializable {
     private String parentPhone;
     private Date updatedAt;
 
-    public Long getProfileId() { return profileId; }
-    public void setProfileId(Long profileId) { this.profileId = profileId; }
+    public String getProfileId() { return profileId; }
+    public void setProfileId(String profileId) { this.profileId = profileId; }
 
-    public Long getStudentId() { return studentId; }
-    public void setStudentId(Long studentId) { this.studentId = studentId; }
+    public String getStudentId() { return studentId; }
+    public void setStudentId(String studentId) { this.studentId = studentId; }
 
     public String getStudentName() { return studentName; }
     public void setStudentName(String studentName) { this.studentName = studentName; }

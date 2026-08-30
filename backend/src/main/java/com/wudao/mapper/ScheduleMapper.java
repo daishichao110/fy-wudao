@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface ScheduleMapper {
     List<Schedule> selectAll(@Param("danceClassName") String danceClassName);
-    Schedule selectById(@Param("scheduleId") Long scheduleId);
+    Schedule selectById(@Param("scheduleId") String scheduleId);
     int insert(Schedule schedule);
-    int incrementBookedCount(@Param("scheduleId") Long scheduleId);
-    int decrementBookedCount(@Param("scheduleId") Long scheduleId);
+    int incrementBookedCount(@Param("scheduleId") String scheduleId);
+    int decrementBookedCount(@Param("scheduleId") String scheduleId);
 }

@@ -27,10 +27,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long userId) {
+    public User getUserById(String userId) {
         log.info("[UserService] Executing getUserById() for userId: {}", userId);
-        if (userId == null || userId <= 0) {
-            throw new IllegalArgumentException("用户ID不合法");
+        if (!StringUtils.hasText(userId)) {
+            throw new IllegalArgumentException("用户ID不可为空");
         }
         return userMapper.selectById(userId);
     }
@@ -43,10 +43,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User approveUser(Long userId, Integer status) {
+    public User approveUser(String userId, Integer status) {
         log.info("[UserService] Executing approveUser for userId: {}, newStatus: {}", userId, status);
-        if (userId == null || userId <= 0) {
-            throw new IllegalArgumentException("操作用户ID不合法");
+        if (!StringUtils.hasText(userId)) {
+            throw new IllegalArgumentException("操作用户ID不可为空");
         }
         if (status == null || (status != 1 && status != 2)) {
             throw new IllegalArgumentException("审批状态参数不合法(1-通过 2-驳回)");
@@ -54,7 +54,8 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.selectById(userId);
         if (user == null) {
-            throw new IllegalArgumentException("目标审核用户不存在");
+            log.error("[UserService] Approval failed: Target user ID {} not found in sys_user database table.", userId);
+            throw new IllegalArgumentException("目标审核用户不存在 (ID: " + userId + ")");
         }
 
         userMapper.updateStatus(userId, status);
@@ -83,8 +84,8 @@ public class UserServiceImpl implements UserService {
             user.setUsername("user_" + System.currentTimeMillis());
         }
 
-        if (user.getUserId() == null || user.getUserId() <= 0) {
-            user.setUserId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!StringUtils.hasText(user.getUserId())) {
+            user.setUserId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
 
         userMapper.insertUser(user);

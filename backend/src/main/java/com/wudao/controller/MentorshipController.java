@@ -28,7 +28,7 @@ public class MentorshipController {
 
     @PostMapping("/checkin")
     public Result<Mentorship> checkinMentorship(@RequestBody Map<String, Object> params) {
-        Long pairId = Long.valueOf(params.get("pairId").toString());
+        String pairId = params.get("pairId").toString();
         log.info("[REST API POST /api/mentorship/checkin] Checkin for pairId: {}", pairId);
         Mentorship res = mentorshipService.checkin(pairId);
         return Result.success("结对子打卡成功！姐妹星 +5", res);

@@ -11,13 +11,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/api/student-profile")
 public class StudentProfileController {
 
-    private final ConcurrentHashMap<Long, StudentProfile> profileStore = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, StudentProfile> profileStore = new ConcurrentHashMap<>();
 
     public StudentProfileController() {
         // 初始演示数据 (学员 李小桐)
         StudentProfile p = new StudentProfile();
-        p.setProfileId(1L);
-        p.setStudentId(6L);
+        p.setProfileId("1");
+        p.setStudentId("6");
         p.setStudentName("李小桐(新学员)");
         p.setGradeLevel("小学三年级");
         p.setChineseScore(95.5);
@@ -32,11 +32,11 @@ public class StudentProfileController {
         p.setParentName("李妈妈");
         p.setParentPhone("13900000006");
         p.setUpdatedAt(new Date());
-        profileStore.put(6L, p);
+        profileStore.put("6", p);
     }
 
     @GetMapping("/my")
-    public Result<StudentProfile> getMyProfile(@RequestParam(required = false, defaultValue = "6") Long studentId) {
+    public Result<StudentProfile> getMyProfile(@RequestParam(required = false, defaultValue = "6") String studentId) {
         StudentProfile p = profileStore.get(studentId);
         if (p == null) {
             p = new StudentProfile();
@@ -59,9 +59,9 @@ public class StudentProfileController {
     @PostMapping("/save")
     public Result<String> saveProfile(@RequestBody StudentProfile dto) {
         if (dto.getStudentId() == null) {
-            dto.setStudentId(6L);
+            dto.setStudentId("6");
         }
-        dto.setProfileId(System.currentTimeMillis());
+        dto.setProfileId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         dto.setUpdatedAt(new Date());
         profileStore.put(dto.getStudentId(), dto);
         return Result.success("学员档案维护成功");

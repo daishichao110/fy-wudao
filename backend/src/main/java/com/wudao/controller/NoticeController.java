@@ -47,8 +47,8 @@ public class NoticeController {
         }
 
         log.info("[REST API POST /api/notice/create] Inserting real notice: Title={}, Tag={}", notice.getTitle(), notice.getTag());
-        if (notice.getNoticeId() == null || notice.getNoticeId() <= 0) {
-            notice.setNoticeId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!org.springframework.util.StringUtils.hasText(notice.getNoticeId())) {
+            notice.setNoticeId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
         noticeMapper.insertNotice(notice);
         log.info("[REST API POST /api/notice/create] Saved notice ID: {}", notice.getNoticeId());

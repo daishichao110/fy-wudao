@@ -4,27 +4,27 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Mentorship implements Serializable {
-    private Long pairId;
-    private Long seniorStudentId;
+    private String pairId;
+    private String seniorStudentId;
     private String seniorStudentName;
-    private Long juniorStudentId;
+    private String juniorStudentId;
     private String juniorStudentName;
     private String termName;
     private Integer starPoints;
     private Integer checkinCount;
     private Date createdAt;
 
-    public Long getPairId() { return pairId; }
-    public void setPairId(Long pairId) { this.pairId = pairId; }
+    public String getPairId() { return pairId; }
+    public void setPairId(String pairId) { this.pairId = pairId; }
 
-    public Long getSeniorStudentId() { return seniorStudentId; }
-    public void setSeniorStudentId(Long seniorStudentId) { this.seniorStudentId = seniorStudentId; }
+    public String getSeniorStudentId() { return seniorStudentId; }
+    public void setSeniorStudentId(String seniorStudentId) { this.seniorStudentId = seniorStudentId; }
 
     public String getSeniorStudentName() { return seniorStudentName; }
     public void setSeniorStudentName(String seniorStudentName) { this.seniorStudentName = seniorStudentName; }
 
-    public Long getJuniorStudentId() { return juniorStudentId; }
-    public void setJuniorStudentId(Long juniorStudentId) { this.juniorStudentId = juniorStudentId; }
+    public String getJuniorStudentId() { return juniorStudentId; }
+    public void setJuniorStudentId(String juniorStudentId) { this.juniorStudentId = juniorStudentId; }
 
     public String getJuniorStudentName() { return juniorStudentName; }
     public void setJuniorStudentName(String juniorStudentName) { this.juniorStudentName = juniorStudentName; }

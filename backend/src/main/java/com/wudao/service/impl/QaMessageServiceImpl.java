@@ -26,11 +26,11 @@ public class QaMessageServiceImpl implements QaMessageService {
     private UserMapper userMapper;
 
     @Override
-    public List<QaMessage> getMyMessages(Long userId) {
+    public List<QaMessage> getMyMessages(String userId) {
         log.info("[QaMessageService] Executing getMyMessages() for userId: {}", userId);
-        if (userId == null || userId <= 0) {
+        if (!StringUtils.hasText(userId)) {
             log.error("[QaMessageService] Invalid userId: {}", userId);
-            throw new IllegalArgumentException("查询的用户ID不合法");
+            throw new IllegalArgumentException("查询的用户ID不可为空");
         }
         List<QaMessage> list = qaMessageMapper.selectByUserId(userId);
         log.info("[QaMessageService] Fetched {} Q&A messages for user {}", list != null ? list.size() : 0, userId);
@@ -46,11 +46,11 @@ public class QaMessageServiceImpl implements QaMessageService {
         if (message == null) {
             throw new IllegalArgumentException("提问参数不可为空");
         }
-        if (message.getStudentId() == null || message.getStudentId() <= 0) {
-            throw new IllegalArgumentException("提问学员ID不合法");
+        if (!StringUtils.hasText(message.getStudentId())) {
+            throw new IllegalArgumentException("提问学员ID不可为空");
         }
-        if (message.getTeacherId() == null || message.getTeacherId() <= 0) {
-            throw new IllegalArgumentException("接收导师ID不合法");
+        if (!StringUtils.hasText(message.getTeacherId())) {
+            throw new IllegalArgumentException("接收导师ID不可为空");
         }
         if (!StringUtils.hasText(message.getQuestionContent()) || message.getQuestionContent().trim().length() < 4) {
             throw new IllegalArgumentException("提问内容不可少于4个字符");
@@ -73,8 +73,8 @@ public class QaMessageServiceImpl implements QaMessageService {
         message.setTeacherName(teacher.getRealName());
         message.setIsFeatured(0);
 
-        if (message.getMsgId() == null || message.getMsgId() <= 0) {
-            message.setMsgId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!StringUtils.hasText(message.getMsgId())) {
+            message.setMsgId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
 
         qaMessageMapper.insert(message);
@@ -84,12 +84,12 @@ public class QaMessageServiceImpl implements QaMessageService {
 
     @Override
     @Transactional
-    public QaMessage replyQuestion(Long msgId, String replyContent) {
+    public QaMessage replyQuestion(String msgId, String replyContent) {
         log.info("[QaMessageService] Executing replyQuestion() for msgId={}", msgId);
 
         // 1. 参数校验
-        if (msgId == null || msgId <= 0) {
-            throw new IllegalArgumentException("回复的消息ID不合法");
+        if (!StringUtils.hasText(msgId)) {
+            throw new IllegalArgumentException("回复的消息ID不可为空");
         }
         if (!StringUtils.hasText(replyContent)) {
             throw new IllegalArgumentException("回复解答内容不可为空");
@@ -111,12 +111,12 @@ public class QaMessageServiceImpl implements QaMessageService {
 
     @Override
     @Transactional
-    public QaMessage featureQuestion(Long msgId, String featuredTitle) {
+    public QaMessage featureQuestion(String msgId, String featuredTitle) {
         log.info("[QaMessageService] Executing featureQuestion() for msgId={}", msgId);
 
         // 1. 参数校验
-        if (msgId == null || msgId <= 0) {
-            throw new IllegalArgumentException("精选消息ID不合法");
+        if (!StringUtils.hasText(msgId)) {
+            throw new IllegalArgumentException("精选消息ID不可为空");
         }
         if (!StringUtils.hasText(featuredTitle)) {
             throw new IllegalArgumentException("精选知识点标题不可为空");

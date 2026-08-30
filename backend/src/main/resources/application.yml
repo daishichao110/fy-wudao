@@ -35,3 +35,7 @@ logging:
     root: INFO
     com.wudao: DEBUG
     com.wudao.mapper: DEBUG
+
+wx:
+  appid: wx_test_appid
+  secret: wx_test_secret

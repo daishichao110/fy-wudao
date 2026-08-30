@@ -4,21 +4,21 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class VolunteerEnrollment implements Serializable {
-    private Long enrollmentId;
-    private Long taskId;
-    private Long userId;
+    private String enrollmentId;
+    private String taskId;
+    private String userId;
     private String userName;
     private String status;
     private Date createdAt;
 
-    public Long getEnrollmentId() { return enrollmentId; }
-    public void setEnrollmentId(Long enrollmentId) { this.enrollmentId = enrollmentId; }
+    public String getEnrollmentId() { return enrollmentId; }
+    public void setEnrollmentId(String enrollmentId) { this.enrollmentId = enrollmentId; }
 
-    public Long getTaskId() { return taskId; }
-    public void setTaskId(Long taskId) { this.taskId = taskId; }
+    public String getTaskId() { return taskId; }
+    public void setTaskId(String taskId) { this.taskId = taskId; }
 
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }

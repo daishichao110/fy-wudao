@@ -20,7 +20,7 @@ public class QaMessageController {
     private QaMessageService qaMessageService;
 
     @GetMapping("/my-messages")
-    public Result<List<QaMessage>> getMyMessages(@RequestParam("userId") Long userId) {
+    public Result<List<QaMessage>> getMyMessages(@RequestParam("userId") String userId) {
         log.info("[REST API GET /api/qa/my-messages] Querying messages for userId: {}", userId);
         List<QaMessage> list = qaMessageService.getMyMessages(userId);
         return Result.success(list);
@@ -42,7 +42,7 @@ public class QaMessageController {
 
     @PostMapping("/reply")
     public Result<QaMessage> replyQuestion(@RequestBody Map<String, Object> params) {
-        Long msgId = Long.valueOf(params.get("msgId").toString());
+        String msgId = params.get("msgId").toString();
         String replyContent = params.get("replyContent").toString();
         log.info("[REST API POST /api/qa/reply] Teacher replying for msgId: {}", msgId);
         QaMessage res = qaMessageService.replyQuestion(msgId, replyContent);
@@ -51,7 +51,7 @@ public class QaMessageController {
 
     @PostMapping("/feature")
     public Result<QaMessage> featureQuestion(@RequestBody Map<String, Object> params) {
-        Long msgId = Long.valueOf(params.get("msgId").toString());
+        String msgId = params.get("msgId").toString();
         String featuredTitle = params.get("featuredTitle").toString();
         log.info("[REST API POST /api/qa/feature] Teacher one-click publishing to knowledge base: msgId={}", msgId);
         QaMessage res = qaMessageService.featureQuestion(msgId, featuredTitle);

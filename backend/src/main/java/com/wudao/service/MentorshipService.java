@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface MentorshipService {
     List<Mentorship> getAllMentorships();
-    Mentorship checkin(Long pairId);
+    Mentorship checkin(String pairId);
     Mentorship createMentorship(Mentorship pair);
 }

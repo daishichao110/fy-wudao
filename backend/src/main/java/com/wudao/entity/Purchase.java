@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Purchase implements Serializable {
-    private Long purchaseId;
+    private String purchaseId;
     private String itemName;
     private String category;
     private BigDecimal totalAmount;
@@ -15,8 +15,8 @@ public class Purchase implements Serializable {
     private String remark;
     private Date createdAt;
 
-    public Long getPurchaseId() { return purchaseId; }
-    public void setPurchaseId(Long purchaseId) { this.purchaseId = purchaseId; }
+    public String getPurchaseId() { return purchaseId; }
+    public void setPurchaseId(String purchaseId) { this.purchaseId = purchaseId; }
 
     public String getItemName() { return itemName; }
     public void setItemName(String itemName) { this.itemName = itemName; }

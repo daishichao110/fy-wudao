@@ -9,6 +9,8 @@ import com.wudao.service.WorkGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class WorkGroupServiceImpl implements WorkGroupService {
                 List<String> names = new ArrayList<>();
                 for (String idStr : idStrs) {
                     try {
-                        Long uid = Long.parseLong(idStr.trim());
+                        String uid = idStr.trim();
                         User memberUser = userMapper.selectById(uid);
                         if (memberUser != null && memberUser.getStudentName() != null) {
                             String rel = memberUser.getRelationship() != null ? memberUser.getRelationship() : "家长";
@@ -60,8 +62,8 @@ public class WorkGroupServiceImpl implements WorkGroupService {
 
     @Override
     public WorkGroup saveOrUpdateGroup(WorkGroup group) {
-        if (group.getGroupId() == null || group.getGroupId() <= 0) {
-            group.setGroupId(SnowflakeIdWorker.generateId());
+        if (!StringUtils.hasText(group.getGroupId())) {
+            group.setGroupId(SnowflakeIdWorker.generateIdStr());
             if (group.getIcon() == null || group.getIcon().trim().isEmpty()) {
                 group.setIcon("👥");
             }
@@ -79,7 +81,7 @@ public class WorkGroupServiceImpl implements WorkGroupService {
     }
 
     @Override
-    public boolean deleteGroup(Long groupId) {
+    public boolean deleteGroup(String groupId) {
         return workGroupMapper.delete(groupId) > 0;
     }
 }

@@ -55,21 +55,28 @@ Page({
     this.setData({ showRegisterForm: false });
   },
 
-  // 💬 微信一键授权登录 (基于标准 wx.login 识别凭证 code)
+  // 🔑 获取或自动生成客户端唯一持久化的 OpenID (彻底解决每次 wx.login 生成不同 Code 导致找不到 OpenID 的问题)
+  getOrCreateOpenId() {
+    let openId = wx.getStorageSync('wx_openid');
+    if (!openId) {
+      openId = 'wx_openid_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+      wx.setStorageSync('wx_openid', openId);
+    }
+    return openId;
+  },
+
+  // 💬 微信一键授权登录 (基于标准 wx.login 凭证 code + 持久化 OpenID 识别账号)
   handleWxLogin() {
     if (this.data.loading) return;
     this.setData({ loading: true });
 
+    const openId = this.getOrCreateOpenId();
+
     wx.login({
       success: (loginRes) => {
-        if (!loginRes.code) {
-          this.setData({ loading: false });
-          wx.showToast({ title: '获取微信凭证失败，请重试', icon: 'none' });
-          return;
-        }
-
         api.wxLogin({
-          code: loginRes.code
+          code: loginRes.code || '',
+          openId: openId
         }).then(res => {
           this.setData({ loading: false });
           if (res.data && res.data.userInfo) {
@@ -103,7 +110,7 @@ Page({
             success: (modalRes) => {
               if (modalRes.confirm) {
                 this.setData({
-                  wxCode: loginRes.code,
+                  wxCode: loginRes.code || '',
                   showRegisterForm: true
                 });
               }
@@ -118,9 +125,10 @@ Page({
     });
   },
 
-  // 📝 提交申请 (无需强制获取手机号/身份证，直接提交身份信息)
+  // 📝 提交申请 (提交持久化 OpenID 到数据库，审核通过后即可直接解封无感秒登)
   handleApplyLoginPermission() {
     const { selectedRole, teacherName, danceClassName, studentName, parentName, phone, relationOptions, relationIndex, classIndex, classEnumList, wxCode } = this.data;
+    const openId = this.getOrCreateOpenId();
 
     let payload = {};
 
@@ -131,6 +139,7 @@ Page({
       }
       payload = {
         code: wxCode || '',
+        openId: openId,
         parentName: teacherName.trim(),
         studentName: '教务教师',
         relationship: '教师',
@@ -147,6 +156,7 @@ Page({
       const chosenClassObj = (classEnumList && classEnumList[classIndex]) ? classEnumList[classIndex] : { code: 'GRADE_2', name: '二年级' };
       payload = {
         code: wxCode || '',
+        openId: openId,
         studentName: studentName.trim(),
         parentName: parentName ? parentName.trim() : (studentName.trim() + relationship),
         relationship: relationship,

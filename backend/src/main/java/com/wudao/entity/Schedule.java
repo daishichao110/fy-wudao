@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Schedule implements Serializable {
-    private Long scheduleId;
+    private String scheduleId;
     private String courseName;
     private String danceType;
-    private Long teacherId;
+    private String teacherId;
     private String teacherName;
     private String classroomName;
     private String classDate;
@@ -39,8 +39,8 @@ public class Schedule implements Serializable {
     public String getDanceClassName() { return danceClassName; }
     public void setDanceClassName(String danceClassName) { this.danceClassName = danceClassName; }
 
-    public Long getScheduleId() { return scheduleId; }
-    public void setScheduleId(Long scheduleId) { this.scheduleId = scheduleId; }
+    public String getScheduleId() { return scheduleId; }
+    public void setScheduleId(String scheduleId) { this.scheduleId = scheduleId; }
 
     public String getCourseName() { return courseName; }
     public void setCourseName(String courseName) { this.courseName = courseName; }
@@ -48,8 +48,8 @@ public class Schedule implements Serializable {
     public String getDanceType() { return danceType; }
     public void setDanceType(String danceType) { this.danceType = danceType; }
 
-    public Long getTeacherId() { return teacherId; }
-    public void setTeacherId(Long teacherId) { this.teacherId = teacherId; }
+    public String getTeacherId() { return teacherId; }
+    public void setTeacherId(String teacherId) { this.teacherId = teacherId; }
 
     public String getTeacherName() { return teacherName; }
     public void setTeacherName(String teacherName) { this.teacherName = teacherName; }

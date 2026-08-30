@@ -9,5 +9,5 @@ public interface WorkGroupMapper {
     List<WorkGroup> selectAll();
     int insert(WorkGroup group);
     int update(WorkGroup group);
-    int delete(Long groupId);
+    int delete(String groupId);
 }

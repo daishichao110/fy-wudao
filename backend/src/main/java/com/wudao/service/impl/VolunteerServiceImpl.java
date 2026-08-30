@@ -49,8 +49,8 @@ public class VolunteerServiceImpl implements VolunteerService {
         if (!org.springframework.util.StringUtils.hasText(task.getDanceClassName())) {
             task.setDanceClassName("二年级");
         }
-        if (task.getTaskId() == null || task.getTaskId() <= 0) {
-            task.setTaskId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!org.springframework.util.StringUtils.hasText(task.getTaskId())) {
+            task.setTaskId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
         volunteerMapper.insertTask(task);
         return task;
@@ -60,7 +60,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Transactional
     public VolunteerEnrollment assignTask(VolunteerEnrollment enrollment) {
         log.info("[VolunteerService] Executing Task Assignment: taskId={}, userId={}", enrollment.getTaskId(), enrollment.getUserId());
-        if (enrollment == null || enrollment.getTaskId() == null || enrollment.getUserId() == null) {
+        if (enrollment == null || !org.springframework.util.StringUtils.hasText(enrollment.getTaskId()) || !org.springframework.util.StringUtils.hasText(enrollment.getUserId())) {
             throw new IllegalArgumentException("指派任务参数不可为空");
         }
 
@@ -78,8 +78,8 @@ public class VolunteerServiceImpl implements VolunteerService {
         String parentDisplayName = (user.getStudentName() != null && !user.getStudentName().isEmpty()) ? (user.getStudentName() + "的" + rel) : user.getRealName();
         enrollment.setUserName(parentDisplayName);
         enrollment.setStatus("ASSIGNED");
-        if (enrollment.getEnrollmentId() == null || enrollment.getEnrollmentId() <= 0) {
-            enrollment.setEnrollmentId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!org.springframework.util.StringUtils.hasText(enrollment.getEnrollmentId())) {
+            enrollment.setEnrollmentId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
 
         volunteerMapper.insertEnrollment(enrollment);
@@ -97,11 +97,11 @@ public class VolunteerServiceImpl implements VolunteerService {
         if (enrollment == null) {
             throw new IllegalArgumentException("认领申请参数不可为空");
         }
-        if (enrollment.getTaskId() == null || enrollment.getTaskId() <= 0) {
-            throw new IllegalArgumentException("志愿任务ID不合法");
+        if (!org.springframework.util.StringUtils.hasText(enrollment.getTaskId())) {
+            throw new IllegalArgumentException("志愿任务ID不可为空");
         }
-        if (enrollment.getUserId() == null || enrollment.getUserId() <= 0) {
-            throw new IllegalArgumentException("家委/家长用户ID不合法");
+        if (!org.springframework.util.StringUtils.hasText(enrollment.getUserId())) {
+            throw new IllegalArgumentException("家委/家长用户ID不可为空");
         }
 
         User user = userMapper.selectById(enrollment.getUserId());
@@ -131,8 +131,8 @@ public class VolunteerServiceImpl implements VolunteerService {
         }
 
         enrollment.setStatus("COMPLETED");
-        if (enrollment.getEnrollmentId() == null || enrollment.getEnrollmentId() <= 0) {
-            enrollment.setEnrollmentId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!org.springframework.util.StringUtils.hasText(enrollment.getEnrollmentId())) {
+            enrollment.setEnrollmentId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
         volunteerMapper.insertEnrollment(enrollment);
         volunteerMapper.incrementTaskEnrolledCount(enrollment.getTaskId());

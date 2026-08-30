@@ -6,18 +6,18 @@ import java.util.Date;
 public class Notice implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long noticeId;
+    private String noticeId;
     private String tag;
     private String title;
     private String content;
     private String publisher;
     private Date createdAt;
 
-    public Long getNoticeId() {
+    public String getNoticeId() {
         return noticeId;
     }
 
-    public void setNoticeId(Long noticeId) {
+    public void setNoticeId(String noticeId) {
         this.noticeId = noticeId;
     }
 

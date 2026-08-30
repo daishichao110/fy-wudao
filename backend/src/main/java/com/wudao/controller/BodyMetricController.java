@@ -23,14 +23,14 @@ public class BodyMetricController {
     private BodyMetricService bodyMetricService;
 
     @GetMapping("/student/{studentId}")
-    public Result<BodyMetric> getLatestMetric(@PathVariable("studentId") Long studentId) {
+    public Result<BodyMetric> getLatestMetric(@PathVariable("studentId") String studentId) {
         log.info("[REST API GET /api/metric/student/{}] Querying latest body metrics", studentId);
         BodyMetric metric = bodyMetricService.getLatestMetric(studentId);
         return Result.success(metric);
     }
 
     @GetMapping("/history/{studentId}")
-    public Result<List<BodyMetric>> getMetricHistory(@PathVariable("studentId") Long studentId) {
+    public Result<List<BodyMetric>> getMetricHistory(@PathVariable("studentId") String studentId) {
         log.info("[REST API GET /api/metric/history/{}] Querying metric history", studentId);
         List<BodyMetric> history = bodyMetricService.getMetricHistory(studentId);
         return Result.success(history);

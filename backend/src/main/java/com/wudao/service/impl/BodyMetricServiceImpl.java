@@ -29,11 +29,11 @@ public class BodyMetricServiceImpl implements BodyMetricService {
     private UserMapper userMapper;
 
     @Override
-    public BodyMetric getLatestMetric(Long studentId) {
+    public BodyMetric getLatestMetric(String studentId) {
         log.info("[BodyMetricService] Executing getLatestMetric() for studentId={}", studentId);
-        if (studentId == null || studentId <= 0) {
+        if (!StringUtils.hasText(studentId)) {
             log.error("[BodyMetricService] Invalid studentId: {}", studentId);
-            throw new IllegalArgumentException("学员ID不合法");
+            throw new IllegalArgumentException("学员ID不可为空");
         }
         BodyMetric metric = bodyMetricMapper.selectLatestByStudentId(studentId);
         log.info("[BodyMetricService] Query result for studentId {}: {}", studentId, metric != null ? metric.getHeightCm() + "cm" : "NO_RECORD");
@@ -41,10 +41,10 @@ public class BodyMetricServiceImpl implements BodyMetricService {
     }
 
     @Override
-    public List<BodyMetric> getMetricHistory(Long studentId) {
+    public List<BodyMetric> getMetricHistory(String studentId) {
         log.info("[BodyMetricService] Executing getMetricHistory() for studentId={}", studentId);
-        if (studentId == null || studentId <= 0) {
-            throw new IllegalArgumentException("学员ID不合法");
+        if (!StringUtils.hasText(studentId)) {
+            throw new IllegalArgumentException("学员ID不可为空");
         }
         List<BodyMetric> history = bodyMetricMapper.selectHistoryByStudentId(studentId);
         log.info("[BodyMetricService] Fetched {} history metric entries for student {}", history != null ? history.size() : 0, studentId);
@@ -68,8 +68,8 @@ public class BodyMetricServiceImpl implements BodyMetricService {
         if (metric == null) {
             throw new IllegalArgumentException("身材量体数据不可为空");
         }
-        if (metric.getStudentId() == null || metric.getStudentId() <= 0) {
-            throw new IllegalArgumentException("学员ID不合法");
+        if (!StringUtils.hasText(metric.getStudentId())) {
+            throw new IllegalArgumentException("学员ID不可为空");
         }
 
         // 2. 校验学员是否存在
@@ -107,8 +107,8 @@ public class BodyMetricServiceImpl implements BodyMetricService {
             metric.setMeasuredDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         }
 
-        if (metric.getMetricId() == null || metric.getMetricId() <= 0) {
-            metric.setMetricId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!StringUtils.hasText(metric.getMetricId())) {
+            metric.setMetricId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
 
         bodyMetricMapper.insert(metric);

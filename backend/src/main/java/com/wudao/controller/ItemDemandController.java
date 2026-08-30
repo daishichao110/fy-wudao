@@ -57,7 +57,7 @@ public class ItemDemandController {
         String studentName = String.valueOf(payload.getOrDefault("studentName", "李小桐"));
 
         Map<String, Object> item = new HashMap<>();
-        item.put("itemId", System.currentTimeMillis());
+        item.put("itemId", com.wudao.common.SnowflakeIdWorker.generateIdStr());
         item.put("itemName", itemName);
         item.put("spec", spec);
         item.put("unitPrice", "￥0.00");
@@ -70,13 +70,13 @@ public class ItemDemandController {
 
     @PostMapping("/update")
     public Result<String> updateDemand(@RequestBody Map<String, Object> payload) {
-        Long itemId = Long.valueOf(String.valueOf(payload.get("itemId")));
+        String itemId = String.valueOf(payload.get("itemId"));
         Boolean needIt = (Boolean) payload.getOrDefault("needIt", true);
         Integer quantity = Integer.valueOf(String.valueOf(payload.getOrDefault("quantity", 1)));
         String itemName = payload.containsKey("itemName") ? String.valueOf(payload.get("itemName")) : null;
 
         for (Map<String, Object> item : demandList) {
-            if (itemId.equals(item.get("itemId"))) {
+            if (itemId.equals(String.valueOf(item.get("itemId")))) {
                 item.put("needIt", needIt);
                 item.put("quantity", quantity);
                 if (itemName != null && !itemName.trim().isEmpty()) {

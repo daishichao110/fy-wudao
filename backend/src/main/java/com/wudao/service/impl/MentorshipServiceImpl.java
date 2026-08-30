@@ -30,12 +30,12 @@ public class MentorshipServiceImpl implements MentorshipService {
 
     @Override
     @Transactional
-    public Mentorship checkin(Long pairId) {
+    public Mentorship checkin(String pairId) {
         log.info("[MentorshipService] Executing checkin() for pairId={}", pairId);
 
-        if (pairId == null || pairId <= 0) {
+        if (!StringUtils.hasText(pairId)) {
             log.error("[MentorshipService] Invalid pairId: {}", pairId);
-            throw new IllegalArgumentException("结对子记录ID不合法");
+            throw new IllegalArgumentException("结对子记录ID不可为空");
         }
 
         Mentorship pair = mentorshipMapper.selectById(pairId);
@@ -59,14 +59,14 @@ public class MentorshipServiceImpl implements MentorshipService {
         if (pair == null) throw new IllegalArgumentException("结对子参数不可为空");
         if (!StringUtils.hasText(pair.getSeniorStudentName())) pair.setSeniorStudentName("张悦悦(高年级学姐)");
         if (!StringUtils.hasText(pair.getJuniorStudentName())) pair.setJuniorStudentName("李小桐(新学员)");
-        if (pair.getSeniorStudentId() == null) pair.setSeniorStudentId(5L);
-        if (pair.getJuniorStudentId() == null) pair.setJuniorStudentId(6L);
+        if (!StringUtils.hasText(pair.getSeniorStudentId())) pair.setSeniorStudentId("5");
+        if (!StringUtils.hasText(pair.getJuniorStudentId())) pair.setJuniorStudentId("6");
         if (!StringUtils.hasText(pair.getTermName())) pair.setTermName("芭蕾与中国舞联训班");
         if (pair.getStarPoints() == null) pair.setStarPoints(50);
         if (pair.getCheckinCount() == null) pair.setCheckinCount(0);
 
-        if (pair.getPairId() == null || pair.getPairId() <= 0) {
-            pair.setPairId(com.wudao.common.SnowflakeIdWorker.generateId());
+        if (!StringUtils.hasText(pair.getPairId())) {
+            pair.setPairId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
         }
 
         mentorshipMapper.insert(pair);
