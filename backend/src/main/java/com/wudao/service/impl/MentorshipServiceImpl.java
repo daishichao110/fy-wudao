@@ -57,10 +57,10 @@ public class MentorshipServiceImpl implements MentorshipService {
     public Mentorship createMentorship(Mentorship pair) {
         log.info("[MentorshipService] Executing createMentorship()...");
         if (pair == null) throw new IllegalArgumentException("结对子参数不可为空");
-        if (!StringUtils.hasText(pair.getSeniorStudentName())) pair.setSeniorStudentName("张悦悦(高年级学姐)");
-        if (!StringUtils.hasText(pair.getJuniorStudentName())) pair.setJuniorStudentName("李小桐(新学员)");
-        if (!StringUtils.hasText(pair.getSeniorStudentId())) pair.setSeniorStudentId("5");
-        if (!StringUtils.hasText(pair.getJuniorStudentId())) pair.setJuniorStudentId("6");
+        if (!StringUtils.hasText(pair.getSeniorStudentName())) throw new IllegalArgumentException("高年级学姐姓名不可为空");
+        if (!StringUtils.hasText(pair.getJuniorStudentName())) throw new IllegalArgumentException("低年级学员姓名不可为空");
+        if (!StringUtils.hasText(pair.getSeniorStudentId())) throw new IllegalArgumentException("高年级学姐ID不可为空");
+        if (!StringUtils.hasText(pair.getJuniorStudentId())) throw new IllegalArgumentException("低年级学员ID不可为空");
         if (!StringUtils.hasText(pair.getTermName())) pair.setTermName("芭蕾与中国舞联训班");
         if (pair.getStarPoints() == null) pair.setStarPoints(50);
         if (pair.getCheckinCount() == null) pair.setCheckinCount(0);

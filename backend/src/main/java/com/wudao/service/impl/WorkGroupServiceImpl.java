@@ -36,7 +36,7 @@ public class WorkGroupServiceImpl implements WorkGroupService {
                 }
             }
 
-            // 组员姓名拼接：根据 member_user_ids 检索 sys_user 动态拼接 (例如：李小桐的爸爸, 张小宝的妈妈, 王美美的妈妈)
+            // 组员姓名拼接：根据 member_user_ids 检索 sys_user 动态拼接
             if (group.getMemberUserIds() != null && !group.getMemberUserIds().trim().isEmpty()) {
                 String[] idStrs = group.getMemberUserIds().split(",");
                 List<String> names = new ArrayList<>();

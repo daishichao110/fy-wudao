@@ -955,37 +955,61 @@
 .ac-action-group {
   display: flex;
   gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .approval-btn {
   flex: 1;
-  height: 42px;
-  line-height: 42px;
-  border-radius: 21px;
-  font-size: 14px;
-  font-weight: 800;
+  min-width: 0;
+  height: 44px;
+  border-radius: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.approval-btn::after {
-  border: none;
+.approval-btn .btn-icon {
+  font-size: 15px;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.approval-btn .btn-text {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  line-height: 1;
 }
 
 /* 🔴 驳回按钮：高鲜艳朱红渐变 */
 .btn-reject-action {
-  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%) !important;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35) !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4) !important;
+}
+
+.btn-reject-action:active {
+  transform: scale(0.96);
+  opacity: 0.9;
 }
 
 /* 🟢 同意按钮：高鲜艳翡翠绿渐变 */
 .btn-pass-action {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4) !important;
+}
+
+.btn-pass-action:active {
+  transform: scale(0.96);
+  opacity: 0.9;
 }

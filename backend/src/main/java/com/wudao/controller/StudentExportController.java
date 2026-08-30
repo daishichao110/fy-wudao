@@ -1,19 +1,37 @@
 package com.wudao.controller;
 
 import com.wudao.common.Result;
+import com.wudao.entity.User;
+import com.wudao.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/export")
 public class StudentExportController {
 
+    @Autowired
+    private UserMapper userMapper;
+
     @GetMapping("/students")
     public Result<String> exportStudents() {
         StringBuilder csv = new StringBuilder();
-        csv.append("学员ID,学员姓名,所属班级,年纪/年级,语文成绩,数学成绩,英语成绩,身高(cm),体重(kg),家长姓名,家长电话\n");
-        csv.append("6,李小桐,芭蕾高级班,小学三年级,95.5,98.0,94.0,138.5,31.2,李妈妈,13900000006\n");
-        csv.append("5,张悦悦,芭蕾高级班,小学四年级,92.0,96.5,95.0,152.5,38.0,张爸爸,13800000005\n");
-        csv.append("7,王小敏,芭蕾基础班,小学二年级,88.5,90.0,91.5,128.0,26.5,王妈妈,13700000007\n");
+        csv.append("学员ID,账号名,真实姓名,关联学生,与学生关系,手机号,身份角色,所在班级\n");
+        List<User> list = userMapper.selectAllUsers();
+        if (list != null) {
+            for (User user : list) {
+                csv.append(user.getUserId()).append(",")
+                   .append(user.getUsername() != null ? user.getUsername() : "").append(",")
+                   .append(user.getRealName() != null ? user.getRealName() : "").append(",")
+                   .append(user.getStudentName() != null ? user.getStudentName() : "").append(",")
+                   .append(user.getRelationship() != null ? user.getRelationship() : "").append(",")
+                   .append(user.getPhone() != null ? user.getPhone() : "").append(",")
+                   .append(user.getRoleType() != null ? user.getRoleType() : "").append(",")
+                   .append(user.getDanceClassName() != null ? user.getDanceClassName() : "").append("\n");
+            }
+        }
         return Result.success(csv.toString());
     }
 }

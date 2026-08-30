@@ -39,7 +39,7 @@ public class QaMessageControllerTest {
     public void testAskReplyAndFeatureFlow() throws Exception {
         String askJson = "{\n" +
                 "  \"studentId\": 6,\n" +
-                "  \"studentName\": \"李小桐\",\n" +
+                "  \"studentName\": \"张三\",\n" +
                 "  \"teacherId\": 2,\n" +
                 "  \"teacherName\": \"林依依老师\",\n" +
                 "  \"questionContent\": \"测试提问：芭蕾转关身体平衡技巧\"\n" +

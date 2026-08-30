@@ -46,7 +46,7 @@ public class BodyMetricControllerTest {
     public void testSaveMetric() throws Exception {
         String json = "{\n" +
                 "  \"studentId\": 6,\n" +
-                "  \"studentName\": \"李小桐\",\n" +
+                "  \"studentName\": \"张三\",\n" +
                 "  \"heightCm\": 135.5,\n" +
                 "  \"weightKg\": 30.0,\n" +
                 "  \"bustCm\": 65.0,\n" +

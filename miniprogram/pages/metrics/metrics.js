@@ -21,11 +21,12 @@ Page({
     if (isTeacher) {
       this.loadAllMetrics();
     } else {
-      this.loadStudentMetric(userInfo.userId || 6);
+      this.loadStudentMetric(userInfo.userId);
     }
   },
 
   loadStudentMetric(studentId) {
+    if (!studentId) return;
     api.getStudentMetrics(studentId).then(res => {
       if (res.data) this.setData({ metric: res.data });
     });
@@ -34,10 +35,6 @@ Page({
   loadAllMetrics() {
     api.getAllMetrics().then(res => {
       if (res.data) this.setData({ allMetrics: res.data });
-    }).catch(() => {
-      api.getStudentMetrics(6).then(res => {
-        if (res.data) this.setData({ allMetrics: [res.data] });
-      });
     });
   },
 

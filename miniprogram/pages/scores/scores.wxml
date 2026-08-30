@@ -103,7 +103,7 @@
 
         <view class="form-group margin-top-8">
           <text class="field-label">学员姓名 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：李小桐" value="{{scoreForm.studentName}}" bindinput="onFormInput" data-field="studentName" disabled="{{isStudentRole}}" />
+          <input class="fancy-input" placeholder="输入学员姓名" value="{{scoreForm.studentName}}" bindinput="onFormInput" data-field="studentName" disabled="{{isStudentRole}}" />
         </view>
 
         <view class="form-group margin-top-8">

@@ -181,7 +181,7 @@ DROP TABLE IF EXISTS duty_schedule;
 CREATE TABLE duty_schedule (
     duty_id VARCHAR(64) PRIMARY KEY COMMENT '轮值看护ID (字符串雪花算法 ID)',
     duty_date DATE NOT NULL COMMENT '轮值日期',
-    assignee_name VARCHAR(64) NOT NULL COMMENT '认领家委称谓 (如 李小桐的爸爸)',
+    assignee_name VARCHAR(64) NOT NULL COMMENT '认领家委称谓 (如 家长称谓)',
     user_id VARCHAR(64) DEFAULT NULL COMMENT '关联用户ID',
     dance_class_name VARCHAR(50) NOT NULL DEFAULT '二年级' COMMENT '关联班级 (租户隔离)',
     status VARCHAR(20) DEFAULT 'SCHEDULED' COMMENT '状态',
@@ -270,25 +270,4 @@ CREATE TABLE sys_thought (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='随感与心里话交流表';
 
--- =========================================================================
--- 基础测试数据初始化
--- =========================================================================
 
--- 1. 初始系统账号 (超级管理员 & 专业老师)
-INSERT INTO sys_user (user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status) VALUES
-(1787400000000000001, 'admin', '系统管理员', '全校学生', '管理员', '18911800655', '/image/teacher1.jpg', 'SUPER_ADMIN', '全校全局管理', 1000, 100, 1),
-(1787400000000000002, 'teacher', '林依依老师', '专业舞蹈导师', '教师', '18618486266', '/image/teacher1.jpg', 'TEACHER', '全校全局管理', 1000, 100, 1);
-
--- 2. 初始家委工作小组
-INSERT INTO sys_work_group (group_id, group_name, icon, dance_class_name, leader_name, member_names, duty_desc) VALUES
-(1001, '后勤化妆组', '💄', '二年级', '张妈妈 (家委)', '李妈妈, 王妈妈, 赵妈妈', '负责舞团大型演出、舞台试妆、发型打造与彩排检录后勤工作'),
-(1002, '道具与服装组', '👗', '二年级', '陈妈妈 (家委)', '周妈妈, 吴妈妈', '负责演出服试穿度量、演出道具保管维护及剧场打点');
-
--- 3. 初始活动展播 Banner
-INSERT INTO sys_banner (banner_id, title, subtitle, badge, image_url, content, event_date, location, creator_name, creator_role, status, sort_order) VALUES
-(1, '2026金帆舞团大剧院年度展演', '劲松金帆舞团 · 华彩盛典', '🎪 大型演出', '/image/banner1.jpg', '舞团年度大展演即将在国家大剧院精彩亮相，全团学员紧密排练中。', '2026-09-15', '国家大剧院歌剧院', '教务管理处', '👑 管理员', 1, 1),
-(2, '舞团少儿芭蕾剧目全区金奖风采', '捷报频传 · 优雅绽放', '🏆 风采展示', '/image/banner2.jpg', '祝贺我校二年级与三年级学员在全区少儿舞蹈展演中喜斩获一等奖。', '2026-08-20', '区文化馆大剧场', '教务管理处', '👑 管理员', 1, 2);
-
--- 4. 初始名师团队档案
-INSERT INTO sys_teacher (teacher_id, name, title, dance_type, experience_years, avatar_url, bio) VALUES
-(2001, '林依依老师', '芭蕾舞首席导师', '古典芭蕾 / 现代舞', '10年教龄', '/image/teacher1.jpg', '毕业于北京舞蹈学院芭蕾舞系，曾任国家级舞蹈团首席剧目演员，具备丰富的小学及青少年考级剧目排演经验。');

@@ -13,35 +13,6 @@ public class ItemDemandController {
     private final CopyOnWriteArrayList<Map<String, Object>> demandList = new CopyOnWriteArrayList<>();
 
     public ItemDemandController() {
-        Map<String, Object> item1 = new HashMap<>();
-        item1.put("itemId", 101L);
-        item1.put("itemName", "舞台防水遮瑕粉饼");
-        item1.put("spec", "舞台高定防汗持久型");
-        item1.put("unitPrice", "￥45.00");
-        item1.put("needIt", true);
-        item1.put("quantity", 2);
-        item1.put("studentName", "李小桐");
-        demandList.add(item1);
-
-        Map<String, Object> item2 = new HashMap<>();
-        item2.put("itemId", 102L);
-        item2.put("itemName", "舞台演出哑光红口红");
-        item2.put("spec", "复古正红 / 显白不脱色");
-        item2.put("unitPrice", "￥38.00");
-        item2.put("needIt", true);
-        item2.put("quantity", 1);
-        item2.put("studentName", "李小桐");
-        demandList.add(item2);
-
-        Map<String, Object> item3 = new HashMap<>();
-        item3.put("itemId", 103L);
-        item3.put("itemName", "舞台定型发胶与隐形发网");
-        item3.put("spec", "强力定型发胶 + 黑色发网3个");
-        item3.put("unitPrice", "￥25.00");
-        item3.put("needIt", true);
-        item3.put("quantity", 1);
-        item3.put("studentName", "李小桐");
-        demandList.add(item3);
     }
 
     @GetMapping("/list")
@@ -54,7 +25,7 @@ public class ItemDemandController {
         String itemName = String.valueOf(payload.getOrDefault("itemName", "自定义物品"));
         Integer quantity = Integer.valueOf(String.valueOf(payload.getOrDefault("quantity", 1)));
         String spec = String.valueOf(payload.getOrDefault("spec", "自定义规格/化妆用品"));
-        String studentName = String.valueOf(payload.getOrDefault("studentName", "李小桐"));
+        String studentName = payload.containsKey("studentName") ? String.valueOf(payload.get("studentName")) : "";
 
         Map<String, Object> item = new HashMap<>();
         item.put("itemId", com.wudao.common.SnowflakeIdWorker.generateIdStr());

@@ -77,7 +77,7 @@
 
       <view class="form-item margin-top-12">
         <text class="field-label">学生姓名 <text class="required">*</text></text>
-        <input class="fancy-input" placeholder="例如：李小桐" model:value="{{studentName}}" />
+        <input class="fancy-input" placeholder="例如：输入学生姓名" model:value="{{studentName}}" />
       </view>
 
       <view class="form-item margin-top-12">
@@ -104,12 +104,12 @@
 
     <!-- 底部 1:1 对称美学高定按钮组 -->
     <view class="btn-group-row margin-top-20">
-      <button class="fancy-btn btn-cancel" bindtap="cancelRegisterForm">
+      <view class="fancy-btn btn-cancel" bindtap="cancelRegisterForm">
         <text class="btn-icon">↩</text> 返回登录
-      </button>
-      <button class="fancy-btn btn-submit" bindtap="handleApplyLoginPermission" loading="{{applying}}">
+      </view>
+      <view class="fancy-btn btn-submit" bindtap="handleApplyLoginPermission">
         <text class="btn-icon">✨</text> 提交申请
-      </button>
+      </view>
     </view>
   </view>
 </view>

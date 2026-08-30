@@ -73,7 +73,7 @@ module.exports = {
   submitThought: (data) => request('/thought/publish', 'POST', data, true),
   getThoughts: (type) => request(`/thought/list${type ? '?type=' + type : ''}`, 'GET'),
   likeThought: (id) => request('/thought/like', 'POST', { id: id }, true),
-  getMyStudentProfile: (studentId) => request(`/student-profile/my?studentId=${studentId || 6}`, 'GET'),
+  getMyStudentProfile: (studentId) => request(`/student-profile/my${studentId ? '?studentId=' + studentId : ''}`, 'GET'),
   submitStudentProfile: (data) => request('/student-profile/save', 'POST', data, true),
 
   // 家委协同任务 API

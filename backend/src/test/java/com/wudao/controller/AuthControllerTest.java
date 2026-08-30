@@ -23,7 +23,7 @@ public class AuthControllerTest {
         String json = "{\n" +
                 "  \"code\": \"test_wx_code_123\",\n" +
                 "  \"roleType\": \"STUDENT\",\n" +
-                "  \"realName\": \"李小桐\",\n" +
+                "  \"realName\": \"张三\",\n" +
                 "  \"phone\": \"13800000005\"\n" +
                 "}";
 

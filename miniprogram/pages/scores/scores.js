@@ -24,14 +24,7 @@ Page({
     formGradeIndex: 0,
 
     // 全量成绩数据集
-    allStudentScores: [
-      { id: 1, studentName: '李小桐', gradeLevel: '二年级', chineseScore: 96, mathScore: 98, englishScore: 97, totalScore: 291, resumeBio: '2025年斩获全国少儿芭蕾剧目一等奖，通过芭蕾4级考级' },
-      { id: 2, studentName: '陈萌萌', gradeLevel: '四年级', chineseScore: 96, mathScore: 97, englishScore: 95, totalScore: 288, resumeBio: '2024年获得全区少儿舞蹈展演金奖' },
-      { id: 3, studentName: '王美美', gradeLevel: '三年级', chineseScore: 94, mathScore: 96, englishScore: 97, totalScore: 287, resumeBio: '中国舞考级5级，舞团领舞学员' },
-      { id: 4, studentName: '张小宝', gradeLevel: '二年级', chineseScore: 92, mathScore: 95, englishScore: 94, totalScore: 281, resumeBio: '舞团基训班优秀学员' },
-      { id: 5, studentName: '周思涵', gradeLevel: '五年级', chineseScore: 93, mathScore: 94, englishScore: 93, totalScore: 280, resumeBio: '现代舞与拉伸班优秀学员' },
-      { id: 6, studentName: '赵心怡', gradeLevel: '三年级', chineseScore: 90, mathScore: 93, englishScore: 92, totalScore: 275, resumeBio: '少儿芭蕾启蒙体验班学员' }
-    ],
+    allStudentScores: [],
 
     // 过滤后的前端展示成绩
     displayScores: [],
@@ -132,7 +125,7 @@ Page({
     } else {
       // 家长仅能看到自己的数据
       filtered = allStudentScores.filter(item => {
-        return item.studentName.indexOf(currentStudentName) !== -1 || currentStudentName.indexOf(item.studentName) !== -1 || item.studentName === '李小桐';
+        return currentStudentName && (item.studentName.indexOf(currentStudentName) !== -1 || currentStudentName.indexOf(item.studentName) !== -1);
       });
     }
 
@@ -144,7 +137,7 @@ Page({
       } else if (isCommitteeRole) {
         canEdit = (item.gradeLevel === lockedGradeName); // 家委会能改对应年级数据
       } else if (isStudentRole) {
-        canEdit = (item.studentName.indexOf(currentStudentName) !== -1 || currentStudentName.indexOf(item.studentName) !== -1 || item.studentName === '李小桐'); // 家长仅能修改自己的数据
+        canEdit = currentStudentName && (item.studentName.indexOf(currentStudentName) !== -1 || currentStudentName.indexOf(item.studentName) !== -1);
       }
       return {
         ...item,
@@ -167,7 +160,7 @@ Page({
   // 打开录入/编辑弹窗
   openAddScoreModal() {
     const { isAdminOrTeacher, isCommitteeRole, isStudentRole, lockedGradeName, userInfo } = this.data;
-    const currentStudentName = (userInfo && (userInfo.studentName || userInfo.realName)) ? (userInfo.studentName || userInfo.realName) : '李小桐';
+    const currentStudentName = (userInfo && (userInfo.studentName || userInfo.realName)) ? (userInfo.studentName || userInfo.realName) : '';
 
     let hint = '';
     let defaultGrade = '二年级';

@@ -237,7 +237,7 @@
       <scroll-view scroll-y class="modal-body">
         <view class="form-group">
           <text class="field-label">学员姓名 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：李小桐" model:value="{{studentProfileForm.studentName}}" />
+          <input class="fancy-input" placeholder="例如：输入学员姓名" model:value="{{studentProfileForm.studentName}}" />
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">班级年级</text>
@@ -315,12 +315,14 @@
 
               <!-- 超清晰 1:1 对称双色高亮操作按钮组 -->
               <view class="ac-action-group margin-top-12">
-                <button class="approval-btn btn-reject-action" bindtap="handleApprove" data-userid="{{item.userId}}" data-status="2">
-                  <text class="btn-icon">✖</text> 驳回申请
-                </button>
-                <button class="approval-btn btn-pass-action" bindtap="handleApprove" data-userid="{{item.userId}}" data-status="1">
-                  <text class="btn-icon">✔</text> 同意开通
-                </button>
+                <view class="approval-btn btn-reject-action" bindtap="handleApprove" data-userid="{{item.userId}}" data-status="2">
+                  <text class="btn-icon">✖</text>
+                  <text class="btn-text">驳回申请</text>
+                </view>
+                <view class="approval-btn btn-pass-action" bindtap="handleApprove" data-userid="{{item.userId}}" data-status="1">
+                  <text class="btn-icon">✔</text>
+                  <text class="btn-text">同意开通</text>
+                </view>
               </view>
             </view>
           </block>

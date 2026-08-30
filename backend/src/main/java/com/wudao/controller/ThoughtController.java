@@ -13,28 +13,6 @@ public class ThoughtController {
     private final CopyOnWriteArrayList<Map<String, Object>> thoughtList = new CopyOnWriteArrayList<>();
 
     public ThoughtController() {
-        Map<String, Object> t1 = new HashMap<>();
-        t1.put("id", 1L);
-        t1.put("studentName", "李小桐(家长)");
-        t1.put("roleType", "STUDENT");
-        t1.put("type", "THOUGHT"); // 有感而发 (全员可见)
-        t1.put("title", "💭 有感而发");
-        t1.put("content", "今天陪孩子练习芭蕾基训的擦地和软开度，看到孩子从刚开始压腿哭鼻子到现在能坚持做完一组动作，作为家长心里非常感动！感谢教务处和老师们的悉心指导，孩子的体态和自信都有了很大提升！");
-        t1.put("likesCount", 8);
-        t1.put("createdAt", "2026-08-23 16:30");
-        thoughtList.add(t1);
-
-        Map<String, Object> t2 = new HashMap<>();
-        t2.put("id", 2L);
-        t2.put("studentName", "李小桐(家长)");
-        t2.put("targetTeacherName", "林依依老师(芭蕾首席导师)");
-        t2.put("roleType", "STUDENT");
-        t2.put("type", "HEART"); // 说说心里话 (定向私密)
-        t2.put("title", "💖 说说心里话");
-        t2.put("content", "林老师您好！孩子最近回家后总提到上课时您对她的表扬，学习舞蹈的积极性高了很多。想私下向您请教一下，在家练习左脚抱腿时需要注意什么细节呢？感谢林老师！");
-        t2.put("likesCount", 0);
-        t2.put("createdAt", "2026-08-23 17:15");
-        thoughtList.add(t2);
     }
 
     @GetMapping({"/list", "/thought-list"})
@@ -55,7 +33,7 @@ public class ThoughtController {
     public Result<String> publishThought(@RequestBody Map<String, Object> payload) {
         String type = String.valueOf(payload.getOrDefault("type", "THOUGHT"));
         String content = String.valueOf(payload.getOrDefault("content", ""));
-        String studentName = String.valueOf(payload.getOrDefault("studentName", "李小桐(家长)"));
+        String studentName = payload.containsKey("studentName") ? String.valueOf(payload.get("studentName")) : "";
         String roleType = String.valueOf(payload.getOrDefault("roleType", "STUDENT"));
         String danceClassName = String.valueOf(payload.getOrDefault("danceClassName", "二年级"));
         String targetTeacherName = String.valueOf(payload.getOrDefault("targetTeacherName", ""));

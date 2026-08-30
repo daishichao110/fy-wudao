@@ -14,9 +14,9 @@ Page({
     // 发布/新增物品选购计划 Modal
     showItemDemandModal: false,
     itemForm: {
-      itemName: '双皮头芭蕾练功软鞋 (粉色)',
-      deadline: '2026-08-30',
-      expectedArrivalDate: '2026-09-05',
+      itemName: '',
+      deadline: '',
+      expectedArrivalDate: '',
       arrivalStatus: '未到货'
     },
 
@@ -79,16 +79,16 @@ Page({
       const list = (res && res.data) ? res.data : [];
       const today = this.getTodayDate();
       const mapped = list.map(item => {
-        const deadlineStr = item.deadline || '2026-08-30';
+        const deadlineStr = item.deadline || today;
         const isExpired = deadlineStr < today;
         return {
           ...item,
           deadlineStr: deadlineStr,
-          expectedArrivalDate: item.expectedArrivalDate || '2026-09-05',
+          expectedArrivalDate: item.expectedArrivalDate || '',
           arrivalStatus: item.arrivalStatus || '未到货',
           isExpired: isExpired,
-          sizeSummaryStr: item.sizeSummaryStr || '35码: 12双 | 36码: 8双 | 37码: 4双 (合计 24双)',
-          signedCount: item.signedCount || 24
+          sizeSummaryStr: item.sizeSummaryStr || '',
+          signedCount: item.signedCount || 0
         };
       });
       this.setData({ itemDemandList: mapped });
