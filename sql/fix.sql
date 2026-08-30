@@ -106,3 +106,45 @@ CREATE TABLE IF NOT EXISTS item_demand_enrollment (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uk_item_parent (item_id, parent_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物品选购家长个数登记表';
+
+-- [更新时间: 2026-08-30 21:16:00]
+-- 说明: 规范化所有表中的年级字段存为标准英文代号 (GRADE_ALL, GRADE_1, GRADE_2, GRADE_3, GRADE_4, GRADE_5, GRADE_6)
+UPDATE sys_user SET dance_class_name = 'GRADE_ALL' WHERE dance_class_name IN ('全校/公共', '全校公共', '全校全部', '全校全局管理');
+UPDATE sys_user SET dance_class_name = 'GRADE_1' WHERE dance_class_name = '一年级';
+UPDATE sys_user SET dance_class_name = 'GRADE_2' WHERE dance_class_name = '二年级';
+UPDATE sys_user SET dance_class_name = 'GRADE_3' WHERE dance_class_name = '三年级';
+UPDATE sys_user SET dance_class_name = 'GRADE_4' WHERE dance_class_name = '四年级';
+UPDATE sys_user SET dance_class_name = 'GRADE_5' WHERE dance_class_name = '五年级';
+UPDATE sys_user SET dance_class_name = 'GRADE_6' WHERE dance_class_name = '六年级';
+
+UPDATE dance_schedule SET dance_class_name = 'GRADE_ALL' WHERE dance_class_name IN ('全校/公共', '全校公共', '全校全部', '全校全局管理');
+UPDATE dance_schedule SET dance_class_name = 'GRADE_1' WHERE dance_class_name = '一年级';
+UPDATE dance_schedule SET dance_class_name = 'GRADE_2' WHERE dance_class_name = '二年级';
+UPDATE dance_schedule SET dance_class_name = 'GRADE_3' WHERE dance_class_name = '三年级';
+UPDATE dance_schedule SET dance_class_name = 'GRADE_4' WHERE dance_class_name = '四年级';
+UPDATE dance_schedule SET dance_class_name = 'GRADE_5' WHERE dance_class_name = '五年级';
+UPDATE dance_schedule SET dance_class_name = 'GRADE_6' WHERE dance_class_name = '六年级';
+
+UPDATE item_demand SET dance_class_name = 'GRADE_ALL' WHERE dance_class_name IN ('全校/公共', '全校公共', '全校全部', '全校全局管理');
+UPDATE item_demand SET dance_class_name = 'GRADE_1' WHERE dance_class_name = '一年级';
+UPDATE item_demand SET dance_class_name = 'GRADE_2' WHERE dance_class_name = '二年级';
+UPDATE item_demand SET dance_class_name = 'GRADE_3' WHERE dance_class_name = '三年级';
+UPDATE item_demand SET dance_class_name = 'GRADE_4' WHERE dance_class_name = '四年级';
+UPDATE item_demand SET dance_class_name = 'GRADE_5' WHERE dance_class_name = '五年级';
+UPDATE item_demand SET dance_class_name = 'GRADE_6' WHERE dance_class_name = '六年级';
+
+UPDATE volunteer_task SET dance_class_name = 'GRADE_ALL' WHERE dance_class_name IN ('全校/公共', '全校公共', '全校全部', '全校全局管理');
+UPDATE volunteer_task SET dance_class_name = 'GRADE_1' WHERE dance_class_name = '一年级';
+UPDATE volunteer_task SET dance_class_name = 'GRADE_2' WHERE dance_class_name = '二年级';
+UPDATE volunteer_task SET dance_class_name = 'GRADE_3' WHERE dance_class_name = '三年级';
+UPDATE volunteer_task SET dance_class_name = 'GRADE_4' WHERE dance_class_name = '四年级';
+UPDATE volunteer_task SET dance_class_name = 'GRADE_5' WHERE dance_class_name = '五年级';
+UPDATE volunteer_task SET dance_class_name = 'GRADE_6' WHERE dance_class_name = '六年级';
+
+UPDATE student_profile SET grade_level = 'GRADE_ALL' WHERE grade_level IN ('全校/公共', '全校公共', '全校全部', '全校全局管理');
+UPDATE student_profile SET grade_level = 'GRADE_1' WHERE grade_level = '一年级';
+UPDATE student_profile SET grade_level = 'GRADE_2' WHERE grade_level = '二年级';
+UPDATE student_profile SET grade_level = 'GRADE_3' WHERE grade_level = '三年级';
+UPDATE student_profile SET grade_level = 'GRADE_4' WHERE grade_level = '四年级';
+UPDATE student_profile SET grade_level = 'GRADE_5' WHERE grade_level = '五年级';
+UPDATE student_profile SET grade_level = 'GRADE_6' WHERE grade_level = '六年级';

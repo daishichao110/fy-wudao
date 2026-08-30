@@ -2,6 +2,7 @@ package com.wudao.common;
 
 public enum DanceClassEnum {
     GRADE_ALL("GRADE_ALL", "全校/公共"),
+    GRADE_1("GRADE_1", "一年级"),
     GRADE_2("GRADE_2", "二年级"),
     GRADE_3("GRADE_3", "三年级"),
     GRADE_4("GRADE_4", "四年级"),
@@ -31,16 +32,18 @@ public enum DanceClassEnum {
                 return e.getName();
             }
         }
+        if ("全校公共".equals(code) || "全校全部".equals(code) || "全校全局管理".equals(code)) return "全校/公共";
         return code;
     }
 
     public static String getCodeByName(String name) {
         if (name == null || name.trim().isEmpty()) return "GRADE_ALL";
+        if ("全校/公共".equals(name) || "全校公共".equals(name) || "全校全部".equals(name) || "全校全局管理".equals(name)) return "GRADE_ALL";
         for (DanceClassEnum e : values()) {
-            if (e.getName().equals(name)) {
+            if (e.getName().equals(name) || e.getCode().equalsIgnoreCase(name)) {
                 return e.getCode();
             }
         }
-        return name;
+        return "GRADE_ALL";
     }
 }

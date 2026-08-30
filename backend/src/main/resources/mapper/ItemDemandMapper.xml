@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.ItemDemandMapper">
+
+    <resultMap id="ItemDemandResult" type="com.wudao.entity.ItemDemand">
+        <id property="itemId" column="item_id" />
+        <result property="itemName" column="item_name" />
+        <result property="danceClassName" column="dance_class_name" />
+        <result property="deadline" column="deadline" />
+        <result property="expectedArrivalDate" column="expected_arrival_date" />
+        <result property="arrivalStatus" column="arrival_status" />
+        <result property="sizeSummaryStr" column="size_summary_str" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <resultMap id="ItemDemandEnrollmentResult" type="com.wudao.entity.ItemDemandEnrollment">
+        <id property="enrollmentId" column="enrollment_id" />
+        <result property="itemId" column="item_id" />
+        <result property="parentName" column="parent_name" />
+        <result property="quantity" column="quantity" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <select id="selectAll" resultMap="ItemDemandResult">
+        SELECT item_id, item_name, dance_class_name, deadline, expected_arrival_date, arrival_status, size_summary_str, created_at
+        FROM item_demand
+        <where>
+            <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校全部'">
+                (dance_class_name = #{danceClassName} OR dance_class_name = 'GRADE_ALL')
+            </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectById" resultMap="ItemDemandResult">
+        SELECT item_id, item_name, dance_class_name, deadline, expected_arrival_date, arrival_status, size_summary_str, created_at
+        FROM item_demand
+        WHERE item_id = #{itemId}
+    </select>
+
+    <insert id="insertDemand" parameterType="com.wudao.entity.ItemDemand">
+        INSERT INTO item_demand (
+            item_id, item_name, dance_class_name, deadline, expected_arrival_date, arrival_status, size_summary_str, created_at
+        ) VALUES (
+            #{itemId}, #{itemName}, #{danceClassName}, #{deadline}, #{expectedArrivalDate}, #{arrivalStatus}, #{sizeSummaryStr}, NOW()
+        )
+    </insert>
+
+    <update id="updateDemand" parameterType="com.wudao.entity.ItemDemand">
+        UPDATE item_demand
+        <set>
+            <if test="itemName != null and itemName != ''">item_name = #{itemName},</if>
+            <if test="danceClassName != null and danceClassName != ''">dance_class_name = #{danceClassName},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="expectedArrivalDate != null">expected_arrival_date = #{expectedArrivalDate},</if>
+            <if test="arrivalStatus != null and arrivalStatus != ''">arrival_status = #{arrivalStatus},</if>
+            <if test="sizeSummaryStr != null">size_summary_str = #{sizeSummaryStr},</if>
+        </set>
+        WHERE item_id = #{itemId}
+    </update>
+
+    <select id="selectEnrollmentsByItemId" resultMap="ItemDemandEnrollmentResult">
+        SELECT enrollment_id, item_id, parent_name, quantity, created_at
+        FROM item_demand_enrollment
+        WHERE item_id = #{itemId}
+        ORDER BY created_at ASC
+    </select>
+
+    <insert id="upsertEnrollment" parameterType="com.wudao.entity.ItemDemandEnrollment">
+        INSERT INTO item_demand_enrollment (
+            enrollment_id, item_id, parent_name, quantity, created_at
+        ) VALUES (
+            #{enrollmentId}, #{itemId}, #{parentName}, #{quantity}, NOW()
+        )
+        ON DUPLICATE KEY UPDATE quantity = VALUES(quantity), created_at = NOW()
+    </insert>
+
+    <update id="updateSizeSummaryStr">
+        UPDATE item_demand
+        SET size_summary_str = #{sizeSummaryStr}
+        WHERE item_id = #{itemId}
+    </update>
+
+</mapper>

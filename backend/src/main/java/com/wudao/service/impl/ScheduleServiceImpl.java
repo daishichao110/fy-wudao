@@ -53,9 +53,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (!StringUtils.hasText(schedule.getCourseName())) {
             throw new IllegalArgumentException("课程名称不可为空");
         }
-        if (!StringUtils.hasText(schedule.getDanceClassName())) {
-            schedule.setDanceClassName("二年级");
-        }
+        schedule.setDanceClassName(com.wudao.common.DanceClassEnum.getCodeByName(schedule.getDanceClassName()));
         if (!StringUtils.hasText(schedule.getDanceType())) {
             schedule.setDanceType("芭蕾舞");
         }
