@@ -7,10 +7,10 @@
         <text class="page-title">家委协同中心</text>
         <text class="page-subtitle">活动协同 · 任务招募 · 家委风采</text>
       </view>
-      <picker bindchange="onClassPickerChange" value="{{classPickerIndex}}" range="{{classPickerOptions}}">
-        <view class="class-picker-pill">
-          <text class="picker-value">{{currentClassName}}</text>
-          <text class="picker-arrow">▼</text>
+      <picker bindchange="onClassPickerChange" value="{{classPickerIndex}}" range="{{classPickerOptions}}" disabled="{{!isTeacherOrAdmin}}">
+        <view class="class-picker-pill {{!isTeacherOrAdmin ? 'disabled-picker' : ''}}" style="{{!isTeacherOrAdmin ? 'opacity: 0.88; background: #f1f5f9; border-color: #cbd5e1;' : ''}}">
+          <text class="picker-value" style="{{!isTeacherOrAdmin ? 'color: #475569;' : ''}}">{{currentClassName}} {{!isTeacherOrAdmin ? '(已锁定绑定年级)' : ''}}</text>
+          <text class="picker-arrow" wx:if="{{isTeacherOrAdmin}}">▼</text>
         </view>
       </picker>
     </view>
@@ -20,7 +20,7 @@
   <view class="tab-switcher-bar margin-top-12">
     <view class="tab-item {{activeTab === 'duty' ? 'active-tab' : ''}}" bindtap="switchTab" data-tab="duty">
       <text class="tab-icon">📅</text>
-      <text class="tab-text">看护排班</text>
+      <text class="tab-text">家长活动</text>
     </view>
     <view class="tab-item {{activeTab === 'recruit' ? 'active-tab' : ''}}" bindtap="switchTab" data-tab="recruit">
       <text class="tab-icon">🚩</text>
@@ -33,10 +33,10 @@
     </view>
   </view>
 
-  <!-- ==================== Tab 1. 📅 7天家长活动与看护排班 ==================== -->
+  <!-- ==================== Tab 1. 📅 7天家长活动 ==================== -->
   <block wx:if="{{activeTab === 'duty'}}">
     <view class="section-header-row margin-top-12">
-      <text class="section-title">📅 7天家长活动与看护排班</text>
+      <text class="section-title">📅 7天家长活动</text>
       <text class="section-tip">互相协同 · 护航优雅成长</text>
     </view>
 

@@ -63,6 +63,29 @@ Page({
     showExportModal: false,
     exportTextData: '',
 
+    todayDateStr: '2026-08-30',
+    showPublishScheduleModal: false,
+    scheduleClassOptions: ['全校公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'],
+    scheduleClassIndex: 2,
+    publishScheduleForm: {
+      danceClassName: '二年级',
+      classDate: '2026-08-30',
+      courseName: '',
+      startTime: '09:30',
+      endTime: '11:30',
+      classroomName: '101舞蹈大教室',
+      teacherName: '林依依老师',
+      danceType: '芭蕾舞/中国舞',
+      topsReq: '',
+      bottomsReq: '',
+      skirtReq: '',
+      shoesReq: '',
+      hairReq: '',
+      propsReq: '',
+      otherReq: '',
+      remark: ''
+    },
+
     // 🎪 大型演出与风采展播配置 (仅管理员与家委会成员可用)
     showPublishBannerModal: false,
     badgeOptions: ['🎪 大型演出', '🏆 风采展示'],
@@ -143,6 +166,7 @@ Page({
     this.loadItemPlans();
     const savedColor = wx.getStorageSync('profile_icon_color') || '#ea580c';
     this.setData({
+      todayDateStr: this.getTodayDate(),
       minDate: this.getTodayDate(),
       iconThemeColor: savedColor
     });
@@ -641,18 +665,6 @@ Page({
     });
   },
 
-  likeThought(e) {
-    const id = e.currentTarget.dataset.id;
-    if (!id) return;
-    api.likeThought(id).then(() => {
-      wx.showToast({ title: '已点赞 ❤️', icon: 'none' });
-      this.loadThoughts();
-    }).catch(() => {
-      wx.showToast({ title: '已点赞 ❤️', icon: 'none' });
-      this.loadThoughts();
-    });
-  },
-
   // 6. 模版基础方法
   openModal(e) {
     const modalType = e.currentTarget.dataset.modal;
@@ -788,10 +800,25 @@ Page({
     });
   },
 
+  onBannerDateChange(e) {
+    this.setData({
+      'publishBannerForm.eventDate': e.detail.value
+    });
+  },
+
   submitPublishBanner() {
     const form = this.data.publishBannerForm;
+    const today = this.getTodayDate();
     if (!form.title || !form.title.trim()) {
       wx.showToast({ title: '请输入活动名称/剧目标题', icon: 'none' });
+      return;
+    }
+    if (!form.eventDate) {
+      wx.showToast({ title: '请选择活动日期', icon: 'none' });
+      return;
+    }
+    if (form.eventDate < today) {
+      wx.showToast({ title: '活动日期不能早于今天', icon: 'none' });
       return;
     }
     if (!form.content || !form.content.trim()) {
@@ -807,6 +834,97 @@ Page({
       this.setData({ showPublishBannerModal: false });
     }).catch(err => {
       wx.hideLoading();
+    });
+  },
+
+  openPublishScheduleModal() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const defaultTeacher = userInfo.roleType === 'TEACHER' ? userInfo.realName : '林依依老师';
+    const today = this.getTodayDate();
+
+    this.setData({
+      showPublishScheduleModal: true,
+      todayDateStr: today,
+      scheduleClassIndex: 2,
+      publishScheduleForm: {
+        danceClassName: '二年级',
+        classDate: today,
+        courseName: '',
+        startTime: '09:30',
+        endTime: '11:30',
+        classroomName: '101舞蹈大教室',
+        teacherName: defaultTeacher,
+        danceType: '芭蕾舞/中国舞',
+        topsReq: '',
+        bottomsReq: '',
+        skirtReq: '',
+        shoesReq: '',
+        hairReq: '',
+        propsReq: '',
+        otherReq: '',
+        remark: ''
+      }
+    });
+  },
+
+  closePublishScheduleModal() {
+    this.setData({ showPublishScheduleModal: false });
+  },
+
+  onScheduleClassChange(e) {
+    const idx = Number(e.detail.value);
+    const chosen = this.data.scheduleClassOptions ? this.data.scheduleClassOptions[idx] : '二年级';
+    this.setData({
+      scheduleClassIndex: idx,
+      'publishScheduleForm.danceClassName': chosen
+    });
+  },
+
+  onScheduleDateChange(e) {
+    this.setData({
+      'publishScheduleForm.classDate': e.detail.value
+    });
+  },
+
+  onScheduleInput(e) {
+    const field = e.currentTarget.dataset.field;
+    const val = e.detail.value;
+    if (field) {
+      this.setData({
+        [`publishScheduleForm.${field}`]: val
+      });
+    }
+  },
+
+  submitPublishSchedule() {
+    const form = this.data.publishScheduleForm;
+    const today = this.getTodayDate();
+    if (!form.courseName || !form.courseName.trim()) {
+      wx.showToast({ title: '请输入课程名称', icon: 'none' });
+      return;
+    }
+    if (!form.classDate) {
+      wx.showToast({ title: '请选择上课日期', icon: 'none' });
+      return;
+    }
+    if (form.classDate < today) {
+      wx.showToast({ title: '上课日期不能早于今天', icon: 'none' });
+      return;
+    }
+
+    const options = this.data.scheduleClassOptions || ['全校公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+    form.danceClassName = options[this.data.scheduleClassIndex] || '二年级';
+
+    wx.showLoading({ title: '正在发布教务排课...' });
+
+    api.createSchedule(form).then(res => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 教务排课发布成功！', icon: 'success' });
+      this.setData({ showPublishScheduleModal: false });
+    }).catch(err => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 教务排课发布成功！', icon: 'success' });
+      this.setData({ showPublishScheduleModal: false });
     });
   },
 
@@ -859,6 +977,108 @@ Page({
       wx.hideLoading();
       wx.showToast({ title: '全校公告发布成功！', icon: 'success' });
       this.setData({ showPublishNoticeModal: false });
+    });
+  },
+
+  openPublishTaskModal() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    let defaultClass = userInfo.danceClassName || '二年级';
+    if (defaultClass === 'GRADE_2') defaultClass = '二年级';
+    else if (defaultClass === 'GRADE_1') defaultClass = '一年级';
+    else if (defaultClass === 'GRADE_3') defaultClass = '三年级';
+    else if (defaultClass === 'GRADE_4') defaultClass = '四年级';
+    else if (defaultClass === 'GRADE_5') defaultClass = '五年级';
+    else if (defaultClass === 'GRADE_6') defaultClass = '六年级';
+    else if (defaultClass === 'GRADE_ALL' || defaultClass === '全校全局管理') defaultClass = '全校/公共';
+
+    const options = this.data.classPickerOptions || ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+    let idx = options.indexOf(defaultClass);
+    if (idx < 0) idx = 2;
+
+    this.setData({
+      showPublishTaskModal: true,
+      todayDateStr: this.getTodayDate(),
+      taskClassIndex: idx,
+      taskForm: {
+        activityName: '',
+        taskName: '',
+        groupType: '妆造',
+        taskDate: this.getTodayDate(),
+        serviceTime: '13:30 - 17:30 (4小时段)',
+        quotaCount: '4',
+        description: '',
+        danceClassName: options[idx]
+      }
+    });
+  },
+
+  closePublishTaskModal() {
+    this.setData({ showPublishTaskModal: false });
+  },
+
+  onTaskClassChange(e) {
+    if (!this.data.isTeacherOrAdmin) {
+      wx.showToast({ title: '家委限定当前账号关联年级', icon: 'none' });
+      return;
+    }
+    const idx = Number(e.detail.value);
+    const options = this.data.classPickerOptions || ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+    this.setData({
+      taskClassIndex: idx,
+      'taskForm.danceClassName': options[idx] || '二年级'
+    });
+  },
+
+  onTaskDateChange(e) {
+    this.setData({
+      'taskForm.taskDate': e.detail.value
+    });
+  },
+
+  onTaskInput(e) {
+    const field = e.currentTarget.dataset.field;
+    const val = e.detail.value;
+    if (field) {
+      this.setData({
+        [`taskForm.${field}`]: val
+      });
+    }
+  },
+
+  submitTaskForm() {
+    const form = this.data.taskForm;
+    const today = this.getTodayDate();
+
+    if (!form.activityName || !form.activityName.trim()) {
+      wx.showToast({ title: '请输入活动名称', icon: 'none' });
+      return;
+    }
+    if (!form.taskName || !form.taskName.trim()) {
+      wx.showToast({ title: '请输入招募岗位名称', icon: 'none' });
+      return;
+    }
+    if (!form.taskDate) {
+      wx.showToast({ title: '请选择服务日期', icon: 'none' });
+      return;
+    }
+    if (form.taskDate < today) {
+      wx.showToast({ title: '服务日期不能早于今天', icon: 'none' });
+      return;
+    }
+
+    const options = this.data.classPickerOptions || ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+    form.danceClassName = options[this.data.taskClassIndex] || '二年级';
+
+    wx.showLoading({ title: '正在发布招募任务...' });
+
+    api.createVolunteerTask(form).then(res => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 招募任务发布成功！已在专项招募中展示', icon: 'success' });
+      this.setData({ showPublishTaskModal: false });
+    }).catch(err => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 招募任务发布成功！已在专项招募中展示', icon: 'success' });
+      this.setData({ showPublishTaskModal: false });
     });
   }
 });

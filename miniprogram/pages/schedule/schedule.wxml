@@ -5,17 +5,13 @@
     <view class="class-picker-row">
       <view class="class-title-group">
         <text class="class-label">🎓 适用年级排课</text>
-        <picker bindchange="onClassPickerChange" value="{{classPickerIndex}}" range="{{classPickerOptions}}">
-          <view class="picker-pill">
-            <text class="picker-value">{{currentClassName}}</text>
-            <text class="picker-arrow">▼</text>
+        <picker bindchange="onClassPickerChange" value="{{classPickerIndex}}" range="{{classPickerOptions}}" disabled="{{!isTeacherOrAdmin}}">
+          <view class="picker-pill {{!isTeacherOrAdmin ? 'disabled-picker' : ''}}" style="{{!isTeacherOrAdmin ? 'opacity: 0.88; background: #f1f5f9; border-color: #cbd5e1;' : ''}}">
+            <text class="picker-value" style="{{!isTeacherOrAdmin ? 'color: #475569;' : ''}}">{{currentClassName}} {{!isTeacherOrAdmin ? '(已锁定绑定年级)' : ''}}</text>
+            <text class="picker-arrow" wx:if="{{isTeacherOrAdmin}}">▼</text>
           </view>
         </picker>
-      </view>
-      <view style="display: flex; align-items: center; gap: 8px;">
-        <view class="h-btn btn-orange" style="font-size: 11px; padding: 4px 10px; border-radius: 12px; background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; font-weight: 700;" bindtap="openScheduleModal" wx:if="{{hasManagePermission}}">＋ 发布排课</view>
-        <text class="filter-tip" wx:if="{{selectedDateStr}}" bindtap="clearDateFilter">重置 ✖</text>
-      </view>
+      <text class="filter-tip" wx:if="{{selectedDateStr}}" bindtap="clearDateFilter">重置日期 ✖</text>
     </view>
   </view>
 

@@ -92,7 +92,7 @@
           <text class="field-label">报名截止日期 <text class="required">*</text></text>
           <picker mode="date" start="{{todayDateStr}}" value="{{itemForm.deadline}}" bindchange="onDeadlineDateChange">
             <view class="fancy-input picker-input">
-              <text>{{itemForm.deadline ? itemForm.deadline : '📅 请选择截止日期 (只能选今天及之后)'}}</text>
+              <text>{{itemForm.deadline ? itemForm.deadline : '📅 请选择截止日期'}}</text>
               <text class="pi-arrow">📅</text>
             </view>
           </picker>
@@ -102,7 +102,7 @@
           <text class="field-label">预计到货时间</text>
           <picker mode="date" start="{{todayDateStr}}" value="{{itemForm.expectedArrivalDate}}" bindchange="onArrivalDateChange">
             <view class="fancy-input picker-input">
-              <text>{{itemForm.expectedArrivalDate ? itemForm.expectedArrivalDate : '📅 请选择到货日期 (只能选今天及之后)'}}</text>
+              <text>{{itemForm.expectedArrivalDate ? itemForm.expectedArrivalDate : '📅 请选择预计到货日期'}}</text>
               <text class="pi-arrow">📅</text>
             </view>
           </picker>

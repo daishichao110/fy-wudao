@@ -18,7 +18,7 @@
     </swiper>
   </view>
 
-  <!-- 2. 最新公告跑马灯 (点击任意公告进入详情，管理员/老师/家委支持快捷发布全校公告) -->
+  <!-- 2. 最新公告跑马灯 (点击任意公告进入详情) -->
   <view class="notice-bar">
     <text class="notice-tag">📢 公告</text>
     <swiper class="notice-swiper" vertical autoplay circular interval="3500">
@@ -28,7 +28,6 @@
         </swiper-item>
       </block>
     </swiper>
-    <view class="publish-quick-btn" bindtap="openPublishNoticeModal" wx:if="{{canPublishBanner}}">＋ 发布公告</view>
   </view>
 
   <!-- 3. 🏛️ 舞团品牌与办学特色 (精简保留干净标题与详情跳转，去除重复图片与下方赘余) -->

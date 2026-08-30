@@ -6,9 +6,9 @@
         SELECT task_id, activity_name, group_type, task_name, task_date, service_time, location, quota_count, enrolled_count, status, description, dance_class_name, created_at
         FROM volunteer_task
         <where>
-            <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理'">
-            dance_class_name = #{danceClassName}
-        </if>
+            <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理' and danceClassName != '全校全部'">
+                (dance_class_name = #{danceClassName} OR dance_class_name = '全校/公共' OR dance_class_name = '全校全部' OR dance_class_name IS NULL OR dance_class_name = '')
+            </if>
         </where>
         ORDER BY task_id DESC
     </select>

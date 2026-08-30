@@ -130,6 +130,10 @@ Page({
   },
 
   onClassPickerChange(e) {
+    if (!this.data.isTeacherOrAdmin) {
+      wx.showToast({ title: '仅管理员与老师可切换年级视图', icon: 'none' });
+      return;
+    }
     const idx = Number(e.detail.value);
     const chosenObj = classEnumList[idx] || classEnumList[0];
     this.setData({
@@ -203,7 +207,7 @@ Page({
 
     wx.showModal({
       title: '确认报名家长活动',
-      content: `确定由【${parentDisplayName}】报名 [${targetClass}] ${item.monthDayStr} 的家长看护与家委协同？`,
+      content: `确定由【${parentDisplayName}】报名 [${targetClass}] ${item.monthDayStr} 的家长活动与家委协同？`,
       confirmText: '确认报名',
       success: (res) => {
         if (res.confirm) {
@@ -215,7 +219,7 @@ Page({
             wx.showToast({ title: `🎉 成功报名(${parentDisplayName})！`, icon: 'success' });
             this.initFutureSevenDays();
           }).catch(err => {
-            wx.showToast({ title: `成功报名看护活动！`, icon: 'success' });
+            wx.showToast({ title: `成功报名家长活动！`, icon: 'success' });
             this.initFutureSevenDays();
           });
         }

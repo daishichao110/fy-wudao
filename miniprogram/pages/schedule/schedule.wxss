@@ -323,3 +323,133 @@
 }
 .empty-icon { font-size: 40px; display: block; margin-bottom: 8px; }
 .empty-text { font-size: 13px; font-weight: 700; color: #94a3b8; }
+
+/* -------------------------------------------------------------
+ * 📅 教务排课 Modal 弹窗高级风采样式
+ * ------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid #f1f5f9;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border-bottom: 1px solid #fed7aa;
+}
+
+.m-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #c2410c;
+}
+
+.close-btn {
+  font-size: 16px;
+  color: #94a3b8;
+  padding: 4px;
+}
+
+.modal-body {
+  max-height: 65vh;
+  padding: 14px 18px;
+  box-sizing: border-box;
+}
+
+.field-label, .form-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.required {
+  color: #ef4444;
+  font-weight: 800;
+  margin-left: 2px;
+}
+
+.fancy-input, .form-input {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #0f172a;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.fancy-textarea, .form-textarea {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #0f172a;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.picker-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.pi-arrow { font-size: 11px; color: #ea580c; }
+.form-row-2 { display: flex; gap: 8px; }
+.form-row-3 { display: flex; gap: 6px; }
+.flex-1 { flex: 1; }
+.margin-top-4 { margin-top: 4px; }
+.margin-top-6 { margin-top: 6px; }
+.margin-top-8 { margin-top: 8px; }
+.margin-top-12 { margin-top: 12px; }
+
+.modal-foot {
+  padding: 12px 18px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.act-btn {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.btn-reject { background: #f1f5f9; color: #64748b; }
+.btn-pass { background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); color: #ffffff; box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3); }

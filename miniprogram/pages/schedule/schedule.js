@@ -97,6 +97,10 @@ Page({
   },
 
   onClassPickerChange(e) {
+    if (!this.data.isTeacherOrAdmin) {
+      wx.showToast({ title: '仅管理员与老师可切换年级视图', icon: 'none' });
+      return;
+    }
     const idx = Number(e.detail.value);
     const chosenObj = classEnumList[idx] || classEnumList[0];
     this.setData({

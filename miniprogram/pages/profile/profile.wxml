@@ -106,12 +106,12 @@
       </view>
 
       <!-- 6. 排课与课表配置 -->
-      <navigator url="/pages/schedule/schedule" class="action-item">
+      <view class="action-item" bindtap="openPublishScheduleModal">
         <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
           <text style="font-size: 20px;">📅</text>
         </view>
-        <text class="action-label">排课与课表配置</text>
-      </navigator>
+        <text class="action-label">发布教务排课</text>
+      </view>
 
       <!-- 6. 档案数据导出模版 -->
       <view class="action-item" bindtap="downloadStudentInfo">
@@ -208,20 +208,27 @@
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">所属年级/班级 <text class="required">*</text></text>
-          <picker bindchange="onTaskClassChange" value="{{taskClassIndex}}" range="{{classPickerOptions}}">
-            <view class="fancy-picker-box" style="padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-              <text class="picker-txt" style="font-size: 13px; color: #1e293b;">{{classPickerOptions[taskClassIndex] || '二年级'}}</text>
-              <text class="picker-arrow" style="font-size: 12px; color: #64748b;">▼</text>
+          <picker bindchange="onTaskClassChange" value="{{taskClassIndex}}" range="{{classPickerOptions}}" disabled="{{!isTeacherOrAdmin}}">
+            <view class="fancy-input picker-input {{!isTeacherOrAdmin ? 'disabled-picker' : ''}}">
+              <text>{{classPickerOptions[taskClassIndex] || '二年级'}} {{!isTeacherOrAdmin ? '(家委限定当前年级)' : ''}}</text>
+              <text class="pi-arrow" wx:if="{{isTeacherOrAdmin}}">▼</text>
             </view>
           </picker>
         </view>
+
         <view class="form-group margin-top-8">
           <text class="field-label">招募岗位名称 <text class="required">*</text></text>
           <input class="fancy-input" placeholder="例如：后台化妆发型兼看护家长" value="{{taskForm.taskName}}" bindinput="onTaskInput" data-field="taskName" />
         </view>
+
         <view class="form-group margin-top-8">
           <text class="field-label">服务日期 (活动开展日期) <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：2026-08-30" value="{{taskForm.taskDate}}" bindinput="onTaskInput" data-field="taskDate" />
+          <picker mode="date" start="{{todayDateStr}}" value="{{taskForm.taskDate}}" bindchange="onTaskDateChange">
+            <view class="fancy-input picker-input">
+              <text>{{taskForm.taskDate ? taskForm.taskDate : '📅 请选择服务日期'}}</text>
+              <text class="pi-arrow">📅</text>
+            </view>
+          </picker>
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">服务具体时间段说明</text>
@@ -390,10 +397,6 @@
               <text class="sec-sub margin-top-6" style="color: #334155; font-size: 13px; line-height: 1.6; display: block;">{{item.content}}</text>
               <view class="item-header margin-top-8" style="display: flex; justify-content: space-between; align-items: center;">
                 <text class="group-tip" style="font-size: 11px; color: #94a3b8;">📅 {{item.createdAt}}</text>
-                <view style="display: flex; align-items: center; gap: 4px;" bindtap="likeThought" data-id="{{item.id}}">
-                  <text style="font-size: 13px;">❤️</text>
-                  <text style="font-size: 11px; color: #e11d48; font-weight: 700;">{{item.likesCount || 0}}</text>
-                </view>
               </view>
             </view>
           </block>
@@ -438,8 +441,13 @@
             </picker>
           </view>
           <view class="form-group flex-1">
-            <text class="field-label">活动日期</text>
-            <input class="fancy-input" placeholder="yyyy-MM-dd" value="{{publishBannerForm.eventDate}}" bindinput="onBannerInput" data-field="eventDate" />
+            <text class="field-label">活动日期 <text class="required">*</text></text>
+            <picker mode="date" start="{{todayDateStr}}" value="{{publishBannerForm.eventDate}}" bindchange="onBannerDateChange">
+              <view class="fancy-input picker-input">
+                <text>{{publishBannerForm.eventDate ? publishBannerForm.eventDate : '📅 请选择活动日期'}}</text>
+                <text class="pi-arrow">📅</text>
+              </view>
+            </picker>
           </view>
         </view>
 
@@ -494,6 +502,104 @@
       <view class="modal-foot">
         <view class="act-btn btn-reject" bindtap="closePublishNoticeModal">取消</view>
         <view class="act-btn btn-pass" bindtap="submitPublishNotice">🚀 立即发布全校广播</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 9. 📅 发布教务排课 Modal -->
+  <view class="modal-overlay" wx:if="{{showPublishScheduleModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">📅 发布教务课程排课</text>
+        <text class="close-btn" bindtap="closePublishScheduleModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="form-row-2 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">适用年级 <text class="required">*</text></text>
+            <picker bindchange="onScheduleClassChange" value="{{scheduleClassIndex}}" range="{{scheduleClassOptions}}">
+              <view class="fancy-input picker-input">
+                <text>{{scheduleClassOptions[scheduleClassIndex]}}</text>
+                <text class="pi-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">上课日期 <text class="required">*</text></text>
+            <picker mode="date" start="{{todayDateStr}}" value="{{publishScheduleForm.classDate}}" bindchange="onScheduleDateChange">
+              <view class="fancy-input picker-input">
+                <text>{{publishScheduleForm.classDate ? publishScheduleForm.classDate : '📅 请选择上课日期'}}</text>
+                <text class="pi-arrow">📅</text>
+              </view>
+            </picker>
+          </view>
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">课程/剧目名称 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：少儿芭蕾基训与软开度专项" value="{{publishScheduleForm.courseName}}" bindinput="onScheduleInput" data-field="courseName" />
+        </view>
+
+        <view class="form-row-2 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">开始时间</text>
+            <input class="fancy-input" placeholder="09:30" value="{{publishScheduleForm.startTime}}" bindinput="onScheduleInput" data-field="startTime" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">结束时间</text>
+            <input class="fancy-input" placeholder="11:30" value="{{publishScheduleForm.endTime}}" bindinput="onScheduleInput" data-field="endTime" />
+          </view>
+        </view>
+
+        <view class="form-row-2 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">教室房号</text>
+            <input class="fancy-input" placeholder="101舞蹈大教室" value="{{publishScheduleForm.classroomName}}" bindinput="onScheduleInput" data-field="classroomName" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">任课导师</text>
+            <input class="fancy-input" placeholder="林依依老师" value="{{publishScheduleForm.teacherName}}" bindinput="onScheduleInput" data-field="teacherName" />
+          </view>
+        </view>
+
+        <!-- 服装要求 -->
+        <text class="section-sub-title margin-top-12">👗 服装与着装规范要求</text>
+        <view class="form-row-2 margin-top-6">
+          <view class="form-group flex-1">
+            <text class="field-label">上装</text>
+            <input class="fancy-input" placeholder="粉色芭蕾练功服" value="{{publishScheduleForm.topsReq}}" bindinput="onScheduleInput" data-field="topsReq" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">下装/连裤袜</text>
+            <input class="fancy-input" placeholder="白色专业裤袜" value="{{publishScheduleForm.bottomsReq}}" bindinput="onScheduleInput" data-field="bottomsReq" />
+          </view>
+        </view>
+
+        <view class="form-row-2 margin-top-6">
+          <view class="form-group flex-1">
+            <text class="field-label">舞鞋</text>
+            <input class="fancy-input" placeholder="双皮头练功软鞋" value="{{publishScheduleForm.shoesReq}}" bindinput="onScheduleInput" data-field="shoesReq" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">发型盘发</text>
+            <input class="fancy-input" placeholder="高盘丸子头+发网" value="{{publishScheduleForm.hairReq}}" bindinput="onScheduleInput" data-field="hairReq" />
+          </view>
+        </view>
+
+        <!-- 教具要求 -->
+        <text class="section-sub-title margin-top-12">🎒 教具与随身物品</text>
+        <view class="form-group margin-top-6">
+          <text class="field-label">教具准备</text>
+          <input class="fancy-input" placeholder="瑜伽垫、弹力带、瑜伽砖2个" value="{{publishScheduleForm.propsReq}}" bindinput="onScheduleInput" data-field="propsReq" />
+        </view>
+        <view class="form-group margin-top-6">
+          <text class="field-label">备注交代</text>
+          <textarea class="fancy-textarea" style="height: 60px;" placeholder="录入课前注意事项、剧目卡位交代等..." value="{{publishScheduleForm.remark}}" bindinput="onScheduleInput" data-field="remark"></textarea>
+        </view>
+      </scroll-view>
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closePublishScheduleModal">取消</view>
+        <view class="act-btn btn-pass" bindtap="submitPublishSchedule">🚀 确认发布排课</view>
       </view>
     </view>
   </view>
