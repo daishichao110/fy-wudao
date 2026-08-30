@@ -235,6 +235,35 @@
   border-radius: 10px;
 }
 
+.wx-auth-phone-btn {
+  width: 100%;
+  height: 44px;
+  line-height: 44px;
+  background: #fff7ed;
+  border: 1.5px dashed #ea580c;
+  color: #ea580c;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.manual-phone-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-label {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
 .fancy-picker {
   width: 100%;
   height: 44px;

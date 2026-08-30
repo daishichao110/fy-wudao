@@ -10,7 +10,8 @@ USE wudao_db;
 DROP TABLE IF EXISTS sys_user;
 CREATE TABLE sys_user (
     user_id BIGINT PRIMARY KEY COMMENT '用户ID (雪花算法 64位分布式ID)',
-    username VARCHAR(50) NOT NULL UNIQUE COMMENT '账号名/手机号',
+    username VARCHAR(50) NOT NULL UNIQUE COMMENT '账号名/手机号/标识',
+    open_id VARCHAR(128) DEFAULT '' COMMENT '微信OpenID',
     real_name VARCHAR(50) NOT NULL COMMENT '真实姓名/家长姓名',
     student_name VARCHAR(50) DEFAULT '' COMMENT '关联学生姓名',
     relationship VARCHAR(30) DEFAULT '' COMMENT '与学生关系: 爸爸/妈妈/其他监护人',

@@ -117,24 +117,17 @@ Page({
     scheduleClassOptions: ['全校/公共', '二年级', '三年级', '四年级', '五年级', '六年级'],
     scheduleClassCodeList: ['GRADE_ALL', 'GRADE_2', 'GRADE_3', 'GRADE_4', 'GRADE_5', 'GRADE_6'],
     scheduleClassIndex: 0,
-    studentList: [
-      { name: '李小桐', checked: true },
-      { name: '张小宝', checked: true },
-      { name: '王美美', checked: true },
-      { name: '赵心怡', checked: true },
-      { name: '陈萌萌', checked: true },
-      { name: '周思涵', checked: true }
-    ],
+    studentList: [],
 
     // 学员个人档案表单
     studentProfileForm: {
-      studentName: '李小桐',
+      studentName: '',
       gradeLevel: '二年级',
-      chineseScore: 96,
+      chineseScore: 95,
       mathScore: 98,
-      englishScore: 97,
-      parentPhone: '18911800655',
-      resumeBio: '2025年斩获全国少儿芭蕾剧目一等奖，通过芭蕾4级'
+      englishScore: 96,
+      parentPhone: '',
+      resumeBio: ''
     }
   },
 
@@ -479,10 +472,47 @@ Page({
     });
   },
 
+  onTaskInput(e) {
+    const field = e.currentTarget.dataset.field;
+    const val = e.detail.value;
+    if (field) {
+      this.setData({
+        [`taskForm.${field}`]: val
+      });
+    }
+  },
+
+  onTaskClassChange(e) {
+    const options = ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+    const idx = Number(e.detail.value);
+    const chosen = options[idx] || '二年级';
+    this.setData({
+      taskClassIndex: idx,
+      'taskForm.danceClassName': chosen
+    });
+  },
+
   // 4. 🚩 招募任务 Modal
   openPublishTaskModal() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const userGrade = userInfo.danceClassName || '二年级';
+    const options = ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+    let idx = options.indexOf(userGrade);
+    if (idx < 0) idx = 2; // 默认二年级
+
+    const existing = this.data.taskForm || {};
     this.setData({
-      'taskForm.taskDate': this.getTodayDate(),
+      taskClassIndex: idx,
+      classPickerOptions: options,
+      taskForm: {
+        activityName: existing.activityName || '2026金帆舞团大剧院年度展演',
+        taskName: existing.taskName || '后台服装化妆兼看护家长',
+        taskDate: existing.taskDate || this.getTodayDate(),
+        serviceTime: existing.serviceTime || '13:30 - 17:30 (4小时)',
+        quotaCount: existing.quotaCount || 4,
+        description: existing.description || '负责试妆、发型、后勤检录与剧场安全看护',
+        danceClassName: existing.danceClassName || options[idx]
+      },
       showPublishTaskModal: true
     });
   },
@@ -493,6 +523,11 @@ Page({
 
   submitTaskForm() {
     const form = this.data.taskForm;
+    const options = ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+    if (!form.danceClassName) {
+      form.danceClassName = options[this.data.taskClassIndex || 2] || '二年级';
+    }
+
     if (!form.activityName || !form.activityName.trim()) {
       wx.showToast({ title: '请输入活动名称', icon: 'none' });
       return;
@@ -557,7 +592,7 @@ Page({
     }
 
     const userInfo = wx.getStorageSync('userInfo') || {};
-    const studentName = userInfo.realName || userInfo.studentName || '李小桐(家长)';
+    const studentName = userInfo.realName || userInfo.studentName || userInfo.parentName || '家长';
     const type = this.data.activeThoughtType || 'THOUGHT';
 
     wx.showLoading({ title: '正在发布...' });

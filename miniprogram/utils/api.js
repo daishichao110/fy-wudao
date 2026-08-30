@@ -1,4 +1,4 @@
-// 微信小程序开发与调试配置: 使用 127.0.0.1:8080 或 局域网 IP 直连
+// 微信小程序开发与调试配置: 本地 8080 端口或局域网 IP 直连
 const BASE_URL = 'https://52ddup.com/api';
 
 const request = (url, method = 'GET', data = {}, showErrorToast = false) => {

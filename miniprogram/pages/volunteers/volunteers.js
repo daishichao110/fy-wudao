@@ -225,8 +225,8 @@ Page({
 
   // 2. 🚩 舞团大型活动专项招募任务列表
   loadVolunteerTasks() {
-    const queryClassCode = this.data.currentClassCode === 'GRADE_ALL' ? '' : this.data.currentClassCode;
-    api.getVolunteerTasks(queryClassCode).then(res => {
+    const queryClassName = (this.data.currentClassName === '全校/公共') ? '' : (this.data.currentClassName || '');
+    api.getVolunteerTasks(queryClassName).then(res => {
       const list = (res && res.data) ? res.data : [];
       const mapped = list.map(item => ({
         ...item,

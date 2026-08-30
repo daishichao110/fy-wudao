@@ -44,7 +44,7 @@ Page({
   exportSheet() {
     wx.showLoading({ title: '生成导出报表中...' });
     wx.request({
-      url: 'http://localhost:8080/api/metric/export-csv',
+      url: `${api.BASE_URL}/metric/export-csv`,
       method: 'GET',
       success: (res) => {
         wx.hideLoading();

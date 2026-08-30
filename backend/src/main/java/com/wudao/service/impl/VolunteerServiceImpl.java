@@ -28,6 +28,9 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Override
     public List<VolunteerTask> getAllTasks(String danceClassName) {
         log.info("[VolunteerService] Executing getAllTasks() for class: {}", danceClassName);
+        if (danceClassName != null && danceClassName.startsWith("GRADE_")) {
+            danceClassName = com.wudao.common.DanceClassEnum.getNameByCode(danceClassName);
+        }
         List<VolunteerTask> tasks = volunteerMapper.selectAllTasks(danceClassName);
         log.info("[VolunteerService] Fetched {} volunteer task groups", tasks != null ? tasks.size() : 0);
         return tasks;

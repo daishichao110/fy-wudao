@@ -8,8 +8,16 @@ LOG_FILE="app.log"
 JAVA_OPTS="-Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai -Xms256m -Xmx512m"
 
 # 🔍 自动检测同级目录下的外部生产环境配置文件 (application-prod.yml 或 application.yml)
-CONFIG_OPTS="--spring.config.location=./application.yml"
-echo "检测到外部配置文件: ./application.yml"
+CONFIG_OPTS=""
+if [ -f "./application-prod.yml" ]; then
+    CONFIG_OPTS="--spring.config.location=optional:classpath:/application.yml,file:./application-prod.yml"
+    echo "检测到外部生产环境配置文件: ./application-prod.yml"
+elif [ -f "./application.yml" ]; then
+    CONFIG_OPTS="--spring.config.location=optional:classpath:/application.yml,file:./application.yml"
+    echo "检测到外部配置文件: ./application.yml"
+else
+    echo "使用内嵌默认配置文件: classpath:/application.yml"
+fi
 
 # 获取进程 PID
 get_pid() {

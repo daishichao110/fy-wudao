@@ -13,7 +13,7 @@
   <view class="teacher-list">
     <block wx:for="{{filteredTeachers}}" wx:key="teacherId">
       <view class="teacher-card" bindtap="openTeacherDetail" data-teacher="{{item}}">
-        <image class="t-avatar" src="{{item.avatarUrl || 'http://localhost:8080/image/teacher1.jpg'}}" mode="aspectFill"></image>
+        <image class="t-avatar" src="{{item.avatarUrl || '/image/teacher1.jpg'}}" mode="aspectFill"></image>
         <view class="t-info-col">
           <view class="t-head-line">
             <text class="t-name">{{item.name}}</text>
@@ -42,7 +42,7 @@
       <scroll-view scroll-y class="modal-body" wx:if="{{selectedTeacher}}">
         <view class="t-detail-card">
           <view class="td-header">
-            <image class="td-avatar" src="{{selectedTeacher.avatarUrl || 'http://localhost:8080/image/teacher1.jpg'}}" mode="aspectFill"></image>
+            <image class="td-avatar" src="{{selectedTeacher.avatarUrl || '/image/teacher1.jpg'}}" mode="aspectFill"></image>
             <view class="td-meta">
               <text class="td-name">{{selectedTeacher.name}}</text>
               <text class="td-title">{{selectedTeacher.title}}</text>

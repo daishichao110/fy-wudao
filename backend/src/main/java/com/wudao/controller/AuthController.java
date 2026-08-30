@@ -23,36 +23,38 @@ public class AuthController {
     /**
      * 微信授权登录接口 (根据手机号自动识别数据库中的角色与权限 status = 1 审核通过的用户登录)
      */
+    /**
+     * 微信授权登录接口 (根据 wx.login 凭证 code 识别 OpenID / 账号，status = 1 审核通过的用户登录)
+     */
     @PostMapping("/wx-login")
     public Result<Map<String, Object>> wxLogin(@RequestBody Map<String, String> params) {
-        String phone = params.get("phone");
         String code = params.get("code");
+        String phone = params.get("phone");
 
-        log.info("[REST API POST /api/auth/wx-login] Automated phone lookup: phone={}, code={}", phone, code);
+        log.info("[REST API POST /api/auth/wx-login] Standard wx.login Code Authorization: code={}, phone={}", code, phone);
 
         User user = null;
-        // 1. 若前端传输了手机号，优先根据手机号在数据库 sys_user 表中精准检索对应身份
-        if (phone != null && !phone.trim().isEmpty()) {
+        // 1. 优先根据凭证与识别号精准查找用户
+        if (code != null && !code.trim().isEmpty()) {
+            String openId = "wx_openid_" + Math.abs(code.hashCode());
+            user = userMapper.selectByUsername(openId);
+        }
+        if (user == null && phone != null && !phone.trim().isEmpty()) {
             user = userMapper.selectByUsername(phone.trim());
         }
 
-        // 2. 若微信开发者工具未透传解密手机号(仅传code)，检索数据库中存在的管理员账号 18911800655
         if (user == null) {
-            user = userMapper.selectByUsername("18911800655");
-        }
-
-        if (user == null) {
-            log.warn("Login failed! Phone number not registered in database sys_user.");
-            return Result.error("您的手机号尚未开通权限，请点击【去申请】填写资料提交审批！");
+            log.warn("Login failed! Account not registered in database sys_user.");
+            return Result.error("您的微信账号尚未开通权限，请点击【去申请】填写资料提交审批！");
         }
 
         // 2. 校验：所有权限必须由管理员统一审批通过 (status === 1) 方可登录！
         if (user.getStatus() != null && user.getStatus() == 0) {
-            log.warn("Login blocked! User {} (phone: {}) status is 0 (Pending Admin Approval)", user.getRealName(), user.getPhone());
+            log.warn("Login blocked! User {} status is 0 (Pending Admin Approval)", user.getRealName());
             return Result.error("您的账号申请正等待超级管理员审批中，审批同意后方可登录！");
         }
         if (user.getStatus() != null && user.getStatus() == 2) {
-            log.warn("Login blocked! User {} (phone: {}) status is 2 (Rejected)", user.getRealName(), user.getPhone());
+            log.warn("Login blocked! User {} status is 2 (Rejected)", user.getRealName());
             return Result.error("您的账号注册申请已被管理员驳回，请重新提交资料申请！");
         }
 
@@ -68,10 +70,11 @@ public class AuthController {
     }
 
     /**
-     * 填写学生姓名、关系及手机号申请小程序登录权限
+     * 填写学生姓名、关系及班级资料提交权限开通申请 (无需强制获取手机号/身份证)
      */
     @PostMapping("/apply-login")
     public Result<String> applyLoginPermission(@RequestBody Map<String, String> params) {
+        String code = params.get("code");
         String parentName = params.get("parentName");
         String studentName = params.get("studentName");
         String relationship = params.get("relationship");
@@ -79,18 +82,17 @@ public class AuthController {
         String roleType = params.getOrDefault("roleType", "STUDENT");
         String danceClassName = params.getOrDefault("danceClassName", "芭蕾/中国舞体验班");
 
-        if (phone == null || phone.trim().isEmpty()) {
-            return Result.error("请输入手机号！");
-        }
+        String openId = (code != null && !code.trim().isEmpty()) ? ("wx_openid_" + Math.abs(code.hashCode())) : null;
+        String userKey = (phone != null && !phone.trim().isEmpty()) ? phone.trim() : (openId != null ? openId : ("user_" + System.currentTimeMillis()));
 
-        log.info("[REST API POST /api/auth/apply-login] Applying for login permission: Parent: {}, Student: {}, Relation: {}, Phone: {}, Role: {}", parentName, studentName, relationship, phone, roleType);
+        log.info("[REST API POST /api/auth/apply-login] Standard OpenID Application: Parent: {}, Student: {}, Key: {}, Role: {}", parentName, studentName, userKey, roleType);
 
-        User existingUser = userMapper.selectByUsername(phone.trim());
+        User existingUser = userMapper.selectByUsername(userKey);
         if (existingUser != null) {
             if (existingUser.getStatus() == 0) {
-                return Result.error("该手机号已提交过申请，正等待管理员审批，请勿重复提交！");
+                return Result.error("该账号已提交过申请，正等待管理员审批，请勿重复提交！");
             } else if (existingUser.getStatus() == 1) {
-                return Result.error("该手机号已由管理员审核通过，请直接进行登录！");
+                return Result.error("该账号已由管理员审核通过，请直接点击登录！");
             } else {
                 // 已被驳回，更新后重新提交审批
                 existingUser.setRealName(parentName != null && !parentName.trim().isEmpty() ? parentName : (studentName + relationship));
@@ -105,11 +107,12 @@ public class AuthController {
 
         User newUser = new User();
         newUser.setUserId(com.wudao.common.SnowflakeIdWorker.generateId());
-        newUser.setUsername(phone.trim());
+        newUser.setUsername(userKey);
+        newUser.setOpenId(openId != null ? openId : userKey);
         newUser.setRealName(parentName != null && !parentName.trim().isEmpty() ? parentName : (studentName + relationship));
         newUser.setStudentName(studentName);
         newUser.setRelationship(relationship);
-        newUser.setPhone(phone.trim());
+        newUser.setPhone((phone != null && !phone.trim().isEmpty()) ? phone.trim() : userKey);
         newUser.setRoleType(roleType);
         newUser.setDanceClassName(com.wudao.common.DanceClassEnum.getCodeByName(danceClassName));
         newUser.setRemainingHours(20);
@@ -118,7 +121,7 @@ public class AuthController {
 
         userMapper.insertUser(newUser);
 
-        log.info("New User Application created! User ID: {}, Name: {}, ClassEnum: {}, Status: 0", newUser.getUserId(), newUser.getRealName(), newUser.getDanceClassName());
+        log.info("New User Application created! User ID: {}, Name: {}, Status: 0", newUser.getUserId(), newUser.getRealName());
 
         return Result.success("权限申请提交成功！必须等待超级管理员同意后方可登录小程序。");
     }

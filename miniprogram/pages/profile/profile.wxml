@@ -188,27 +188,36 @@
       <scroll-view scroll-y class="modal-body">
         <view class="form-group">
           <text class="field-label">活动名称 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：2026金帆舞团年度大剧院展演" model:value="{{taskForm.activityName}}" />
+          <input class="fancy-input" placeholder="例如：2026金帆舞团年度大剧院展演" value="{{taskForm.activityName}}" bindinput="onTaskInput" data-field="activityName" />
+        </view>
+        <view class="form-group margin-top-8">
+          <text class="field-label">所属年级/班级 <text class="required">*</text></text>
+          <picker bindchange="onTaskClassChange" value="{{taskClassIndex}}" range="{{classPickerOptions}}">
+            <view class="fancy-picker-box" style="padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <text class="picker-txt" style="font-size: 13px; color: #1e293b;">{{classPickerOptions[taskClassIndex] || '二年级'}}</text>
+              <text class="picker-arrow" style="font-size: 12px; color: #64748b;">▼</text>
+            </view>
+          </picker>
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">招募岗位名称 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：后台化妆发型兼看护家长" model:value="{{taskForm.taskName}}" />
+          <input class="fancy-input" placeholder="例如：后台化妆发型兼看护家长" value="{{taskForm.taskName}}" bindinput="onTaskInput" data-field="taskName" />
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">服务日期 (活动开展日期) <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：2026-08-30" model:value="{{taskForm.taskDate}}" />
+          <input class="fancy-input" placeholder="例如：2026-08-30" value="{{taskForm.taskDate}}" bindinput="onTaskInput" data-field="taskDate" />
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">服务具体时间段说明</text>
-          <input class="fancy-input" placeholder="例如：13:30 - 17:30 (4小时)" model:value="{{taskForm.serviceTime}}" />
+          <input class="fancy-input" placeholder="例如：13:30 - 17:30 (4小时)" value="{{taskForm.serviceTime}}" bindinput="onTaskInput" data-field="serviceTime" />
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">招募名额 (人数)</text>
-          <input class="fancy-input" type="number" placeholder="4" model:value="{{taskForm.quotaCount}}" />
+          <input class="fancy-input" type="number" placeholder="4" value="{{taskForm.quotaCount}}" bindinput="onTaskInput" data-field="quotaCount" />
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">岗位说明与要求</text>
-          <textarea class="fancy-textarea" placeholder="请说明工作职责与注意事项..." model:value="{{taskForm.description}}"></textarea>
+          <textarea class="fancy-textarea" placeholder="请说明工作职责与注意事项..." value="{{taskForm.description}}" bindinput="onTaskInput" data-field="description"></textarea>
         </view>
       </scroll-view>
       <view class="modal-foot">
@@ -324,7 +333,6 @@
               <text class="sec-sub margin-top-4" style="color: #334155; font-size: 12px; line-height: 1.5;">{{item.content}}</text>
               <view class="item-header margin-top-6">
                 <text class="group-tip" style="font-size: 10px;">{{item.createdAt}}</text>
-                <view class="im-pill status-click" bindtap="likeThought" data-id="{{item.id}}">❤️ {{item.likesCount || 0}} 点赞</view>
               </view>
             </view>
           </block>

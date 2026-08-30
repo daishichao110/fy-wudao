@@ -3,26 +3,26 @@
 <mapper namespace="com.wudao.mapper.UserMapper">
 
     <select id="selectAll" resultType="com.wudao.entity.User">
-        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        SELECT user_id, username, open_id, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
         FROM sys_user
         ORDER BY user_id ASC
     </select>
 
     <select id="selectById" resultType="com.wudao.entity.User">
-        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        SELECT user_id, username, open_id, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
         FROM sys_user
         WHERE user_id = #{userId}
     </select>
 
     <select id="selectByUsername" resultType="com.wudao.entity.User">
-        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        SELECT user_id, username, open_id, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
         FROM sys_user
-        WHERE username = #{username} OR phone = #{username}
+        WHERE open_id = #{username} OR username = #{username} OR phone = #{username}
         LIMIT 1
     </select>
 
     <select id="selectFirstByRole" resultType="com.wudao.entity.User">
-        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        SELECT user_id, username, open_id, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
         FROM sys_user
         WHERE role_type = #{roleType} AND status = 1
         ORDER BY user_id ASC
@@ -30,7 +30,7 @@
     </select>
 
     <select id="selectPendingUsers" resultType="com.wudao.entity.User">
-        SELECT user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
+        SELECT user_id, username, open_id, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status, created_at
         FROM sys_user
         WHERE status = 0
         <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理'">
@@ -53,9 +53,9 @@
 
     <insert id="insertUser" parameterType="com.wudao.entity.User">
         INSERT INTO sys_user (
-            user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status
+            user_id, username, open_id, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status
         ) VALUES (
-            #{userId}, #{username}, #{realName}, #{studentName}, #{relationship}, #{phone}, #{avatarUrl}, #{roleType}, #{danceClassName}, #{remainingHours}, #{volunteerPoints}, #{status}
+            #{userId}, #{username}, #{openId}, #{realName}, #{studentName}, #{relationship}, #{phone}, #{avatarUrl}, #{roleType}, #{danceClassName}, #{remainingHours}, #{volunteerPoints}, #{status}
         )
     </insert>
 

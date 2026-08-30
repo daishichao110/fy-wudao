@@ -8,7 +8,8 @@ Page({
     parentName: '',
     teacherName: '',
     danceClassName: '',
-    phone: '', // 彻底移除任何默认手机号，纯净绑定真实授权手机号
+    phone: '', // 微信授权解析出的手机号
+    inputPhone: '', // 手动输入的手机号 (与 phone 分离，避免输入过程中视图重新渲染切换)
     relationOptions: ['爸爸', '妈妈', '爷爷/奶奶/其他监护人'],
     relationIndex: 0,
     classEnumList: [
@@ -54,43 +55,21 @@ Page({
     this.setData({ showRegisterForm: false });
   },
 
-  // 💬 微信官方原生授权手机号回调处理 (获取当前微信绑定的真实手机号)
-  onGetPhoneNumber(e) {
-    console.log('微信授权手机号回调:', e.detail);
-
-    // 1. 如果用户拒绝授权手机号
-    if (e.detail && e.detail.errMsg && e.detail.errMsg.indexOf('deny') !== -1) {
-      wx.showToast({ title: '未授权手机号，无法进行身份验证', icon: 'none' });
-      return;
-    }
-
-    // 2. 从微信原生授权回调中提取真实的手机号 (DevTools / 微信真机环境)
-    let realPhone = '';
-    if (e.detail && e.detail.phoneNumber) {
-      realPhone = e.detail.phoneNumber;
-    } else if (e.detail && e.detail.phone) {
-      realPhone = e.detail.phone;
-    }
-
-    // 3. 将真实授权手机号同步至 data 并发起后端身份识别
-    if (realPhone) {
-      this.setData({ phone: realPhone });
-    }
-    this.executeWxLoginCheck(realPhone);
-  },
-
-  // 核心校验逻辑：微信登录 -> 匹配授权手机号 -> 已批准直接进入主页 / 未批准提示并携带该手机号进入申请页
-  executeWxLoginCheck(authorizedPhone) {
+  // 💬 微信一键授权登录 (基于标准 wx.login 识别凭证 code)
+  handleWxLogin() {
     if (this.data.loading) return;
     this.setData({ loading: true });
 
-    const targetPhone = authorizedPhone || this.data.phone || '';
-
     wx.login({
       success: (loginRes) => {
+        if (!loginRes.code) {
+          this.setData({ loading: false });
+          wx.showToast({ title: '获取微信凭证失败，请重试', icon: 'none' });
+          return;
+        }
+
         api.wxLogin({
-          code: loginRes.code || 'wx_code',
-          phone: targetPhone
+          code: loginRes.code
         }).then(res => {
           this.setData({ loading: false });
           if (res.data && res.data.userInfo) {
@@ -115,7 +94,7 @@ Page({
         }).catch(err => {
           this.setData({ loading: false });
           
-          // 未批准或未注册：跳转到填写申请卡片！
+          // 未批准或未注册：提示并进入资料申请卡片
           wx.showModal({
             title: '🔒 暂未开通登录权限',
             content: (err && err.message) || '您的微信账号尚未开通权限。点击【去申请】填写资料提交审批！',
@@ -124,6 +103,7 @@ Page({
             success: (modalRes) => {
               if (modalRes.confirm) {
                 this.setData({
+                  wxCode: loginRes.code,
                   showRegisterForm: true
                 });
               }
@@ -138,14 +118,9 @@ Page({
     });
   },
 
-  // 📝 提交申请 (智能区分专业老师 vs 学员/家长)
+  // 📝 提交申请 (无需强制获取手机号/身份证，直接提交身份信息)
   handleApplyLoginPermission() {
-    const { selectedRole, teacherName, danceClassName, studentName, parentName, phone, relationOptions, relationIndex, classIndex, classEnumList } = this.data;
-
-    if (!phone || !phone.trim() || phone.trim().length !== 11) {
-      wx.showToast({ title: '请输入正确的11位手机号', icon: 'none' });
-      return;
-    }
+    const { selectedRole, teacherName, danceClassName, studentName, parentName, phone, relationOptions, relationIndex, classIndex, classEnumList, wxCode } = this.data;
 
     let payload = {};
 
@@ -155,10 +130,11 @@ Page({
         return;
       }
       payload = {
+        code: wxCode || '',
         parentName: teacherName.trim(),
         studentName: '教务教师',
         relationship: '教师',
-        phone: phone.trim(),
+        phone: phone ? phone.trim() : '',
         roleType: 'TEACHER',
         danceClassName: danceClassName ? danceClassName.trim() : '全校芭蕾/中国舞教务'
       };
@@ -170,10 +146,11 @@ Page({
       const relationship = (relationOptions && relationOptions[relationIndex]) ? relationOptions[relationIndex] : '爸爸';
       const chosenClassObj = (classEnumList && classEnumList[classIndex]) ? classEnumList[classIndex] : { code: 'GRADE_2', name: '二年级' };
       payload = {
+        code: wxCode || '',
         studentName: studentName.trim(),
         parentName: parentName ? parentName.trim() : (studentName.trim() + relationship),
         relationship: relationship,
-        phone: phone.trim(),
+        phone: phone ? phone.trim() : '',
         roleType: selectedRole,
         danceClassName: chosenClassObj.code || 'GRADE_2'
       };
@@ -185,7 +162,7 @@ Page({
       this.setData({ applying: false, showRegisterForm: false });
       wx.showModal({
         title: '✅ 申请提交成功',
-        content: `您的手机号 (${phone}) 开通申请已提交。必须等待超级管理员审批同意后，再次点击微信授权登录即可直接进入对应权限主页！`,
+        content: `您的身份开通申请已成功提交！等待超级管理员审批同意后，点击【微信一键授权登录】即可直接进入对应权限主页。`,
         showCancel: false
       });
     }).catch(err => {

@@ -59,7 +59,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         // 发票凭证默认设置后端本地资源路径
         if (!StringUtils.hasText(purchase.getProofUrl())) {
-            purchase.setProofUrl("http://localhost:8080/image/banner1.jpg");
+            purchase.setProofUrl("/image/banner1.jpg");
         }
 
         if (purchase.getPurchaseId() == null || purchase.getPurchaseId() <= 0) {

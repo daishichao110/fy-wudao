@@ -41,7 +41,7 @@ public class TeacherController {
         }
 
         if (teacher.getAvatarUrl() == null || teacher.getAvatarUrl().trim().isEmpty()) {
-            teacher.setAvatarUrl("http://localhost:8080/image/teacher1.jpg");
+            teacher.setAvatarUrl("/image/teacher1.jpg");
         }
 
         log.info("[REST API POST /api/teacher/create] Adding new teacher bio: Name={}, Title={}", teacher.getName(), teacher.getTitle());

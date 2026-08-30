@@ -76,7 +76,7 @@ const loadData = async () => {
 
 const exportSheet = () => {
   // 直接下载后端生成的 UTF-8 BOM CSV 文件
-  window.open('http://localhost:8080/api/metric/export-csv', '_blank')
+  window.open('https://52ddup.com/api/metric/export-csv', '_blank')
   store.showToast('演出服订购单下载中！', 'success')
 }
 
