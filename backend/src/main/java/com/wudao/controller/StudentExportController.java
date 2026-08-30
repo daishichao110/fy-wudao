@@ -19,7 +19,7 @@ public class StudentExportController {
     public Result<String> exportStudents() {
         StringBuilder csv = new StringBuilder();
         csv.append("学员ID,账号名,真实姓名,关联学生,与学生关系,手机号,身份角色,所在班级\n");
-        List<User> list = userMapper.selectAllUsers();
+        List<User> list = userMapper.selectAll();
         if (list != null) {
             for (User user : list) {
                 csv.append(user.getUserId()).append(",")

@@ -131,6 +131,41 @@
           </view>
         </view>
 
+        <!-- 📏 综合档案：身材体态量体数据区域 -->
+        <view class="section-title margin-top-12" style="font-size: 13px; font-weight: 800; color: #ea580c;">
+          📏 学员身材体态量体档案 (演出服装订购用)
+        </view>
+
+        <view class="form-row-3 margin-top-6">
+          <view class="form-group flex-1">
+            <text class="field-label">身高(cm)</text>
+            <input class="fancy-input" type="digit" placeholder="138" value="{{scoreForm.heightCm}}" bindinput="onFormInput" data-field="heightCm" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">体重(kg)</text>
+            <input class="fancy-input" type="digit" placeholder="30" value="{{scoreForm.weightKg}}" bindinput="onFormInput" data-field="weightKg" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">舞鞋码数</text>
+            <input class="fancy-input" type="digit" placeholder="34" value="{{scoreForm.shoeSize}}" bindinput="onFormInput" data-field="shoeSize" />
+          </view>
+        </view>
+
+        <view class="form-row-3 margin-top-6">
+          <view class="form-group flex-1">
+            <text class="field-label">胸围(cm)</text>
+            <input class="fancy-input" type="digit" placeholder="68" value="{{scoreForm.bustCm}}" bindinput="onFormInput" data-field="bustCm" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">腰围(cm)</text>
+            <input class="fancy-input" type="digit" placeholder="56" value="{{scoreForm.waistCm}}" bindinput="onFormInput" data-field="waistCm" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">臀围(cm)</text>
+            <input class="fancy-input" type="digit" placeholder="72" value="{{scoreForm.hipCm}}" bindinput="onFormInput" data-field="hipCm" />
+          </view>
+        </view>
+
         <view class="form-group margin-top-8">
           <text class="field-label">📜 艺术简历/评价备注</text>
           <textarea class="fancy-textarea" placeholder="例如：芭蕾舞4级考级通过；全区大赛一等奖..." value="{{scoreForm.resumeBio}}" bindinput="onFormInput" data-field="resumeBio"></textarea>
@@ -139,7 +174,7 @@
 
       <view class="modal-foot">
         <view class="act-btn btn-reject" bindtap="closeScoreModal">取消</view>
-        <view class="act-btn btn-pass" bindtap="saveScoreSubmit">💾 保存成绩信息</view>
+        <view class="act-btn btn-pass" bindtap="saveScoreSubmit">💾 保存全量成绩与档案</view>
       </view>
     </view>
   </view>

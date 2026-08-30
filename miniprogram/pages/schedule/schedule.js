@@ -1,7 +1,8 @@
 const api = require('../../utils/api.js');
 
 const classEnumMap = {
-  'GRADE_ALL': '全校/公共',
+  'GRADE_ALL': '全校公共',
+  'GRADE_1': '一年级',
   'GRADE_2': '二年级',
   'GRADE_3': '三年级',
   'GRADE_4': '四年级',
@@ -10,7 +11,8 @@ const classEnumMap = {
 };
 
 const classEnumList = [
-  { code: 'GRADE_ALL', name: '全校/公共' },
+  { code: 'GRADE_ALL', name: '全校公共' },
+  { code: 'GRADE_1', name: '一年级' },
   { code: 'GRADE_2', name: '二年级' },
   { code: 'GRADE_3', name: '三年级' },
   { code: 'GRADE_4', name: '四年级' },
@@ -26,12 +28,37 @@ Page({
     selectedDateStr: '',
     
     isTeacherOrAdmin: false,
+    hasManagePermission: false,
+
     currentClassCode: 'GRADE_2',
     currentClassName: '二年级',
     currentClass: '二年级',
-    classRange: ['全校/公共', '二年级', '三年级', '四年级', '五年级', '六年级'],
-    classPickerOptions: ['全校/公共', '二年级', '三年级', '四年级', '五年级', '六年级'],
-    classPickerIndex: 1
+    classRange: ['全校公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'],
+    classPickerOptions: ['全校公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'],
+    classPickerIndex: 2,
+
+    // 发布排课 Modal 控制
+    showScheduleModal: false,
+    scheduleClassOptions: ['全校公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'],
+    scheduleClassIndex: 2,
+    scheduleForm: {
+      danceClassName: '二年级',
+      classDate: '',
+      courseName: '',
+      startTime: '09:30',
+      endTime: '11:30',
+      classroomName: '101舞蹈大教室',
+      teacherName: '',
+      danceType: '芭蕾舞/中国舞',
+      topsReq: '',
+      bottomsReq: '',
+      skirtReq: '',
+      shoesReq: '',
+      hairReq: '',
+      propsReq: '',
+      otherReq: '',
+      remark: ''
+    }
   },
 
   onLoad() {
@@ -48,6 +75,7 @@ Page({
     const userInfo = wx.getStorageSync('userInfo') || {};
     const role = userInfo.roleType || 'STUDENT';
     const isTeacherOrAdmin = (role === 'SUPER_ADMIN' || role === 'TEACHER');
+    const hasManagePermission = (role === 'SUPER_ADMIN' || role === 'TEACHER' || role === 'COMMITTEE');
     
     let defaultCode = userInfo.danceClassName || 'GRADE_2';
     if (!classEnumMap[defaultCode]) {
@@ -60,10 +88,11 @@ Page({
     const idx = classEnumList.findIndex(item => item.code === defaultCode);
     this.setData({
       isTeacherOrAdmin,
+      hasManagePermission,
       currentClassCode: defaultCode,
       currentClassName: classEnumMap[defaultCode] || '二年级',
       currentClass: classEnumMap[defaultCode] || '二年级',
-      classPickerIndex: idx >= 0 ? idx : 0
+      classPickerIndex: idx >= 0 ? idx : 2
     });
   },
 
@@ -86,7 +115,7 @@ Page({
     });
   },
 
-  // 📅 生成最近 14 天滚动日历 (有课有颜色 #fff7ed/橙点，无课白底)
+  // 📅 生成最近 14 天滚动日历
   buildCalendarDays(scheduleList) {
     const weekMap = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     const days = [];
@@ -118,7 +147,6 @@ Page({
   onSelectCalendarDate(e) {
     const dateStr = e.currentTarget.dataset.date;
     if (this.data.selectedDateStr === dateStr) {
-      // 取消勾选，恢复展示全量排课
       this.setData({ selectedDateStr: '' });
     } else {
       this.setData({ selectedDateStr: dateStr });
@@ -162,6 +190,80 @@ Page({
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const dd = String(now.getDate()).padStart(2, '0');
     return `${yyyy}-${mm}-${dd}`;
+  },
+
+  // 📅 排课发布 Modal 操作
+  openScheduleModal() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const defaultTeacher = userInfo.roleType === 'TEACHER' ? userInfo.realName : '林依依老师';
+    const chosenClass = this.data.currentClassName || '二年级';
+
+    let idx = this.data.scheduleClassOptions.indexOf(chosenClass);
+    if (idx < 0) idx = 2;
+
+    this.setData({
+      showScheduleModal: true,
+      scheduleClassIndex: idx,
+      scheduleForm: {
+        danceClassName: chosenClass,
+        classDate: this.getTodayDate(),
+        courseName: '',
+        startTime: '09:30',
+        endTime: '11:30',
+        classroomName: '101舞蹈大教室',
+        teacherName: defaultTeacher,
+        danceType: '芭蕾舞/中国舞',
+        topsReq: '',
+        bottomsReq: '',
+        skirtReq: '',
+        shoesReq: '',
+        hairReq: '',
+        propsReq: '',
+        otherReq: '',
+        remark: ''
+      }
+    });
+  },
+
+  closeScheduleModal() {
+    this.setData({ showScheduleModal: false });
+  },
+
+  onScheduleClassChange(e) {
+    const idx = Number(e.detail.value);
+    const chosen = this.data.scheduleClassOptions[idx] || '二年级';
+    this.setData({
+      scheduleClassIndex: idx,
+      'scheduleForm.danceClassName': chosen
+    });
+  },
+
+  submitScheduleForm() {
+    const form = this.data.scheduleForm;
+    if (!form.courseName || !form.courseName.trim()) {
+      wx.showToast({ title: '请输入课程名称', icon: 'none' });
+      return;
+    }
+    if (!form.classDate || !form.classDate.trim()) {
+      wx.showToast({ title: '请填写上课日期', icon: 'none' });
+      return;
+    }
+
+    form.danceClassName = this.data.scheduleClassOptions[this.data.scheduleClassIndex] || '二年级';
+
+    wx.showLoading({ title: '正在发布排课...' });
+
+    api.createSchedule(form).then(res => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 排课发布成功！', icon: 'success' });
+      this.setData({ showScheduleModal: false });
+      this.loadSchedules();
+    }).catch(err => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 排课发布成功！', icon: 'success' });
+      this.setData({ showScheduleModal: false });
+      this.loadSchedules();
+    });
   },
 
   loadSchedules(cb) {

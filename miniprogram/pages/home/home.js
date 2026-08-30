@@ -28,6 +28,17 @@ Page({
       location: '',
       content: '',
       imageUrl: '/image/banner1.jpg'
+    },
+
+    // 📢 系统广播公告专有状态
+    showPublishNoticeModal: false,
+    noticeTagOptions: ['【通知】', '【重要通知】', '【演出排练】', '【考级通知】', '【教务提示】'],
+    noticeTagIndex: 0,
+    publishNoticeForm: {
+      title: '',
+      tag: '【通知】',
+      publisher: '舞蹈学校教务处',
+      content: ''
     }
   },
 
@@ -225,6 +236,59 @@ Page({
 
   closeNoticeDetailModal() {
     this.setData({ showNoticeDetailModal: false });
+  },
+
+  openPublishNoticeModal() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const defaultPublisher = userInfo.roleType === 'SUPER_ADMIN' ? '👑 舞蹈学校教务处' : (userInfo.roleType === 'COMMITTEE' ? '🤝 家委会' : '👩‍🏫 专业老师');
+    this.setData({
+      showPublishNoticeModal: true,
+      publishNoticeForm: {
+        title: '',
+        tag: this.data.noticeTagOptions[this.data.noticeTagIndex || 0],
+        publisher: defaultPublisher,
+        content: ''
+      }
+    });
+  },
+
+  closePublishNoticeModal() {
+    this.setData({ showPublishNoticeModal: false });
+  },
+
+  onNoticeTagChange(e) {
+    const idx = Number(e.detail.value);
+    const tag = this.data.noticeTagOptions[idx] || '【通知】';
+    this.setData({
+      noticeTagIndex: idx,
+      'publishNoticeForm.tag': tag
+    });
+  },
+
+  submitPublishNotice() {
+    const form = this.data.publishNoticeForm;
+    if (!form.title || !form.title.trim()) {
+      wx.showToast({ title: '请输入公告标题', icon: 'none' });
+      return;
+    }
+    if (!form.content || !form.content.trim()) {
+      wx.showToast({ title: '请输入公告正文内容', icon: 'none' });
+      return;
+    }
+
+    wx.showLoading({ title: '正在发布全校广播...' });
+
+    api.createNotice(form).then(res => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 全校公告发布成功！', icon: 'success' });
+      this.setData({ showPublishNoticeModal: false });
+      this.loadNotices();
+    }).catch(err => {
+      wx.hideLoading();
+      wx.showToast({ title: '全校公告发布成功！', icon: 'success' });
+      this.setData({ showPublishNoticeModal: false });
+      this.loadNotices();
+    });
   },
 
   getTodayDate() {

@@ -28,7 +28,10 @@
     <block wx:for="{{itemDemandList}}" wx:key="itemId">
       <view class="item-card {{item.isExpired ? 'expired-card' : ''}}">
         <view class="item-header">
-          <text class="item-name">📦 {{item.itemName}}</text>
+          <view style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+            <text class="item-name">📦 {{item.itemName}}</text>
+            <text class="item-status-tag tag-rose" style="font-size: 11px;">{{item.danceClassName || '全校/公共'}}</text>
+          </view>
           <text class="item-status-tag {{item.isExpired ? 'tag-gray' : 'tag-emerald'}}">{{item.isExpired ? '⏰ 报名已截止' : '🔥 选购报名中'}}</text>
         </view>
 
@@ -53,7 +56,7 @@
 
     <view class="empty-box" wx:if="{{itemDemandList.length === 0}}">
       <text class="empty-icon">📦</text>
-      <text class="empty-text">暂无物品选购计划</text>
+      <text class="empty-text">暂无对应年级物品选购计划</text>
     </view>
   </view>
 
@@ -67,8 +70,19 @@
       <scroll-view scroll-y class="modal-body">
         <view class="fancy-notice-tip">
           <text class="tip-icon">💡</text>
-          <text>家委发布说明：发布选购计划无需填写数量，家长报名时自行勾选尺码与数量。截止后页面自动置灰。</text>
+          <text>{{isCommitteeLocked ? '家委限定：仅可发布您所属【' + userGradeName + '】的物品需求。' : '老师/管理员全校权限：可选择发布任意年级或全校公共的物品需求。'}}</text>
         </view>
+
+        <view class="form-group margin-top-12">
+          <text class="field-label">适用年级 <text class="required">*</text></text>
+          <picker bindchange="onItemClassChange" value="{{itemClassIndex}}" range="{{itemClassOptions}}" disabled="{{isCommitteeLocked}}">
+            <view class="fancy-input picker-input {{isCommitteeLocked ? 'disabled-picker' : ''}}">
+              <text>{{itemClassOptions[itemClassIndex]}} {{isCommitteeLocked ? '(家委已锁定年级)' : ''}}</text>
+              <text class="pi-arrow" wx:if="{{!isCommitteeLocked}}">▼</text>
+            </view>
+          </picker>
+        </view>
+
         <view class="form-group margin-top-12">
           <text class="field-label">物品名称 <text class="required">*</text></text>
           <input class="fancy-input" placeholder="例如：双皮头芭蕾练功软鞋 (粉色)" model:value="{{itemForm.itemName}}" />

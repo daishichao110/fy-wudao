@@ -18,7 +18,7 @@
     </swiper>
   </view>
 
-  <!-- 2. 最新公告跑马灯 (点击任意公告进入详情) -->
+  <!-- 2. 最新公告跑马灯 (点击任意公告进入详情，管理员/老师/家委支持快捷发布全校公告) -->
   <view class="notice-bar">
     <text class="notice-tag">📢 公告</text>
     <swiper class="notice-swiper" vertical autoplay circular interval="3500">
@@ -28,6 +28,7 @@
         </swiper-item>
       </block>
     </swiper>
+    <view class="publish-quick-btn" bindtap="openPublishNoticeModal" wx:if="{{canPublishBanner}}">＋ 发布公告</view>
   </view>
 
   <!-- 3. 🏛️ 舞团品牌与办学特色 (精简保留干净标题与详情跳转，去除重复图片与下方赘余) -->
@@ -187,6 +188,52 @@
       </scroll-view>
       <view class="modal-footer">
         <view class="btn-confirm" bindtap="closeNoticeDetailModal">关闭并返回</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 9. 📢 发布全校系统公告 Modal 弹窗 -->
+  <view class="modal-mask" wx:if="{{showPublishNoticeModal}}">
+    <view class="modal-box">
+      <view class="modal-header">
+        <text class="modal-title">📢 发布全校系统公告</text>
+        <text class="close-icon" bindtap="closePublishNoticeModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="fancy-notice-tip margin-bottom-8">
+          <text class="tip-icon">💡</text>
+          <text>公告说明：发布的系统公告面向全校全体家长与教务广播，无需区分年级。</text>
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">公告标题 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：2026秋季开学前剧目排练与考级重要通知" model:value="{{publishNoticeForm.title}}" />
+        </view>
+
+        <view class="form-row-2 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">公告标签</text>
+            <picker bindchange="onNoticeTagChange" value="{{noticeTagIndex}}" range="{{noticeTagOptions}}">
+              <view class="fancy-input picker-input">
+                <text>{{noticeTagOptions[noticeTagIndex]}}</text>
+                <text class="pi-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">发布单位署名</text>
+            <input class="fancy-input" placeholder="舞蹈学校教务处" model:value="{{publishNoticeForm.publisher}}" />
+          </view>
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">公告正文详情内容 <text class="required">*</text></text>
+          <textarea class="fancy-textarea" style="height: 100px;" placeholder="请输入广播公告的具体通知正文内容、注意事项与具体安排..." model:value="{{publishNoticeForm.content}}"></textarea>
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="btn-cancel" bindtap="closePublishNoticeModal">取消</view>
+        <view class="btn-confirm" bindtap="submitPublishNotice">🚀 立即发布全校广播</view>
       </view>
     </view>
   </view>

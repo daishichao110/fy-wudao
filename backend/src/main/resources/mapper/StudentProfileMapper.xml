@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.StudentProfileMapper">
+
+    <resultMap id="StudentProfileResult" type="com.wudao.entity.StudentProfile">
+        <id property="profileId" column="profile_id" />
+        <result property="studentId" column="student_id" />
+        <result property="studentName" column="student_name" />
+        <result property="gradeLevel" column="grade_level" />
+        <result property="chineseScore" column="chinese_score" />
+        <result property="mathScore" column="math_score" />
+        <result property="englishScore" column="english_score" />
+        <result property="heightCm" column="height_cm" />
+        <result property="weightKg" column="weight_kg" />
+        <result property="bustCm" column="bust_cm" />
+        <result property="waistCm" column="waist_cm" />
+        <result property="hipCm" column="hip_cm" />
+        <result property="shoeSize" column="shoe_size" />
+        <result property="parentName" column="parent_name" />
+        <result property="parentPhone" column="parent_phone" />
+        <result property="resumeBio" column="resume_bio" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <select id="selectByStudentId" resultMap="StudentProfileResult">
+        SELECT * FROM student_profile WHERE student_id = #{studentId} LIMIT 1
+    </select>
+
+    <select id="selectByStudentName" resultMap="StudentProfileResult">
+        SELECT * FROM student_profile WHERE student_name = #{studentName} LIMIT 1
+    </select>
+
+    <select id="selectAllProfiles" resultMap="StudentProfileResult">
+        SELECT * FROM student_profile
+        <where>
+            <if id="gradeLevel != null and gradeLevel != '' and gradeLevel != '全校全部'">
+                grade_level = #{gradeLevel}
+            </if>
+        </where>
+        ORDER BY updated_at DESC
+    </select>
+
+    <insert id="insertProfile">
+        INSERT INTO student_profile (
+            profile_id, student_id, student_name, grade_level,
+            chinese_score, math_score, english_score,
+            height_cm, weight_kg, bust_cm, waist_cm, hip_cm, shoe_size,
+            parent_name, parent_phone, resume_bio, updated_at
+        ) VALUES (
+            #{profileId}, #{studentId}, #{studentName}, #{gradeLevel},
+            #{chineseScore}, #{mathScore}, #{englishScore},
+            #{heightCm}, #{weightKg}, #{bustCm}, #{waistCm}, #{hipCm}, #{shoeSize},
+            #{parentName}, #{parentPhone}, #{resumeBio}, NOW()
+        )
+    </insert>
+
+    <update id="updateProfile">
+        UPDATE student_profile
+        <set>
+            <if id="studentName != null and studentName != ''">student_name = #{studentName},</if>
+            <if id="gradeLevel != null and gradeLevel != ''">grade_level = #{gradeLevel},</if>
+            <if id="chineseScore != null">chinese_score = #{chineseScore},</if>
+            <if id="mathScore != null">math_score = #{mathScore},</if>
+            <if id="englishScore != null">english_score = #{englishScore},</if>
+            <if id="heightCm != null">height_cm = #{heightCm},</if>
+            <if id="weightKg != null">weight_kg = #{weightKg},</if>
+            <if id="bustCm != null">bust_cm = #{bustCm},</if>
+            <if id="waistCm != null">waist_cm = #{waistCm},</if>
+            <if id="hipCm != null">hip_cm = #{hipCm},</if>
+            <if id="shoeSize != null">shoe_size = #{shoeSize},</if>
+            <if id="parentName != null">parent_name = #{parentName},</if>
+            <if id="parentPhone != null">parent_phone = #{parentPhone},</if>
+            <if id="resumeBio != null">resume_bio = #{resumeBio},</if>
+            updated_at = NOW()
+        </set>
+        WHERE profile_id = #{profileId} OR student_id = #{studentId}
+    </update>
+
+</mapper>

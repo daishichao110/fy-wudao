@@ -12,7 +12,10 @@
           </view>
         </picker>
       </view>
-      <text class="filter-tip" wx:if="{{selectedDateStr}}" bindtap="clearDateFilter">重置日期 ✖</text>
+      <view style="display: flex; align-items: center; gap: 8px;">
+        <view class="h-btn btn-orange" style="font-size: 11px; padding: 4px 10px; border-radius: 12px; background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; font-weight: 700;" bindtap="openScheduleModal" wx:if="{{hasManagePermission}}">＋ 发布排课</view>
+        <text class="filter-tip" wx:if="{{selectedDateStr}}" bindtap="clearDateFilter">重置 ✖</text>
+      </view>
     </view>
   </view>
 
@@ -101,6 +104,99 @@
     <view class="empty-box" wx:if="{{displayScheduleList.length === 0}}">
       <text class="empty-icon">📅</text>
       <text class="empty-text">该日期/年级暂无排课记录</text>
+    </view>
+  </view>
+
+  <!-- ==================== 4. 📅 发布/新增教务排课 Modal 弹窗 ==================== -->
+  <view class="modal-overlay" wx:if="{{showScheduleModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">📅 发布教务课程排课</text>
+        <text class="close-btn" bindtap="closeScheduleModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="form-row-2 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">适用年级 <text class="required">*</text></text>
+            <picker bindchange="onScheduleClassChange" value="{{scheduleClassIndex}}" range="{{scheduleClassOptions}}">
+              <view class="fancy-input picker-input">
+                <text>{{scheduleClassOptions[scheduleClassIndex]}}</text>
+                <text class="pi-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">上课日期 <text class="required">*</text></text>
+            <input class="fancy-input" placeholder="yyyy-MM-dd" model:value="{{scheduleForm.classDate}}" />
+          </view>
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">课程/剧目名称 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：少儿芭蕾基训与软开度专项" model:value="{{scheduleForm.courseName}}" />
+        </view>
+
+        <view class="form-row-2 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">开始时间</text>
+            <input class="fancy-input" placeholder="09:30" model:value="{{scheduleForm.startTime}}" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">结束时间</text>
+            <input class="fancy-input" placeholder="11:30" model:value="{{scheduleForm.endTime}}" />
+          </view>
+        </view>
+
+        <view class="form-row-2 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">教室房号</text>
+            <input class="fancy-input" placeholder="101舞蹈大教室" model:value="{{scheduleForm.classroomName}}" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">任课导师</text>
+            <input class="fancy-input" placeholder="林依依老师" model:value="{{scheduleForm.teacherName}}" />
+          </view>
+        </view>
+
+        <!-- 服装要求 -->
+        <text class="section-sub-title margin-top-12">👗 服装与着装规范要求</text>
+        <view class="form-row-2 margin-top-6">
+          <view class="form-group flex-1">
+            <text class="field-label">上装</text>
+            <input class="fancy-input" placeholder="粉色芭蕾练功服" model:value="{{scheduleForm.topsReq}}" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">下装/连裤袜</text>
+            <input class="fancy-input" placeholder="白色专业裤袜" model:value="{{scheduleForm.bottomsReq}}" />
+          </view>
+        </view>
+
+        <view class="form-row-2 margin-top-6">
+          <view class="form-group flex-1">
+            <text class="field-label">舞鞋</text>
+            <input class="fancy-input" placeholder="双皮头练功软鞋" model:value="{{scheduleForm.shoesReq}}" />
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">发型盘发</text>
+            <input class="fancy-input" placeholder="高盘丸子头+发网" model:value="{{scheduleForm.hairReq}}" />
+          </view>
+        </view>
+
+        <!-- 教具要求 -->
+        <text class="section-sub-title margin-top-12">🎒 教具与随身物品</text>
+        <view class="form-group margin-top-6">
+          <text class="field-label">教具准备</text>
+          <input class="fancy-input" placeholder="瑜伽垫、弹力带、瑜伽砖2个" model:value="{{scheduleForm.propsReq}}" />
+        </view>
+        <view class="form-group margin-top-6">
+          <text class="field-label">备注交代</text>
+          <textarea class="fancy-textarea" style="height: 60px;" placeholder="录入课前注意事项、剧目卡位交代等..." model:value="{{scheduleForm.remark}}"></textarea>
+        </view>
+      </scroll-view>
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closeScheduleModal">取消</view>
+        <view class="act-btn btn-pass" bindtap="submitScheduleForm">🚀 确认发布排课</view>
+      </view>
     </view>
   </view>
 </view>

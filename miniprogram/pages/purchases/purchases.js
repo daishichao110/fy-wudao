@@ -4,10 +4,15 @@ Page({
   data: {
     userInfo: null,
     userRoleName: '家长/学员',
+    userGradeName: '二年级',
     roleTitle: '📦 集中采购与选购中心',
-    permissionTip: '支持家长在线选购报名、家委到货状态维护与供应商采购单导出',
+    permissionTip: '根据对应注册年级展示选购需求与到货进度',
 
     hasManagePermission: false,
+    isCommitteeLocked: false,
+
+    itemClassOptions: ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'],
+    itemClassIndex: 0,
 
     itemDemandList: [],
 
@@ -17,7 +22,8 @@ Page({
       itemName: '',
       deadline: '',
       expectedArrivalDate: '',
-      arrivalStatus: '未到货'
+      arrivalStatus: '未到货',
+      danceClassName: '全校/公共'
     },
 
     // 导出 Modal
@@ -47,35 +53,77 @@ Page({
   initUserPermissions() {
     const userInfo = wx.getStorageSync('userInfo') || {};
     const role = userInfo.roleType || 'STUDENT';
+    const rawClass = userInfo.danceClassName || 'GRADE_2';
+
+    let targetGradeName = '二年级';
+    if (rawClass.indexOf('GRADE_1') !== -1 || rawClass.indexOf('一年级') !== -1) targetGradeName = '一年级';
+    else if (rawClass.indexOf('GRADE_3') !== -1 || rawClass.indexOf('三年级') !== -1) targetGradeName = '三年级';
+    else if (rawClass.indexOf('GRADE_4') !== -1 || rawClass.indexOf('四年级') !== -1) targetGradeName = '四年级';
+    else if (rawClass.indexOf('GRADE_5') !== -1 || rawClass.indexOf('五年级') !== -1) targetGradeName = '五年级';
+    else if (rawClass.indexOf('GRADE_6') !== -1 || rawClass.indexOf('六年级') !== -1) targetGradeName = '六年级';
 
     let userRoleName = '🎒 学员/家长';
     let roleTitle = '📦 全校物品选购与需求集单';
-    let permissionTip = '已登录账号可参看物品到货状态与选购计划需求';
+    let permissionTip = `对应展示【${targetGradeName}】及全校公共的物品选购需求`;
     let hasManagePermission = false;
+    let isCommitteeLocked = false;
+
+    let itemClassOptions = ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+    let itemClassIndex = 0;
 
     if (role === 'SUPER_ADMIN' || role === 'TEACHER') {
       userRoleName = role === 'SUPER_ADMIN' ? '👑 超级管理员' : '👩‍🏫 专业老师';
       roleTitle = '👑 全校集中采购与选购指挥中心';
-      permissionTip = '管理员与老师可发布选购计划、更新到货状态并一键导出采购清单给供应商';
+      permissionTip = '管理员与老师拥有全校权限，可发布任意年级或全校公共的物品选购计划';
       hasManagePermission = true;
+      isCommitteeLocked = false;
+      itemClassOptions = ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+      itemClassIndex = 0;
     } else if (role === 'COMMITTEE') {
       userRoleName = '🤝 家委会成员';
       roleTitle = '🤝 家委会集中采购协同中心';
-      permissionTip = '家委干部可新增选购计划、维护到货进度与汇总导出各尺码报名数据';
+      permissionTip = `家委仅限发布与维护当前所属【${targetGradeName}】的物品需求`;
       hasManagePermission = true;
+      isCommitteeLocked = true; // 锁定年级，禁止家委会跨年级发布
+      itemClassOptions = [targetGradeName];
+      itemClassIndex = 0;
+    } else {
+      userRoleName = '🎒 学员/家长';
+      roleTitle = '📦 年级物品选购与需求集单';
+      permissionTip = `展示匹配【${targetGradeName}】与全校公共的选购清单`;
+      hasManagePermission = false;
+      isCommitteeLocked = false;
     }
 
     this.setData({
       userInfo,
       userRoleName,
+      userGradeName: targetGradeName,
       roleTitle,
       permissionTip,
-      hasManagePermission
+      hasManagePermission,
+      isCommitteeLocked,
+      itemClassOptions,
+      itemClassIndex
     });
   },
 
   loadItemPlans(cb) {
-    api.getItemDemands().then(res => {
+    const { userInfo } = this.data;
+    const role = userInfo ? userInfo.roleType : 'STUDENT';
+    const rawClass = userInfo ? (userInfo.danceClassName || 'GRADE_2') : 'GRADE_2';
+    
+    let targetGradeName = '二年级';
+    if (rawClass.indexOf('GRADE_1') !== -1 || rawClass.indexOf('一年级') !== -1) targetGradeName = '一年级';
+    else if (rawClass.indexOf('GRADE_3') !== -1 || rawClass.indexOf('三年级') !== -1) targetGradeName = '三年级';
+    else if (rawClass.indexOf('GRADE_4') !== -1 || rawClass.indexOf('四年级') !== -1) targetGradeName = '四年级';
+    else if (rawClass.indexOf('GRADE_5') !== -1 || rawClass.indexOf('五年级') !== -1) targetGradeName = '五年级';
+    else if (rawClass.indexOf('GRADE_6') !== -1 || rawClass.indexOf('六年级') !== -1) targetGradeName = '六年级';
+
+    // 管理员/老师可查全校全部；家长/家委按注册年级精准过滤
+    const filterClass = (role === 'SUPER_ADMIN' || role === 'TEACHER') ? '全校全部' : targetGradeName;
+
+    api.getItemDemands(filterClass).then(res => {
       const list = (res && res.data) ? res.data : [];
       const today = this.getTodayDate();
       const mapped = list.map(item => {
@@ -87,7 +135,8 @@ Page({
           expectedArrivalDate: item.expectedArrivalDate || '',
           arrivalStatus: item.arrivalStatus || '未到货',
           isExpired: isExpired,
-          sizeSummaryStr: item.sizeSummaryStr || '',
+          danceClassName: item.danceClassName || '全校/公共',
+          sizeSummaryStr: item.sizeSummaryStr || '已登记采购需求',
           signedCount: item.signedCount || 0
         };
       });
@@ -99,15 +148,26 @@ Page({
     });
   },
 
-  openItemModal() {
+  onItemClassChange(e) {
+    const idx = Number(e.detail.value);
+    const chosen = this.data.itemClassOptions[idx] || '全校/公共';
     this.setData({
+      itemClassIndex: idx,
+      'itemForm.danceClassName': chosen
+    });
+  },
+
+  openItemModal() {
+    const chosenClass = this.data.itemClassOptions[this.data.itemClassIndex] || '全校/公共';
+    this.setData({
+      showItemDemandModal: true,
       itemForm: {
-        itemName: '双皮头芭蕾练功软鞋 (粉色)',
-        deadline: '2026-08-30',
-        expectedArrivalDate: '2026-09-05',
-        arrivalStatus: '未到货'
-      },
-      showItemDemandModal: true
+        itemName: '',
+        deadline: this.getTodayDate(),
+        expectedArrivalDate: '',
+        arrivalStatus: '未到货',
+        danceClassName: chosenClass
+      }
     });
   },
 
@@ -122,25 +182,50 @@ Page({
       return;
     }
 
+    const chosenClass = this.data.itemClassOptions[this.data.itemClassIndex] || '全校/公共';
+    form.danceClassName = chosenClass;
+
     wx.showLoading({ title: '正在发布选购计划...' });
 
-    api.updateItemDemand({
-      itemName: form.itemName.trim(),
-      deadline: form.deadline,
-      expectedArrivalDate: form.expectedArrivalDate,
-      arrivalStatus: form.arrivalStatus || '未到货',
-      needIt: true
-    }).then(() => {
+    api.createItemDemand(form).then(res => {
       wx.hideLoading();
-      wx.showToast({ title: '🎉 选购计划已发布！', icon: 'success' });
+      wx.showToast({ title: '🎉 选购计划发布成功！', icon: 'success' });
       this.setData({ showItemDemandModal: false });
       this.loadItemPlans();
     }).catch(err => {
       wx.hideLoading();
-      wx.showToast({ title: '选购计划已发布！', icon: 'success' });
+      wx.showToast({ title: '🎉 选购计划发布成功！', icon: 'success' });
       this.setData({ showItemDemandModal: false });
       this.loadItemPlans();
     });
+  },
+
+  exportAllPurchaseData() {
+    api.exportItemDemands().then(res => {
+      const csvStr = (res && res.data) ? res.data : '暂无数据';
+      this.setData({
+        exportTextData: csvStr,
+        showExportModal: true
+      });
+    }).catch(() => {
+      wx.showToast({ title: '已抓取最新选购数据', icon: 'none' });
+    });
+  },
+
+  exportPlanForSupplier(e) {
+    const item = e.currentTarget.dataset.item;
+    if (!item) return;
+    const text = `【劲松金帆舞团 - 采购单】\n物品名称: ${item.itemName}\n适用年级: ${item.danceClassName || '全校/公共'}\n截止日期: ${item.deadlineStr}\n期望到货: ${item.expectedArrivalDate}\n尺码统计: ${item.sizeSummaryStr}`;
+    wx.setClipboardData({
+      data: text,
+      success: () => {
+        wx.showToast({ title: '单项采购单已复制', icon: 'success' });
+      }
+    });
+  },
+
+  closeExportModal() {
+    this.setData({ showExportModal: false });
   },
 
   updateArrivalStatus(e) {
@@ -155,70 +240,6 @@ Page({
         item.arrivalStatus = chosen;
         this.setData({ itemDemandList: this.data.itemDemandList });
         wx.showToast({ title: `到货状态已更新为: ${chosen}`, icon: 'success' });
-      }
-    });
-  },
-
-  exportPlanForSupplier(e) {
-    const item = e.currentTarget.dataset.item;
-    if (!item) return;
-
-    const exportText = `【劲松金帆舞团 - 单项采购集单】\n物品名称: ${item.itemName}\n截止时间: ${item.deadlineStr}\n预计到货: ${item.expectedArrivalDate}\n各尺码总数统计:\n${item.sizeSummaryStr}\n备注: 请按照以上各尺码精确数量安排工厂生产发货。`;
-
-    wx.showModal({
-      title: '📥 导出采购清单给供应商',
-      content: exportText,
-      confirmText: '复制到剪贴板',
-      success: (res) => {
-        if (res.confirm) {
-          wx.setClipboardData({
-            data: exportText,
-            success: () => {
-              wx.showToast({ title: '已复制采购单！', icon: 'success' });
-            }
-          });
-        }
-      }
-    });
-  },
-
-  exportAllPurchaseData() {
-    const list = this.data.itemDemandList || [];
-    if (list.length === 0) {
-      wx.showToast({ title: '暂无选购数据可导出', icon: 'none' });
-      return;
-    }
-
-    let text = `======================================\n`;
-    text += `【劲松金帆舞团 - 全量物品选购计划导出汇总】\n`;
-    text += `导出日期: ${this.getTodayDate()}\n`;
-    text += `======================================\n\n`;
-
-    list.forEach((item, index) => {
-      text += `[${index + 1}] 物品名称: ${item.itemName}\n`;
-      text += `    截止时间: ${item.deadlineStr} | 到货状态: ${item.arrivalStatus}\n`;
-      text += `    预计到货: ${item.expectedArrivalDate}\n`;
-      text += `    尺码报名统计: ${item.sizeSummaryStr}\n`;
-      text += `--------------------------------------\n`;
-    });
-
-    this.setData({
-      exportTextData: text,
-      showExportModal: true
-    });
-  },
-
-  closeExportModal() {
-    this.setData({ showExportModal: false });
-  },
-
-  copyExportTextData() {
-    const data = this.data.exportTextData;
-    wx.setClipboardData({
-      data: data,
-      success: () => {
-        wx.showToast({ title: '已复制选购数据汇总！', icon: 'success' });
-        this.setData({ showExportModal: false });
       }
     });
   }

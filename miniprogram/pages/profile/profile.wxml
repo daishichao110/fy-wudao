@@ -97,6 +97,22 @@
         <text class="action-label">发布活动展播</text>
       </view>
 
+      <!-- 5. 发布系统公告 -->
+      <view class="action-item" bindtap="openPublishNoticeModal">
+        <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
+          <text style="font-size: 20px;">📢</text>
+        </view>
+        <text class="action-label">发布系统公告</text>
+      </view>
+
+      <!-- 6. 排课与课表配置 -->
+      <navigator url="/pages/schedule/schedule" class="action-item">
+        <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
+          <text style="font-size: 20px;">📅</text>
+        </view>
+        <text class="action-label">排课与课表配置</text>
+      </navigator>
+
       <!-- 6. 档案数据导出模版 -->
       <view class="action-item" bindtap="downloadStudentInfo">
         <view class="action-icon-box" style="background: #fff7ed; border-color: #fed7aa;">
@@ -358,28 +374,99 @@
           <view class="act-btn btn-pass margin-top-8" bindtap="submitThought">🚀 确认发布</view>
         </view>
 
-        <!-- 历史发布与互动列表 -->
-        <view class="history-thoughts-box margin-top-14">
-          <text class="field-label">📋 互动与反馈历史记录:</text>
-          <block wx:for="{{thoughtList}}" wx:key="id">
-            <view class="item-card margin-top-8" style="padding: 10px; background: #f8fafc;">
-              <view class="item-header">
-                <text class="item-name" style="font-size: 13px;">{{item.studentName}}</text>
-                <text class="item-status-tag {{item.type === 'THOUGHT' ? 'tag-emerald' : 'tag-gray'}}">{{item.type === 'THOUGHT' ? '💭 年级公开' : '🔒 私密心里话'}}</text>
-              </view>
-              <text class="sec-sub margin-top-4" style="color: #334155; font-size: 12px; line-height: 1.5;">{{item.content}}</text>
-              <view class="item-header margin-top-6">
-                <text class="group-tip" style="font-size: 10px;">{{item.createdAt}}</text>
-              </view>
-            </view>
-          </block>
-          <view class="empty-box margin-top-8" wx:if="{{thoughtList.length === 0}}">
-            <text class="empty-text">暂无互动记录</text>
-          </view>
         </view>
       </scroll-view>
       <view class="modal-foot">
         <view class="act-btn btn-reject" bindtap="closeThoughtModal">关闭</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 7. 🎪 发布活动与演出风采展播 Modal -->
+  <view class="modal-overlay" wx:if="{{showPublishBannerModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">🎪 发布大型演出与风采展播</text>
+        <text class="close-btn" bindtap="closePublishBannerModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="form-group margin-top-8">
+          <text class="field-label">活动标题 / 剧名 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：2026金帆舞团大剧院年度展演" model:value="{{publishBannerForm.title}}" />
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">宣传副标题</text>
+          <input class="fancy-input" placeholder="例如：劲松金帆舞团 · 华彩盛典" model:value="{{publishBannerForm.subtitle}}" />
+        </view>
+
+        <view class="form-row-2 margin-top-8">
+          <view class="form-group flex-1">
+            <text class="field-label">展示徽章</text>
+            <picker bindchange="onBadgeChange" value="{{badgeIndex}}" range="{{badgeOptions}}">
+              <view class="fancy-input picker-input">
+                <text>{{badgeOptions[badgeIndex]}}</text>
+                <text class="pi-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          <view class="form-group flex-1">
+            <text class="field-label">活动日期</text>
+            <input class="fancy-input" placeholder="yyyy-MM-dd" model:value="{{publishBannerForm.eventDate}}" />
+          </view>
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">演出地点/剧场</text>
+          <input class="fancy-input" placeholder="例如：国家大剧院歌剧院 / 区文化馆大剧场" model:value="{{publishBannerForm.location}}" />
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">演出及风采正文报道 <text class="required">*</text></text>
+          <textarea class="fancy-textarea" style="height: 90px;" placeholder="撰写演出现场盛况、比赛获奖记录或精彩花絮文字报道..." model:value="{{publishBannerForm.content}}"></textarea>
+        </view>
+
+        <view class="form-group margin-top-8">
+          <text class="field-label">展播封面剧照</text>
+          <view class="act-btn btn-pass" style="background: #0284c7; color: #fff; font-size: 13px;" bindtap="chooseBannerImage">📷 选择/更换封面剧照图片</view>
+          <image wx:if="{{publishBannerForm.imageUrl}}" src="{{publishBannerForm.imageUrl}}" mode="aspectFill" style="width: 100%; height: 120px; border-radius: 8px; margin-top: 8px; border: 1px solid #cbd5e1;"></image>
+        </view>
+      </scroll-view>
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closePublishBannerModal">取消</view>
+        <view class="act-btn btn-pass" bindtap="submitPublishBanner">🚀 立即发布活动展播</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 8. 📢 发布全校广播公告 Modal -->
+  <view class="modal-overlay" wx:if="{{showPublishNoticeModal}}">
+    <view class="modal-card">
+      <view class="modal-head">
+        <text class="m-title">📢 发布全校广播公告</text>
+        <text class="close-btn" bindtap="closePublishNoticeModal">✕</text>
+      </view>
+      <scroll-view scroll-y class="modal-body">
+        <view class="fancy-notice-tip">
+          <text class="tip-icon">💡</text>
+          <text>公告说明：发布的系统公告面向全校全体家长与教务广播，无需区分年级。</text>
+        </view>
+        <view class="form-group margin-top-12">
+          <text class="field-label">公告标题 <text class="required">*</text></text>
+          <input class="fancy-input" placeholder="例如：2026秋季开学前剧目排练与考级重要通知" model:value="{{publishNoticeForm.title}}" />
+        </view>
+        <view class="form-group margin-top-12">
+          <text class="field-label">发布单位署名</text>
+          <input class="fancy-input" placeholder="舞蹈学校教务处" model:value="{{publishNoticeForm.publisher}}" />
+        </view>
+        <view class="form-group margin-top-12">
+          <text class="field-label">公告正文内容 <text class="required">*</text></text>
+          <textarea class="fancy-textarea" style="height: 100px;" placeholder="请输入广播公告的具体通知正文内容、注意事项与安排..." model:value="{{publishNoticeForm.content}}"></textarea>
+        </view>
+      </scroll-view>
+      <view class="modal-foot">
+        <view class="act-btn btn-reject" bindtap="closePublishNoticeModal">取消</view>
+        <view class="act-btn btn-pass" bindtap="submitPublishNotice">🚀 立即发布全校广播</view>
       </view>
     </view>
   </view>
