@@ -103,15 +103,15 @@
 
         <view class="form-group margin-top-8">
           <text class="field-label">学员姓名 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="输入学员姓名" value="{{scoreForm.studentName}}" bindinput="onFormInput" data-field="studentName" disabled="{{isStudentRole}}" />
+          <input class="fancy-input {{!isAdminOrTeacher ? 'disabled-input' : ''}}" placeholder="输入学员姓名" value="{{scoreForm.studentName}}" bindinput="onFormInput" data-field="studentName" disabled="{{!isAdminOrTeacher}}" style="{{!isAdminOrTeacher ? 'background: #f1f5f9; color: #64748b;' : ''}}" />
         </view>
 
         <view class="form-group margin-top-8">
           <text class="field-label">所属年级 <text class="required">*</text></text>
-          <picker bindchange="onFormGradeChange" value="{{formGradeIndex}}" range="{{formGradeOptions}}" disabled="{{isStudentRole || isCommitteeRole}}">
-            <view class="fancy-input picker-input">
+          <picker bindchange="onFormGradeChange" value="{{formGradeIndex}}" range="{{formGradeOptions}}" disabled="{{!isAdminOrTeacher}}">
+            <view class="fancy-input picker-input {{!isAdminOrTeacher ? 'disabled-picker' : ''}}" style="{{!isAdminOrTeacher ? 'background: #f1f5f9; color: #64748b;' : ''}}">
               <text>{{formGradeOptions[formGradeIndex]}}</text>
-              <text class="pi-arrow">▼</text>
+              <text class="pi-arrow" wx:if="{{isAdminOrTeacher}}">▼</text>
             </view>
           </picker>
         </view>

@@ -210,7 +210,7 @@
           <text class="field-label">所属年级/班级 <text class="required">*</text></text>
           <picker bindchange="onTaskClassChange" value="{{taskClassIndex}}" range="{{classPickerOptions}}" disabled="{{!isTeacherOrAdmin}}">
             <view class="fancy-input picker-input {{!isTeacherOrAdmin ? 'disabled-picker' : ''}}">
-              <text>{{classPickerOptions[taskClassIndex] || '二年级'}} {{!isTeacherOrAdmin ? '(家委限定当前年级)' : ''}}</text>
+              <text>{{classPickerOptions[taskClassIndex] || '二年级'}}</text>
               <text class="pi-arrow" wx:if="{{isTeacherOrAdmin}}">▼</text>
             </view>
           </picker>

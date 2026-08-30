@@ -71,6 +71,8 @@ module.exports = {
   getItemDemands: (danceClassName) => request(`/item-demand/list${danceClassName ? '?danceClassName=' + encodeURIComponent(danceClassName) : ''}`, 'GET'),
   createItemDemand: (data) => request('/item-demand/add', 'POST', data, true),
   updateItemDemand: (data) => request('/item-demand/update', 'POST', data, true),
+  enrollItemDemand: (data) => request('/item-demand/enroll', 'POST', data, true),
+  exportItemDemands: () => request('/item-demand/export', 'GET'),
   submitThought: (data) => request('/thought/publish', 'POST', data, true),
   getThoughts: (type) => request(`/thought/list${type ? '?type=' + type : ''}`, 'GET'),
   likeThought: (id) => request('/thought/like', 'POST', { id: id }, true),

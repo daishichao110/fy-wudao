@@ -100,6 +100,8 @@ Page({
       imageUrl: '/image/banner1.jpg'
     },
 
+    classPickerOptions: ['全校/公共', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级'],
+    taskClassIndex: 2,
     groupTypeOptions: ['妆造', '道具', '保洁', '摄影与跟排', '餐饮后勤', '通用与安保'],
     groupTypeIndex: 0,
     danceClassNameOptions: ['全校/公共', '二年级', '三年级', '四年级', '五年级', '六年级'],
@@ -1009,6 +1011,7 @@ Page({
     this.setData({
       showPublishTaskModal: true,
       todayDateStr: this.getTodayDate(),
+      classPickerOptions: options,
       taskClassIndex: idx,
       taskForm: {
         activityName: '',

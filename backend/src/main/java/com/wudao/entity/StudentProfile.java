@@ -19,6 +19,7 @@ public class StudentProfile implements Serializable {
     private Double shoeSize;
     private String parentName;
     private String parentPhone;
+    private String resumeBio;
     private Date updatedAt;
 
     public String getProfileId() { return profileId; }
@@ -65,6 +66,9 @@ public class StudentProfile implements Serializable {
 
     public String getParentPhone() { return parentPhone; }
     public void setParentPhone(String parentPhone) { this.parentPhone = parentPhone; }
+
+    public String getResumeBio() { return resumeBio; }
+    public void setResumeBio(String resumeBio) { this.resumeBio = resumeBio; }
 
     public Date getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }

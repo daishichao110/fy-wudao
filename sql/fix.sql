@@ -84,3 +84,25 @@ ALTER TABLE sys_work_group MODIFY COLUMN group_id VARCHAR(64);
 ALTER TABLE sys_work_group ADD COLUMN leader_user_id VARCHAR(64) DEFAULT '' COMMENT '组长用户ID';
 ALTER TABLE sys_work_group ADD COLUMN member_user_ids TEXT COMMENT '组员用户ID列表';
 ALTER TABLE sys_work_group ADD COLUMN sort_order INT DEFAULT 0 COMMENT '排序权重';
+
+-- [更新时间: 2026-08-30 20:40:00]
+-- 说明: 新增 物品选购计划主表 (item_demand) 与 家长选购报名个数表 (item_demand_enrollment)
+CREATE TABLE IF NOT EXISTS item_demand (
+    item_id VARCHAR(64) PRIMARY KEY COMMENT '物品ID',
+    item_name VARCHAR(100) NOT NULL COMMENT '物品名称',
+    dance_class_name VARCHAR(50) DEFAULT '全校/公共' COMMENT '适用年级',
+    deadline VARCHAR(50) DEFAULT '' COMMENT '截止日期',
+    expected_arrival_date VARCHAR(50) DEFAULT '' COMMENT '预计到货日期',
+    arrival_status VARCHAR(50) DEFAULT '未到货' COMMENT '到货状态',
+    size_summary_str TEXT COMMENT '需求个数汇总文本',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物品选购计划表';
+
+CREATE TABLE IF NOT EXISTS item_demand_enrollment (
+    enrollment_id VARCHAR(64) PRIMARY KEY COMMENT '登记ID',
+    item_id VARCHAR(64) NOT NULL COMMENT '物品ID',
+    parent_name VARCHAR(50) NOT NULL COMMENT '家长/填报人姓名',
+    quantity INT NOT NULL DEFAULT 1 COMMENT '购买个数',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_item_parent (item_id, parent_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物品选购家长个数登记表';

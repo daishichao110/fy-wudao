@@ -55,6 +55,17 @@ Page({
     this.loadStudentProfiles();
   },
 
+  formatGradeName(grade) {
+    if (!grade) return '二年级';
+    if (grade === 'GRADE_1' || grade.indexOf('一年级') !== -1) return '一年级';
+    if (grade === 'GRADE_2' || grade.indexOf('二年级') !== -1) return '二年级';
+    if (grade === 'GRADE_3' || grade.indexOf('三年级') !== -1) return '三年级';
+    if (grade === 'GRADE_4' || grade.indexOf('四年级') !== -1) return '四年级';
+    if (grade === 'GRADE_5' || grade.indexOf('五年级') !== -1) return '五年级';
+    if (grade === 'GRADE_6' || grade.indexOf('六年级') !== -1) return '六年级';
+    return grade;
+  },
+
   // 从真实后端接口拉取 MySQL 中的全量学员成绩与档案数据
   loadStudentProfiles() {
     api.getStudentProfiles().then(res => {
@@ -69,7 +80,7 @@ Page({
           profileId: item.profileId,
           studentId: item.studentId,
           studentName: item.studentName || '',
-          gradeLevel: item.gradeLevel || '二年级',
+          gradeLevel: this.formatGradeName(item.gradeLevel),
           chineseScore: chinese,
           mathScore: math,
           englishScore: english,
@@ -209,7 +220,7 @@ Page({
 
     if (isStudentRole) {
       hint = '家长仅维护小孩的唯一专属综合档案，多次保存将自动覆盖更新';
-      defaultGrade = userInfo.danceClassName || '二年级';
+      defaultGrade = this.formatGradeName(userInfo.danceClassName);
       // 检查当前家长小孩是否已有档案
       existingItem = allStudentScores.find(item => item.studentId === userInfo.userId || (currentStudentName && item.studentName.indexOf(currentStudentName) !== -1));
     } else if (isCommitteeRole) {

@@ -9,7 +9,7 @@
       </view>
       <picker bindchange="onClassPickerChange" value="{{classPickerIndex}}" range="{{classPickerOptions}}" disabled="{{!isTeacherOrAdmin}}">
         <view class="class-picker-pill {{!isTeacherOrAdmin ? 'disabled-picker' : ''}}" style="{{!isTeacherOrAdmin ? 'opacity: 0.88; background: #f1f5f9; border-color: #cbd5e1;' : ''}}">
-          <text class="picker-value" style="{{!isTeacherOrAdmin ? 'color: #475569;' : ''}}">{{currentClassName}} {{!isTeacherOrAdmin ? '(已锁定绑定年级)' : ''}}</text>
+          <text class="picker-value" style="{{!isTeacherOrAdmin ? 'color: #475569;' : ''}}">{{currentClassName}}</text>
           <text class="picker-arrow" wx:if="{{isTeacherOrAdmin}}">▼</text>
         </view>
       </picker>
