@@ -166,12 +166,25 @@ Page({
     this.buildCalendarDays(this.data.scheduleList);
   },
 
+  normalizeDateStr(dStr) {
+    if (!dStr) return '';
+    const parts = String(dStr).split('-');
+    if (parts.length === 3) {
+      const y = parts[0];
+      const m = String(parts[1]).padStart(2, '0');
+      const d = String(parts[2]).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+    return dStr;
+  },
+
   updateDisplaySchedules() {
     const { scheduleList, selectedDateStr } = this.data;
     if (!selectedDateStr) {
       this.setData({ displayScheduleList: scheduleList });
     } else {
-      const filtered = scheduleList.filter(item => item.classDate === selectedDateStr);
+      const normSelected = this.normalizeDateStr(selectedDateStr);
+      const filtered = scheduleList.filter(item => this.normalizeDateStr(item.classDate) === normSelected);
       this.setData({ displayScheduleList: filtered });
     }
   },
@@ -281,10 +294,21 @@ Page({
 
     api.getSchedules(queryClassCode).then(res => {
       const remoteData = (res && res.data) ? res.data : [];
-      const mappedRemote = remoteData.map(item => ({
-        ...item,
-        isCollapsed: !!collapsedMap[item.scheduleId]
-      }));
+      const mappedRemote = remoteData.map(item => {
+        let displayClassName = '全校/公共';
+        if (item.danceClassName === 'GRADE_1' || item.danceClassName === '一年级') displayClassName = '一年级';
+        else if (item.danceClassName === 'GRADE_2' || item.danceClassName === '二年级') displayClassName = '二年级';
+        else if (item.danceClassName === 'GRADE_3' || item.danceClassName === '三年级') displayClassName = '三年级';
+        else if (item.danceClassName === 'GRADE_4' || item.danceClassName === '四年级') displayClassName = '四年级';
+        else if (item.danceClassName === 'GRADE_5' || item.danceClassName === '五年级') displayClassName = '五年级';
+        else if (item.danceClassName === 'GRADE_6' || item.danceClassName === '六年级') displayClassName = '六年级';
+
+        return {
+          ...item,
+          danceClassName: displayClassName,
+          isCollapsed: !!collapsedMap[item.scheduleId]
+        };
+      });
 
       this.setData({ scheduleList: mappedRemote });
       this.updateDisplaySchedules();

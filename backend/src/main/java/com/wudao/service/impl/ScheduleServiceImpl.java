@@ -34,9 +34,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<Schedule> getAllSchedules(String danceClassName) {
-        log.info("[ScheduleService] Executing getAllSchedules() for class: {}", danceClassName);
-        List<Schedule> list = scheduleMapper.selectAll(danceClassName);
-        log.info("[ScheduleService] Successfully retrieved {} future schedule records", list != null ? list.size() : 0);
+        String code = (StringUtils.hasText(danceClassName) && !"全校/公共".equals(danceClassName) && !"全校公共".equals(danceClassName) && !"全校全部".equals(danceClassName) && !"GRADE_ALL".equals(danceClassName) && !"ALL".equals(danceClassName)) 
+                ? com.wudao.common.DanceClassEnum.getCodeByName(danceClassName) : null;
+        log.info("[ScheduleService] Executing getAllSchedules() for class: {}, resolved code: {}", danceClassName, code);
+        List<Schedule> list = scheduleMapper.selectAll(code);
+        log.info("[ScheduleService] Successfully retrieved {} schedule records", list != null ? list.size() : 0);
         return list;
     }
 
