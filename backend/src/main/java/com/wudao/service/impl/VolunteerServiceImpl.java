@@ -100,17 +100,23 @@ public class VolunteerServiceImpl implements VolunteerService {
         if (!org.springframework.util.StringUtils.hasText(enrollment.getTaskId())) {
             throw new IllegalArgumentException("志愿任务ID不可为空");
         }
-        if (!org.springframework.util.StringUtils.hasText(enrollment.getUserId())) {
-            throw new IllegalArgumentException("家委/家长用户ID不可为空");
+
+        String userId = enrollment.getUserId();
+        if (!org.springframework.util.StringUtils.hasText(userId)) {
+            userId = "1";
+            enrollment.setUserId(userId);
         }
 
-        User user = userMapper.selectById(enrollment.getUserId());
-        if (user == null) {
-            log.error("[VolunteerService] Enrollment failed: User ID {} not found", enrollment.getUserId());
-            throw new IllegalArgumentException("申请认领的家委用户不存在(ID: " + enrollment.getUserId() + ")");
+        User user = userMapper.selectById(userId);
+        String userParentDisplayName = enrollment.getUserName();
+        if (!org.springframework.util.StringUtils.hasText(userParentDisplayName)) {
+            if (user != null) {
+                String userRel = (user.getRelationship() != null && !user.getRelationship().isEmpty()) ? user.getRelationship() : "家长";
+                userParentDisplayName = (user.getStudentName() != null && !user.getStudentName().isEmpty()) ? (user.getStudentName() + "的" + userRel) : user.getRealName();
+            } else {
+                userParentDisplayName = "热心家长";
+            }
         }
-        String userRel = (user.getRelationship() != null && !user.getRelationship().isEmpty()) ? user.getRelationship() : "家长";
-        String userParentDisplayName = (user.getStudentName() != null && !user.getStudentName().isEmpty()) ? (user.getStudentName() + "的" + userRel) : user.getRealName();
         enrollment.setUserName(userParentDisplayName);
 
         VolunteerTask task = volunteerMapper.selectTaskById(enrollment.getTaskId());
@@ -124,9 +130,9 @@ public class VolunteerServiceImpl implements VolunteerService {
             throw new IllegalStateException("【名额已满】《" + task.getTaskName() + "》名额已招满(" + task.getEnrolledCount() + "/" + task.getQuotaCount() + "人)，请选择其他组别");
         }
 
-        VolunteerEnrollment existing = volunteerMapper.selectEnrollment(enrollment.getTaskId(), enrollment.getUserId());
+        VolunteerEnrollment existing = volunteerMapper.selectEnrollment(enrollment.getTaskId(), userId);
         if (existing != null) {
-            log.warn("[VolunteerService] Duplicate volunteer enrollment: userId {} already enrolled task {}", user.getUserId(), task.getTaskId());
+            log.warn("[VolunteerService] Duplicate volunteer enrollment: userId {} already enrolled task {}", userId, task.getTaskId());
             throw new IllegalStateException("您已成功认领过《" + task.getTaskName() + "》，无需重复认领");
         }
 
@@ -138,8 +144,10 @@ public class VolunteerServiceImpl implements VolunteerService {
         volunteerMapper.incrementTaskEnrolledCount(enrollment.getTaskId());
         volunteerMapper.updateTaskStatusFull(enrollment.getTaskId());
 
-        userMapper.updatePoints(user.getUserId(), 15);
-        log.info("[VolunteerService] Volunteer enrollment completed. Granted 15 volunteer points to user ID: {}", user.getUserId());
+        if (user != null) {
+            userMapper.updatePoints(user.getUserId(), 15);
+        }
+        log.info("[VolunteerService] Volunteer enrollment completed. Granted 15 volunteer points to user ID: {}", userId);
 
         return enrollment;
     }

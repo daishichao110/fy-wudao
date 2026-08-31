@@ -14,10 +14,14 @@ public class User implements Serializable {
     private String avatarUrl;
     private String roleType;
     private String danceClassName;
+    private Integer enrollmentYear;
     private Integer remainingHours;
     private Integer volunteerPoints;
     private Integer status;
     private Date createdAt;
+
+    public Integer getEnrollmentYear() { return enrollmentYear; }
+    public void setEnrollmentYear(Integer enrollmentYear) { this.enrollmentYear = enrollmentYear; }
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }

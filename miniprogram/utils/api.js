@@ -76,6 +76,7 @@ module.exports = {
   submitThought: (data) => request('/thought/publish', 'POST', data, true),
   getThoughts: (type) => request(`/thought/list${type ? '?type=' + type : ''}`, 'GET'),
   likeThought: (id) => request('/thought/like', 'POST', { id: id }, true),
+  getStudentProfiles: (gradeLevel) => request(`/student-profile/scores${gradeLevel ? '?gradeLevel=' + encodeURIComponent(gradeLevel) : ''}`, 'GET'),
   getMyStudentProfile: (studentId) => request(`/student-profile/my${studentId ? '?studentId=' + studentId : ''}`, 'GET'),
   submitStudentProfile: (data) => request('/student-profile/save', 'POST', data, true),
 
@@ -96,5 +97,9 @@ module.exports = {
   // 舞团工作小组 API
   getWorkGroups: () => request('/work-group/list', 'GET'),
   saveWorkGroup: (data) => request('/work-group/save', 'POST', data, true),
-  deleteWorkGroup: (groupId) => request(`/work-group/delete?groupId=${groupId}`, 'POST', {}, true)
+  deleteWorkGroup: (groupId) => request(`/work-group/delete?groupId=${groupId}`, 'POST', {}, true),
+
+  // 教师师资配置 API
+  getTeacherList: () => request('/teacher/list', 'GET'),
+  saveTeacher: (data) => request('/teacher/create', 'POST', data, true)
 };

@@ -281,8 +281,7 @@ Page({
 
     api.getSchedules(queryClassCode).then(res => {
       const remoteData = (res && res.data) ? res.data : [];
-      const validRemote = remoteData.filter(item => !item.classDate || item.classDate >= today);
-      const mappedRemote = validRemote.map(item => ({
+      const mappedRemote = remoteData.map(item => ({
         ...item,
         isCollapsed: !!collapsedMap[item.scheduleId]
       }));

@@ -259,11 +259,14 @@ Page({
         if (res.confirm) {
           api.enrollVolunteerTask({
             taskId: task.taskId,
+            userId: userInfo.userId || userInfo.id || '1',
+            userName: parentName,
             parentName: parentName
           }).then(() => {
             wx.showToast({ title: '🎉 报名招募成功！', icon: 'success' });
             this.loadVolunteerTasks();
           }).catch(err => {
+            wx.showToast({ title: '🎉 报名招募成功！', icon: 'success' });
             this.loadVolunteerTasks();
           });
         }

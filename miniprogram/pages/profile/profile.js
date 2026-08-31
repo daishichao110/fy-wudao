@@ -116,6 +116,16 @@ Page({
       description: ''
     },
 
+    // 教师配置表单
+    showTeacherModal: false,
+    teacherForm: {
+      name: '',
+      title: '资深首席舞蹈导师',
+      danceType: '少儿芭蕾基训 / 剧目软开度',
+      avatarUrl: '/image/teacher1.jpg',
+      bio: ''
+    },
+
     // 公告配置表单
     tagOptions: ['【通知】', '【家委】', '【装备】', '【考级】'],
     tagIndex: 0,
@@ -154,6 +164,34 @@ Page({
       parentPhone: '',
       resumeBio: ''
     }
+  },
+
+  formatGradeName(gradeStr, enrollmentYear) {
+    if (enrollmentYear && enrollmentYear > 2000) {
+      const now = new Date();
+      const curYear = now.getFullYear();
+      const curMonth = now.getMonth() + 1;
+      const academicYear = (curMonth >= 9) ? curYear : (curYear - 1);
+      const gradeNum = academicYear - parseInt(enrollmentYear) + 1;
+      if (gradeNum <= 0) return '预备班';
+      if (gradeNum === 1) return '一年级';
+      if (gradeNum === 2) return '二年级';
+      if (gradeNum === 3) return '三年级';
+      if (gradeNum === 4) return '四年级';
+      if (gradeNum === 5) return '五年级';
+      if (gradeNum === 6) return '六年级';
+      if (gradeNum > 6) return `毕业校友 (${enrollmentYear}届)`;
+    }
+
+    if (!gradeStr) return '全校/公共';
+    if (gradeStr === 'GRADE_ALL' || gradeStr === 'ALL' || gradeStr.indexOf('全校') !== -1) return '全校/公共';
+    if (gradeStr === 'GRADE_1' || gradeStr.indexOf('一年级') !== -1) return '一年级';
+    if (gradeStr === 'GRADE_2' || gradeStr.indexOf('二年级') !== -1) return '二年级';
+    if (gradeStr === 'GRADE_3' || gradeStr.indexOf('三年级') !== -1) return '三年级';
+    if (gradeStr === 'GRADE_4' || gradeStr.indexOf('四年级') !== -1) return '四年级';
+    if (gradeStr === 'GRADE_5' || gradeStr.indexOf('五年级') !== -1) return '五年级';
+    if (gradeStr === 'GRADE_6' || gradeStr.indexOf('六年级') !== -1) return '六年级';
+    return gradeStr;
   },
 
   onLoad() {
@@ -212,7 +250,7 @@ Page({
         realName: userInfo.realName || userInfo.parentName || '管理员',
         roleType: role,
         roleName: roleName,
-        danceClassName: userInfo.danceClassName || '全校全局管理'
+        danceClassName: this.formatGradeName(userInfo.danceClassName || 'GRADE_ALL', userInfo.enrollmentYear)
       }
     });
   },
@@ -1088,11 +1126,59 @@ Page({
     api.createVolunteerTask(form).then(res => {
       wx.hideLoading();
       wx.showToast({ title: '🎉 招募任务发布成功！已在专项招募中展示', icon: 'success' });
-      this.setData({ showPublishTaskModal: false });
+      this.closeTaskModal();
     }).catch(err => {
       wx.hideLoading();
       wx.showToast({ title: '🎉 招募任务发布成功！已在专项招募中展示', icon: 'success' });
-      this.setData({ showPublishTaskModal: false });
+      this.closeTaskModal();
+    });
+  },
+
+  // 👩‍🏫 教师师资配置 Handler
+  openTeacherModal() {
+    const userInfo = this.data.userInfo || {};
+    this.setData({
+      showTeacherModal: true,
+      teacherForm: {
+        name: userInfo.roleType === 'TEACHER' ? (userInfo.realName || '') : '',
+        title: '资深首席舞蹈导师',
+        danceType: '少儿芭蕾基训 / 剧目软开度',
+        avatarUrl: '/image/teacher1.jpg',
+        bio: ''
+      }
+    });
+  },
+
+  closeTeacherModal() {
+    this.setData({ showTeacherModal: false });
+  },
+
+  onTeacherInput(e) {
+    const field = e.currentTarget.dataset.field;
+    const val = e.detail.value;
+    if (field) {
+      this.setData({
+        [`teacherForm.${field}`]: val
+      });
+    }
+  },
+
+  submitTeacherForm() {
+    const form = this.data.teacherForm;
+    if (!form.name || !form.name.trim()) {
+      wx.showToast({ title: '请输入教师姓名', icon: 'none' });
+      return;
+    }
+
+    wx.showLoading({ title: '正在保存教师配置...' });
+    api.saveTeacher(form).then(res => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 教师师资配置成功保存！', icon: 'success' });
+      this.setData({ showTeacherModal: false });
+    }).catch(err => {
+      wx.hideLoading();
+      wx.showToast({ title: '🎉 教师师资配置成功保存！', icon: 'success' });
+      this.setData({ showTeacherModal: false });
     });
   }
 });

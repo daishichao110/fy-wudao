@@ -148,3 +148,23 @@ UPDATE student_profile SET grade_level = 'GRADE_3' WHERE grade_level = '三年�
 UPDATE student_profile SET grade_level = 'GRADE_4' WHERE grade_level = '四年级';
 UPDATE student_profile SET grade_level = 'GRADE_5' WHERE grade_level = '五年级';
 UPDATE student_profile SET grade_level = 'GRADE_6' WHERE grade_level = '六年级';
+
+-- [更新时间: 2026-08-31 18:08:00]
+-- 说明: 方案一入学年份(届别)动态平滑升学架构改造。增加 enrollment_year 字段并自动推算已有记录
+ALTER TABLE sys_user ADD COLUMN IF NOT EXISTS enrollment_year INT DEFAULT 2025 COMMENT '入学年份(届别)';
+ALTER TABLE student_profile ADD COLUMN IF NOT EXISTS enrollment_year INT DEFAULT 2025 COMMENT '入学年份(届别)';
+
+-- 批量更新存量用户的入学年份 (基于 2026 年学年推算)
+UPDATE sys_user SET enrollment_year = 2026 WHERE dance_class_name = 'GRADE_1' OR dance_class_name = '一年级';
+UPDATE sys_user SET enrollment_year = 2025 WHERE dance_class_name = 'GRADE_2' OR dance_class_name = '二年级';
+UPDATE sys_user SET enrollment_year = 2024 WHERE dance_class_name = 'GRADE_3' OR dance_class_name = '三年级';
+UPDATE sys_user SET enrollment_year = 2023 WHERE dance_class_name = 'GRADE_4' OR dance_class_name = '四年级';
+UPDATE sys_user SET enrollment_year = 2022 WHERE dance_class_name = 'GRADE_5' OR dance_class_name = '五年级';
+UPDATE sys_user SET enrollment_year = 2021 WHERE dance_class_name = 'GRADE_6' OR dance_class_name = '六年级';
+
+UPDATE student_profile SET enrollment_year = 2026 WHERE grade_level = 'GRADE_1' OR grade_level = '一年级';
+UPDATE student_profile SET enrollment_year = 2025 WHERE grade_level = 'GRADE_2' OR grade_level = '二年级';
+UPDATE student_profile SET enrollment_year = 2024 WHERE grade_level = 'GRADE_3' OR grade_level = '三年级';
+UPDATE student_profile SET enrollment_year = 2023 WHERE grade_level = 'GRADE_4' OR grade_level = '四年级';
+UPDATE student_profile SET enrollment_year = 2022 WHERE grade_level = 'GRADE_5' OR grade_level = '五年级';
+UPDATE student_profile SET enrollment_year = 2021 WHERE grade_level = 'GRADE_6' OR grade_level = '六年级';
