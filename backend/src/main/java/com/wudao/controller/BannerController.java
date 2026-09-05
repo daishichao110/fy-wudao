@@ -19,10 +19,20 @@ public class BannerController {
     @Autowired
     private BannerService bannerService;
 
+    @Autowired
+    private com.wudao.service.AliyunOssService aliyunOssService;
+
     @GetMapping("/list")
     public Result<List<Banner>> getBanners() {
         log.info("[REST API GET /api/banner/list] Fetching active performance & showcase banners");
         List<Banner> list = bannerService.getActiveBanners();
+        if (list != null) {
+            for (Banner banner : list) {
+                if (org.springframework.util.StringUtils.hasText(banner.getImageUrl())) {
+                    banner.setImageUrl(aliyunOssService.toFullUrl(banner.getImageUrl()));
+                }
+            }
+        }
         return Result.success("获取Banner列表成功", list);
     }
 

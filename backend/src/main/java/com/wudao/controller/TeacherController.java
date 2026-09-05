@@ -18,10 +18,20 @@ public class TeacherController {
     @Autowired
     private TeacherMapper teacherMapper;
 
+    @Autowired
+    private com.wudao.service.AliyunOssService aliyunOssService;
+
     @GetMapping("/list")
     public Result<List<Teacher>> getTeachers() {
         log.info("[REST API GET /api/teacher/list] Querying teacher roster from MySQL table sys_teacher...");
         List<Teacher> list = teacherMapper.selectAllTeachers();
+        if (list != null) {
+            for (Teacher teacher : list) {
+                if (org.springframework.util.StringUtils.hasText(teacher.getAvatarUrl())) {
+                    teacher.setAvatarUrl(aliyunOssService.toFullUrl(teacher.getAvatarUrl()));
+                }
+            }
+        }
         log.info("[REST API GET /api/teacher/list] Fetched {} teachers.", list.size());
         return Result.success("获取成功", list);
     }

@@ -62,6 +62,7 @@ public class OperationLogInterceptor implements HandlerInterceptor {
         API_NAME_MAP.put("/api/notice/list", "查看官方通知公告");
         API_NAME_MAP.put("/api/notice/create", "发布官方通知公告");
         API_NAME_MAP.put("/api/operation-log/list", "查看系统操作与浏览日志");
+        API_NAME_MAP.put("/api/upload/image", "上传图片至阿里云OSS");
     }
 
     @Override
