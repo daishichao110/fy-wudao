@@ -47,7 +47,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public Schedule createSchedule(Schedule schedule) {
         log.info("[ScheduleService] Executing createSchedule() for class: {}, course: {}", schedule != null ? schedule.getDanceClassName() : "NULL", schedule != null ? schedule.getCourseName() : "NULL");
 
-        // 1. 参数非空校验与自动兜底
+        // 1. 严格参数校验 (非空直接抛错，绝不悄悄充入假数据)
         if (schedule == null) {
             log.error("[ScheduleService] Schedule object is null!");
             throw new IllegalArgumentException("排课数据不可为空");
@@ -55,49 +55,57 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (!StringUtils.hasText(schedule.getCourseName())) {
             throw new IllegalArgumentException("课程名称不可为空");
         }
-        schedule.setDanceClassName(com.wudao.common.DanceClassEnum.getCodeByName(schedule.getDanceClassName()));
-        if (!StringUtils.hasText(schedule.getDanceType())) {
-            schedule.setDanceType("芭蕾舞");
-        }
-        if (!StringUtils.hasText(schedule.getClassroomName())) {
-            schedule.setClassroomName("1号芭蕾专业排练厅");
-        }
         if (!StringUtils.hasText(schedule.getClassDate())) {
-            schedule.setClassDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+            throw new IllegalArgumentException("请选择上课日期");
         }
         if (!StringUtils.hasText(schedule.getStartTime())) {
-            schedule.setStartTime("14:00");
+            throw new IllegalArgumentException("请选择开始时间");
         }
         if (!StringUtils.hasText(schedule.getEndTime())) {
-            schedule.setEndTime("16:00");
+            throw new IllegalArgumentException("请选择结束时间");
+        }
+        if (!StringUtils.hasText(schedule.getClassroomName())) {
+            throw new IllegalArgumentException("请填写教室名称");
         }
 
-        // 2. 教师身份与自动兼容保护 (支持教师及管理员发布排课)
-        String targetTeacherId = schedule.getTeacherId();
-        if (!StringUtils.hasText(targetTeacherId)) {
-            targetTeacherId = "1787400000000000002"; // 默认挂载在林依依老师名下
-        }
+        // 2. 教师身份与动态姓名校验 (按传入的姓名或 ID 标准查询绑定，绝不做特例硬编码转换)
+        String inputTeacherName = schedule.getTeacherName();
+        String inputTeacherId = schedule.getTeacherId();
 
-        User teacher = userMapper.selectById(targetTeacherId);
-        if (teacher == null && "2".equals(targetTeacherId)) {
-            teacher = userMapper.selectById("1787400000000000002");
-        }
-        if (teacher != null && StringUtils.hasText(teacher.getRealName())) {
-            schedule.setTeacherId(teacher.getUserId());
-            schedule.setTeacherName(teacher.getRealName());
+        if (StringUtils.hasText(inputTeacherName)) {
+            String cleanName = inputTeacherName.trim();
+            schedule.setTeacherName(cleanName);
+
+            User matchedUser = userMapper.selectByRealName(cleanName);
+            if (matchedUser != null) {
+                schedule.setTeacherId(matchedUser.getUserId());
+            } else if (StringUtils.hasText(inputTeacherId)) {
+                schedule.setTeacherId(inputTeacherId);
+            } else {
+                schedule.setTeacherId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
+            }
+        } else if (StringUtils.hasText(inputTeacherId)) {
+            User teacher = userMapper.selectById(inputTeacherId);
+            if (teacher != null && StringUtils.hasText(teacher.getRealName())) {
+                schedule.setTeacherId(teacher.getUserId());
+                schedule.setTeacherName(teacher.getRealName());
+            } else {
+                schedule.setTeacherId(inputTeacherId);
+                schedule.setTeacherName("任课教师");
+            }
         } else {
-            // 若该 ID 对应用户未查询到，自动降级挂载至 1787400000000000002 (林依依老师)
-            schedule.setTeacherId("1787400000000000002");
-            schedule.setTeacherName(StringUtils.hasText(schedule.getTeacherName()) ? schedule.getTeacherName() : "林依依老师");
+            throw new IllegalArgumentException("请填写任课导师姓名");
         }
 
-        // 3. 着装规范默认保护 (包含 skirtReq 裙子要求与新补充字段)
-        if (!StringUtils.hasText(schedule.getTopsReq())) schedule.setTopsReq("标准专业连功服");
-        if (!StringUtils.hasText(schedule.getBottomsReq())) schedule.setBottomsReq("舞蹈专用大袜/练功裤");
-        if (!StringUtils.hasText(schedule.getSkirtReq())) schedule.setSkirtReq("粉色雪纺一片绑带短裙");
-        if (!StringUtils.hasText(schedule.getShoesReq())) schedule.setShoesReq("双皮头软底舞蹈鞋");
-        if (!StringUtils.hasText(schedule.getHairReq())) schedule.setHairReq("高盘头丸子头(配发网)");
-        if (!StringUtils.hasText(schedule.getPropsReq())) schedule.setPropsReq("把杆砖与弹力带");
+        // 3. 可选字段防 null 转换（用户未填写着装/教具即保存为空字符串，绝不自动插入假数据）
+        schedule.setDanceClassName(com.wudao.common.DanceClassEnum.getCodeByName(schedule.getDanceClassName()));
+        if (schedule.getDanceType() == null) schedule.setDanceType("");
+        if (schedule.getTopsReq() == null) schedule.setTopsReq("");
+        if (schedule.getBottomsReq() == null) schedule.setBottomsReq("");
+        if (schedule.getSkirtReq() == null) schedule.setSkirtReq("");
+        if (schedule.getShoesReq() == null) schedule.setShoesReq("");
+        if (schedule.getHairReq() == null) schedule.setHairReq("");
+        if (schedule.getPropsReq() == null) schedule.setPropsReq("");
         if (schedule.getOtherReq() == null) schedule.setOtherReq("");
         if (schedule.getRemark() == null) schedule.setRemark("");
         if (schedule.getParticipantNames() == null) schedule.setParticipantNames("");

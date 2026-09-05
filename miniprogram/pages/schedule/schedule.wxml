@@ -21,12 +21,11 @@
     <scroll-view scroll-x class="calendar-scroll" enable-flex>
       <block wx:for="{{calendarDays}}" wx:key="dateStr">
         <view class="day-card {{item.isSelected ? 'selected-day' : (item.hasCourse ? 'has-course' : 'no-course')}}" bindtap="onSelectCalendarDate" data-date="{{item.dateStr}}">
-          <text class="day-month">{{item.monthNum}}月</text>
-          <text class="day-num">{{item.dayNum}}日</text>
+          <text class="day-month-num">{{item.monthNum}}月{{item.dayNum}}日</text>
           <text class="day-week">{{item.weekDayStr}}</text>
           <view class="day-dot-status">
             <text wx:if="{{item.hasCourse}}" class="dot-orange">● 有课</text>
-            <text wx:else class="dot-white"></text>
+            <text wx:else class="dot-empty"></text>
           </view>
         </view>
       </block>
@@ -58,7 +57,6 @@
             <view class="meta-info-row margin-top-6">
               <text class="meta-item">📍 {{item.classroomName}}</text>
               <text class="meta-item">👩‍🏫 导师: {{item.teacherName}}</text>
-              <text class="meta-item">💃 舞种: {{item.danceType}}</text>
             </view>
           </view>
         </view>
@@ -124,7 +122,12 @@
           </view>
           <view class="form-group flex-1">
             <text class="field-label">上课日期 <text class="required">*</text></text>
-            <input class="fancy-input" placeholder="yyyy-MM-dd" model:value="{{scheduleForm.classDate}}" />
+            <picker mode="date" value="{{scheduleForm.classDate}}" bindchange="onDateChange">
+              <view class="fancy-input picker-input-row">
+                <text>{{scheduleForm.classDate || '选择日期'}}</text>
+                <text class="pi-arrow">📅</text>
+              </view>
+            </picker>
           </view>
         </view>
 
@@ -136,11 +139,21 @@
         <view class="form-row-2 margin-top-8">
           <view class="form-group flex-1">
             <text class="field-label">开始时间</text>
-            <input class="fancy-input" placeholder="09:30" model:value="{{scheduleForm.startTime}}" />
+            <picker mode="time" value="{{scheduleForm.startTime}}" bindchange="onStartTimeChange">
+              <view class="fancy-input picker-input-row">
+                <text>{{scheduleForm.startTime || '09:30'}}</text>
+                <text class="pi-arrow">⏰</text>
+              </view>
+            </picker>
           </view>
           <view class="form-group flex-1">
             <text class="field-label">结束时间</text>
-            <input class="fancy-input" placeholder="11:30" model:value="{{scheduleForm.endTime}}" />
+            <picker mode="time" value="{{scheduleForm.endTime}}" bindchange="onEndTimeChange">
+              <view class="fancy-input picker-input-row">
+                <text>{{scheduleForm.endTime || '11:30'}}</text>
+                <text class="pi-arrow">⏰</text>
+              </view>
+            </picker>
           </view>
         </view>
 

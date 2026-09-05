@@ -14,6 +14,13 @@
         WHERE user_id = #{userId}
     </select>
 
+    <select id="selectByRealName" resultType="com.wudao.entity.User">
+        SELECT user_id, username, open_id, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, enrollment_year, remaining_hours, volunteer_points, status, created_at
+        FROM sys_user
+        WHERE real_name = #{realName} OR real_name LIKE CONCAT('%', #{realName}, '%')
+        LIMIT 1
+    </select>
+
     <select id="selectByUsername" resultType="com.wudao.entity.User">
         SELECT user_id, username, open_id, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, enrollment_year, remaining_hours, volunteer_points, status, created_at
         FROM sys_user

@@ -98,7 +98,7 @@ public class ItemDemandServiceImpl implements ItemDemandService {
             throw new IllegalArgumentException("物品ID不可为空");
         }
         if (!StringUtils.hasText(parentName) || "null".equals(parentName)) {
-            parentName = "热心家长";
+            throw new IllegalArgumentException("填报家长姓名不可为空");
         }
         if (quantity == null || quantity <= 0) quantity = 1;
 

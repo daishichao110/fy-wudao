@@ -212,7 +212,7 @@ Page({
   // 📅 排课发布 Modal 操作
   openScheduleModal() {
     const userInfo = wx.getStorageSync('userInfo') || {};
-    const defaultTeacher = userInfo.roleType === 'TEACHER' ? userInfo.realName : '林依依老师';
+    const defaultTeacher = (userInfo.roleType === 'TEACHER' && userInfo.realName) ? userInfo.realName : '';
     const chosenClass = this.data.currentClassName || '二年级';
 
     let idx = this.data.scheduleClassOptions.indexOf(chosenClass);
@@ -227,9 +227,9 @@ Page({
         courseName: '',
         startTime: '09:30',
         endTime: '11:30',
-        classroomName: '101舞蹈大教室',
+        classroomName: '',
         teacherName: defaultTeacher,
-        danceType: '芭蕾舞/中国舞',
+        danceType: '',
         topsReq: '',
         bottomsReq: '',
         skirtReq: '',
@@ -255,6 +255,18 @@ Page({
     });
   },
 
+  onDateChange(e) {
+    this.setData({ 'scheduleForm.classDate': e.detail.value });
+  },
+
+  onStartTimeChange(e) {
+    this.setData({ 'scheduleForm.startTime': e.detail.value });
+  },
+
+  onEndTimeChange(e) {
+    this.setData({ 'scheduleForm.endTime': e.detail.value });
+  },
+
   submitScheduleForm() {
     const form = { ...this.data.scheduleForm };
     if (!form.courseName || !form.courseName.trim()) {
@@ -262,7 +274,23 @@ Page({
       return;
     }
     if (!form.classDate || !form.classDate.trim()) {
-      wx.showToast({ title: '请填写上课日期', icon: 'none' });
+      wx.showToast({ title: '请选择上课日期', icon: 'none' });
+      return;
+    }
+    if (!form.startTime || !form.startTime.trim()) {
+      wx.showToast({ title: '请选择开始时间', icon: 'none' });
+      return;
+    }
+    if (!form.endTime || !form.endTime.trim()) {
+      wx.showToast({ title: '请选择结束时间', icon: 'none' });
+      return;
+    }
+    if (!form.classroomName || !form.classroomName.trim()) {
+      wx.showToast({ title: '请输入教室房号', icon: 'none' });
+      return;
+    }
+    if (!form.teacherName || !form.teacherName.trim()) {
+      wx.showToast({ title: '请输入任课导师', icon: 'none' });
       return;
     }
 
@@ -287,7 +315,9 @@ Page({
     const today = this.getTodayDate();
     const collapsedMap = {};
     (this.data.scheduleList || []).forEach(item => {
-      if (item.isCollapsed) collapsedMap[item.scheduleId] = true;
+      if (item.scheduleId) {
+        collapsedMap[item.scheduleId] = item.isCollapsed;
+      }
     });
 
     const queryClassCode = this.data.currentClassCode === 'GRADE_ALL' ? '' : this.data.currentClassCode;
@@ -306,7 +336,7 @@ Page({
         return {
           ...item,
           danceClassName: displayClassName,
-          isCollapsed: !!collapsedMap[item.scheduleId]
+          isCollapsed: collapsedMap[item.scheduleId] !== undefined ? !!collapsedMap[item.scheduleId] : true
         };
       });
 
