@@ -75,26 +75,32 @@ public class ScheduleServiceImpl implements ScheduleService {
         // 2. 教师身份与自动兼容保护 (支持教师及管理员发布排课)
         String targetTeacherId = schedule.getTeacherId();
         if (!StringUtils.hasText(targetTeacherId)) {
-            targetTeacherId = "2"; // 默认挂载在林依依老师名下
+            targetTeacherId = "1787400000000000002"; // 默认挂载在林依依老师名下
         }
 
         User teacher = userMapper.selectById(targetTeacherId);
+        if (teacher == null && "2".equals(targetTeacherId)) {
+            teacher = userMapper.selectById("1787400000000000002");
+        }
         if (teacher != null && StringUtils.hasText(teacher.getRealName())) {
-            schedule.setTeacherId(targetTeacherId);
+            schedule.setTeacherId(teacher.getUserId());
             schedule.setTeacherName(teacher.getRealName());
         } else {
-            // 若该 ID 对应用户未查询到，自动降级挂载至 2号教师 (林依依老师)
-            schedule.setTeacherId("2");
+            // 若该 ID 对应用户未查询到，自动降级挂载至 1787400000000000002 (林依依老师)
+            schedule.setTeacherId("1787400000000000002");
             schedule.setTeacherName(StringUtils.hasText(schedule.getTeacherName()) ? schedule.getTeacherName() : "林依依老师");
         }
 
-        // 3. 着装规范默认保护 (包含 skirtReq 裙子要求)
+        // 3. 着装规范默认保护 (包含 skirtReq 裙子要求与新补充字段)
         if (!StringUtils.hasText(schedule.getTopsReq())) schedule.setTopsReq("标准专业连功服");
         if (!StringUtils.hasText(schedule.getBottomsReq())) schedule.setBottomsReq("舞蹈专用大袜/练功裤");
         if (!StringUtils.hasText(schedule.getSkirtReq())) schedule.setSkirtReq("粉色雪纺一片绑带短裙");
         if (!StringUtils.hasText(schedule.getShoesReq())) schedule.setShoesReq("双皮头软底舞蹈鞋");
         if (!StringUtils.hasText(schedule.getHairReq())) schedule.setHairReq("高盘头丸子头(配发网)");
         if (!StringUtils.hasText(schedule.getPropsReq())) schedule.setPropsReq("把杆砖与弹力带");
+        if (schedule.getOtherReq() == null) schedule.setOtherReq("");
+        if (schedule.getRemark() == null) schedule.setRemark("");
+        if (schedule.getParticipantNames() == null) schedule.setParticipantNames("");
 
         if (schedule.getCapacity() == null || schedule.getCapacity() <= 0) {
             schedule.setCapacity(15);

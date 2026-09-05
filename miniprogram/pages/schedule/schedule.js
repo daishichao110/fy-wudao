@@ -256,7 +256,7 @@ Page({
   },
 
   submitScheduleForm() {
-    const form = this.data.scheduleForm;
+    const form = { ...this.data.scheduleForm };
     if (!form.courseName || !form.courseName.trim()) {
       wx.showToast({ title: '请输入课程名称', icon: 'none' });
       return;
@@ -277,9 +277,9 @@ Page({
       this.loadSchedules();
     }).catch(err => {
       wx.hideLoading();
-      wx.showToast({ title: '🎉 排课发布成功！', icon: 'success' });
-      this.setData({ showScheduleModal: false });
-      this.loadSchedules();
+      console.error('发布排课后端接口异常:', err);
+      const errMsg = (err && (err.message || err.errMsg)) || '排课发布失败，请重新尝试';
+      wx.showToast({ title: errMsg, icon: 'none', duration: 3000 });
     });
   },
 

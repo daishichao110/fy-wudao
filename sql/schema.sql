@@ -18,7 +18,8 @@ CREATE TABLE sys_user (
     phone VARCHAR(20) DEFAULT '' COMMENT '授权手机号',
     avatar_url VARCHAR(255) DEFAULT '/image/teacher1.jpg' COMMENT '相对头像路径',
     role_type VARCHAR(30) NOT NULL COMMENT 'SUPER_ADMIN(管理员)/TEACHER(专业老师)/COMMITTEE(班委/家委干部)/STUDENT(学员及家长)',
-    dance_class_name VARCHAR(50) DEFAULT '二年级' COMMENT '所在班级名称 (租户隔离)',
+    dance_class_name VARCHAR(50) DEFAULT 'GRADE_2' COMMENT '所在班级代号/名称 (租户隔离)',
+    enrollment_year INT DEFAULT 2025 COMMENT '入学年份(届别)',
     remaining_hours INT DEFAULT 20 COMMENT '剩余课时',
     volunteer_points INT DEFAULT 0 COMMENT '爱心志愿积分',
     status TINYINT DEFAULT 1 COMMENT '1-正常/已审批通过 0-待管理员审批 2-已驳回',
@@ -43,6 +44,9 @@ CREATE TABLE dance_schedule (
     shoes_req VARCHAR(100) NOT NULL COMMENT '鞋履要求',
     hair_req VARCHAR(100) NOT NULL COMMENT '发型要求',
     props_req VARCHAR(100) NOT NULL COMMENT '携带教具',
+    other_req VARCHAR(255) DEFAULT '' COMMENT '水壶毛巾等其他要求',
+    remark VARCHAR(255) DEFAULT '' COMMENT '课前提醒与备注',
+    participant_names TEXT COMMENT '参与人员名单与考勤状态',
     capacity INT DEFAULT 15 COMMENT '班级容量',
     booked_count INT DEFAULT 0 COMMENT '已预约/在读人数',
     dance_class_name VARCHAR(50) DEFAULT '二年级' COMMENT '所在班级',
@@ -181,7 +185,7 @@ DROP TABLE IF EXISTS duty_schedule;
 CREATE TABLE duty_schedule (
     duty_id VARCHAR(64) PRIMARY KEY COMMENT '轮值看护ID (字符串雪花算法 ID)',
     duty_date DATE NOT NULL COMMENT '轮值日期',
-    assignee_name VARCHAR(64) NOT NULL COMMENT '认领家委称谓 (如 家长称谓)',
+    assignee_name VARCHAR(64) NOT NULL COMMENT '认领家委称谓 (如 李小桐的爸爸)',
     user_id VARCHAR(64) DEFAULT NULL COMMENT '关联用户ID',
     dance_class_name VARCHAR(50) NOT NULL DEFAULT '二年级' COMMENT '关联班级 (租户隔离)',
     status VARCHAR(20) DEFAULT 'SCHEDULED' COMMENT '状态',
@@ -195,7 +199,8 @@ CREATE TABLE student_profile (
     profile_id VARCHAR(64) PRIMARY KEY COMMENT '档案ID (字符串雪花算法 ID)',
     student_id VARCHAR(64) NOT NULL UNIQUE COMMENT '学员用户ID',
     student_name VARCHAR(50) NOT NULL COMMENT '学员姓名',
-    grade_level VARCHAR(50) DEFAULT '二年级' COMMENT '年级/班级 (租户隔离)',
+    grade_level VARCHAR(50) DEFAULT 'GRADE_2' COMMENT '年级/班级 (租户隔离)',
+    enrollment_year INT DEFAULT 2025 COMMENT '入学年份(届别)',
     chinese_score DECIMAL(5,2) DEFAULT 0 COMMENT '语文成绩',
     math_score DECIMAL(5,2) DEFAULT 0 COMMENT '数学成绩',
     english_score DECIMAL(5,2) DEFAULT 0 COMMENT '英语成绩',
@@ -217,9 +222,9 @@ CREATE TABLE sys_work_group (
     group_id VARCHAR(64) PRIMARY KEY COMMENT '小组ID (字符串雪花算法 ID)',
     group_name VARCHAR(100) NOT NULL COMMENT '小组名称',
     icon VARCHAR(20) DEFAULT '💄' COMMENT '小组图标Emoji',
-    dance_class_name VARCHAR(50) DEFAULT '二年级' COMMENT '所属班级/年级 (租户隔离)',
     leader_user_id VARCHAR(64) DEFAULT '' COMMENT '组长用户ID',
-    member_user_ids TEXT COMMENT '组员用户ID列表(逗号分隔)',
+    member_user_ids TEXT COMMENT '组员用户ID列表',
+    dance_class_name VARCHAR(50) DEFAULT 'GRADE_2' COMMENT '所属班级/年级 (租户隔离)',
     leader_name VARCHAR(50) DEFAULT '' COMMENT '组长姓名/家委称谓',
     member_names TEXT COMMENT '组员姓名列表(逗号分隔)',
     duty_desc TEXT COMMENT '工作职责与分工',
@@ -255,10 +260,21 @@ CREATE TABLE sys_item_demand (
     deadline VARCHAR(30) DEFAULT '' COMMENT '报名截止日期',
     expected_arrival_date VARCHAR(30) DEFAULT '' COMMENT '预计到货日期',
     arrival_status VARCHAR(20) DEFAULT '未到货' COMMENT '到货状态: 未到货/部分到货/已全到货',
-    dance_class_name VARCHAR(50) DEFAULT '二年级' COMMENT '所属班级/年级 (租户隔离)',
+    dance_class_name VARCHAR(50) DEFAULT 'GRADE_2' COMMENT '所属班级/年级 (租户隔离)',
     size_summary_str VARCHAR(255) DEFAULT '' COMMENT '各尺码报名统计',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物品选购与集中采购需求表';
+
+-- 17. 物品选购家长个数登记表 (item_demand_enrollment)
+DROP TABLE IF EXISTS item_demand_enrollment;
+CREATE TABLE item_demand_enrollment (
+    enrollment_id VARCHAR(64) PRIMARY KEY COMMENT '登记ID (字符串雪花算法 ID)',
+    item_id VARCHAR(64) NOT NULL COMMENT '物品ID',
+    parent_name VARCHAR(50) NOT NULL COMMENT '家长/填报人姓名',
+    quantity INT NOT NULL DEFAULT 1 COMMENT '购买个数',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '登记时间',
+    UNIQUE KEY uk_item_parent (item_id, parent_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物品选购家长个数登记表';
 
 -- 17. 随感与心里话交流表 (sys_thought)
 DROP TABLE IF EXISTS sys_thought;
@@ -273,4 +289,25 @@ CREATE TABLE sys_thought (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='随感与心里话交流表';
 
+-- =========================================================================
+-- 基础测试数据初始化
+-- =========================================================================
 
+-- 1. 初始系统账号 (超级管理员 & 专业老师)
+INSERT INTO sys_user (user_id, username, real_name, student_name, relationship, phone, avatar_url, role_type, dance_class_name, remaining_hours, volunteer_points, status) VALUES
+(1787400000000000001, 'admin', '系统管理员', '全校学生', '管理员', '18911800655', '/image/teacher1.jpg', 'SUPER_ADMIN', '全校全局管理', 1000, 100, 1),
+(1787400000000000002, 'teacher', '林依依老师', '专业舞蹈导师', '教师', '18618486266', '/image/teacher1.jpg', 'TEACHER', '全校全局管理', 1000, 100, 1);
+
+-- 2. 初始家委工作小组
+INSERT INTO sys_work_group (group_id, group_name, icon, dance_class_name, leader_name, member_names, duty_desc) VALUES
+(1001, '后勤化妆组', '💄', '二年级', '张妈妈 (家委)', '李妈妈, 王妈妈, 赵妈妈', '负责舞团大型演出、舞台试妆、发型打造与彩排检录后勤工作'),
+(1002, '道具与服装组', '👗', '二年级', '陈妈妈 (家委)', '周妈妈, 吴妈妈', '负责演出服试穿度量、演出道具保管维护及剧场打点');
+
+-- 3. 初始活动展播 Banner
+INSERT INTO sys_banner (banner_id, title, subtitle, badge, image_url, content, event_date, location, creator_name, creator_role, status, sort_order) VALUES
+(1, '2026金帆舞团大剧院年度展演', '劲松金帆舞团 · 华彩盛典', '🎪 大型演出', '/image/banner1.jpg', '舞团年度大展演即将在国家大剧院精彩亮相，全团学员紧密排练中。', '2026-09-15', '国家大剧院歌剧院', '教务管理处', '👑 管理员', 1, 1),
+(2, '舞团少儿芭蕾剧目全区金奖风采', '捷报频传 · 优雅绽放', '🏆 风采展示', '/image/banner2.jpg', '祝贺我校二年级与三年级学员在全区少儿舞蹈展演中喜斩获一等奖。', '2026-08-20', '区文化馆大剧场', '教务管理处', '👑 管理员', 1, 2);
+
+-- 4. 初始名师团队档案
+INSERT INTO sys_teacher (teacher_id, name, title, dance_type, experience_years, avatar_url, bio) VALUES
+(2001, '林依依老师', '芭蕾舞首席导师', '古典芭蕾 / 现代舞', '10年教龄', '/image/teacher1.jpg', '毕业于北京舞蹈学院芭蕾舞系，曾任国家级舞蹈团首席剧目演员，具备丰富的小学及青少年考级剧目排演经验。');

@@ -33,7 +33,7 @@ public class ScheduleControllerTest {
         String json = "{\n" +
                 "  \"courseName\": \"测试芭蕾课程\",\n" +
                 "  \"danceType\": \"芭蕾舞\",\n" +
-                "  \"teacherId\": 2,\n" +
+                "  \"teacherId\": \"1787400000000000002\",\n" +
                 "  \"teacherName\": \"林依依老师\",\n" +
                 "  \"classroomName\": \"1号厅\",\n" +
                 "  \"classDate\": \"2026-08-25\",\n" +
@@ -44,6 +44,8 @@ public class ScheduleControllerTest {
                 "  \"shoesReq\": \"软底鞋\",\n" +
                 "  \"hairReq\": \"丸子头\",\n" +
                 "  \"propsReq\": \"弹力带\",\n" +
+                "  \"otherReq\": \"自带水壶\",\n" +
+                "  \"remark\": \"单元测试说明\",\n" +
                 "  \"capacity\": 15,\n" +
                 "  \"bookedCount\": 0\n" +
                 "}";
