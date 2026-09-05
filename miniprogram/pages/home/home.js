@@ -149,30 +149,17 @@ Page({
     });
   },
 
-  // 📷 上传或选定活动照片 (单张图片)
+  // 📷 上传或选定活动照片 (直接从相册选取)
   chooseBannerImage() {
-    wx.showActionSheet({
-      itemList: ['📷 从相册选择 / 现场拍摄照片', '🖼️ 使用国家大剧院首演剧照', '🖼️ 使用后台幕后花絮剧照'],
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          wx.chooseMedia({
-            count: 1,
-            mediaType: ['image'],
-            sourceType: ['album', 'camera'],
-            success: (chooseRes) => {
-              if (chooseRes.tempFiles && chooseRes.tempFiles.length > 0) {
-                const tempPath = chooseRes.tempFiles[0].tempFilePath;
-                this.setData({ 'publishBannerForm.imageUrl': tempPath });
-                wx.showToast({ title: '已选定封面照片', icon: 'success' });
-              }
-            }
-          });
-        } else if (res.tapIndex === 1) {
-          this.setData({ 'publishBannerForm.imageUrl': '/image/banner1.jpg' });
-          wx.showToast({ title: '已应用剧照 1', icon: 'success' });
-        } else if (res.tapIndex === 2) {
-          this.setData({ 'publishBannerForm.imageUrl': '/image/banner2.jpg' });
-          wx.showToast({ title: '已应用剧照 2', icon: 'success' });
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album'],
+      success: (chooseRes) => {
+        if (chooseRes.tempFiles && chooseRes.tempFiles.length > 0) {
+          const tempPath = chooseRes.tempFiles[0].tempFilePath;
+          this.setData({ 'publishBannerForm.imageUrl': tempPath });
+          wx.showToast({ title: '已从相册选取照片', icon: 'success' });
         }
       }
     });

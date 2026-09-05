@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wudao.mapper.OperationLogMapper">
+
+    <resultMap id="OperationLogMap" type="com.wudao.entity.OperationLog">
+        <id property="logId" column="log_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="apiPath" column="api_path"/>
+        <result property="apiName" column="api_name"/>
+        <result property="opType" column="op_type"/>
+        <result property="opTime" column="op_time"/>
+    </resultMap>
+
+    <insert id="insertLog" parameterType="com.wudao.entity.OperationLog">
+        INSERT INTO sys_operation_log (log_id, user_id, user_name, api_path, api_name, op_type, op_time)
+        VALUES (#{logId}, #{userId}, #{userName}, #{apiPath}, #{apiName}, #{opType}, NOW())
+    </insert>
+
+    <select id="selectLogs" resultMap="OperationLogMap">
+        SELECT log_id, user_id, user_name, api_path, api_name, op_type, op_time
+        FROM sys_operation_log
+        <where>
+            <if test="userId != null and userId != ''">
+                AND user_id = #{userId}
+            </if>
+            <if test="opType != null and opType != ''">
+                AND op_type = #{opType}
+            </if>
+        </where>
+        ORDER BY op_time DESC
+        <if test="limit != null and limit > 0">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+</mapper>

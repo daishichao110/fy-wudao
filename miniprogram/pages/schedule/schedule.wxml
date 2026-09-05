@@ -138,19 +138,19 @@
 
         <view class="form-row-2 margin-top-8">
           <view class="form-group flex-1">
-            <text class="field-label">开始时间</text>
-            <picker mode="time" value="{{scheduleForm.startTime}}" bindchange="onStartTimeChange">
+            <text class="field-label">开始时间 <text class="required">*</text></text>
+            <picker mode="time" value="{{scheduleForm.startTime || '09:30'}}" bindchange="onStartTimeChange">
               <view class="fancy-input picker-input-row">
-                <text>{{scheduleForm.startTime || '09:30'}}</text>
+                <text class="{{!scheduleForm.startTime ? 'ph-style' : ''}}">{{scheduleForm.startTime || '选择开始时间'}}</text>
                 <text class="pi-arrow">⏰</text>
               </view>
             </picker>
           </view>
           <view class="form-group flex-1">
-            <text class="field-label">结束时间</text>
-            <picker mode="time" value="{{scheduleForm.endTime}}" bindchange="onEndTimeChange">
+            <text class="field-label">结束时间 <text class="required">*</text></text>
+            <picker mode="time" value="{{scheduleForm.endTime || '11:30'}}" bindchange="onEndTimeChange">
               <view class="fancy-input picker-input-row">
-                <text>{{scheduleForm.endTime || '11:30'}}</text>
+                <text class="{{!scheduleForm.endTime ? 'ph-style' : ''}}">{{scheduleForm.endTime || '选择结束时间'}}</text>
                 <text class="pi-arrow">⏰</text>
               </view>
             </picker>
@@ -159,12 +159,12 @@
 
         <view class="form-row-2 margin-top-8">
           <view class="form-group flex-1">
-            <text class="field-label">教室房号</text>
-            <input class="fancy-input" placeholder="101舞蹈大教室" model:value="{{scheduleForm.classroomName}}" />
+            <text class="field-label">教室房号 <text class="required">*</text></text>
+            <input class="fancy-input" placeholder="例如：101舞蹈大教室" model:value="{{scheduleForm.classroomName}}" />
           </view>
           <view class="form-group flex-1">
-            <text class="field-label">任课导师</text>
-            <input class="fancy-input" placeholder="林依依老师" model:value="{{scheduleForm.teacherName}}" />
+            <text class="field-label">任课导师 <text class="required">*</text></text>
+            <input class="fancy-input" placeholder="例如：张雅文老师" model:value="{{scheduleForm.teacherName}}" />
           </view>
         </view>
 

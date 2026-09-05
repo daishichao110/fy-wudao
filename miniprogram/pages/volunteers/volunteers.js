@@ -232,12 +232,15 @@ Page({
     const queryClassName = (this.data.currentClassName === '全校/公共') ? '' : (this.data.currentClassName || '');
     api.getVolunteerTasks(queryClassName).then(res => {
       const list = (res && res.data) ? res.data : [];
-      const mapped = list.map(item => ({
-        ...item,
-        taskDate: item.taskDate || '2026-08-30',
-        isCollapsed: false,
-        enrolledList: item.enrolledList || []
-      }));
+      const today = this.getTodayDate();
+      const mapped = list
+        .map(item => ({
+          ...item,
+          taskDate: item.taskDate || '',
+          isCollapsed: false,
+          enrolledList: item.enrolledList || []
+        }))
+        .filter(item => !item.taskDate || item.taskDate >= today);
       this.setData({ taskList: mapped });
     }).catch(err => {
       console.log('读取招募任务 API 异常:', err);
@@ -373,19 +376,21 @@ Page({
     api.getItemDemands().then(res => {
       const list = (res && res.data) ? res.data : [];
       const today = this.getTodayDate();
-      const mapped = list.map(item => {
-        const deadlineStr = item.deadline || '2026-08-30';
-        const isExpired = deadlineStr < today;
-        return {
-          ...item,
-          deadlineStr: deadlineStr,
-          expectedArrivalDate: item.expectedArrivalDate || '2026-09-05',
-          arrivalStatus: item.arrivalStatus || '未到货',
-          isExpired: isExpired,
-          sizeSummaryStr: item.sizeSummaryStr || '35码: 12双 | 36码: 8双 | 37码: 4双 (合计 24双)',
-          signedCount: item.signedCount || 24
-        };
-      });
+      const mapped = list
+        .map(item => {
+          const deadlineStr = item.deadline || '';
+          const isExpired = deadlineStr ? (deadlineStr < today) : false;
+          return {
+            ...item,
+            deadlineStr: deadlineStr,
+            expectedArrivalDate: item.expectedArrivalDate || '',
+            arrivalStatus: item.arrivalStatus || '未到货',
+            isExpired: isExpired,
+            sizeSummaryStr: item.sizeSummaryStr || '',
+            signedCount: item.signedCount || 0
+          };
+        })
+        .filter(item => !item.deadlineStr || item.deadlineStr >= today);
       this.setData({ itemDemandList: mapped });
     }).catch(err => {
       console.log('读取物品选购计划 API 异常:', err);
@@ -393,11 +398,12 @@ Page({
   },
 
   openItemModal() {
+    const today = this.getTodayDate();
     this.setData({
       itemForm: {
         itemName: '双皮头芭蕾练功软鞋',
-        deadline: '2026-08-30',
-        expectedArrivalDate: '2026-09-05',
+        deadline: today,
+        expectedArrivalDate: today,
         arrivalStatus: '未到货'
       },
       showItemDemandModal: true

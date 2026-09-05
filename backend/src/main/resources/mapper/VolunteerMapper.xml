@@ -9,6 +9,7 @@
             <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理' and danceClassName != '全校全部'">
                 (dance_class_name = #{danceClassName} OR dance_class_name = '全校/公共' OR dance_class_name = '全校全部' OR dance_class_name IS NULL OR dance_class_name = '')
             </if>
+            AND (task_date IS NULL OR task_date = '' OR task_date >= DATE_FORMAT(NOW(), '%Y-%m-%d'))
         </where>
         ORDER BY task_id DESC
     </select>

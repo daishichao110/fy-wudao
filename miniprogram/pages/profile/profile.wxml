@@ -383,6 +383,16 @@
           <view class="tab-item {{activeThoughtType === 'ALL' ? 'active-tab' : ''}}" bindtap="switchThoughtTab" data-type="ALL" wx:if="{{hasManagePermission}}">🌟 全部反馈</view>
         </view>
 
+        <view class="form-group margin-top-8" wx:if="{{activeThoughtType === 'HEART'}}">
+          <text class="field-label">指定倾诉老师 <text class="required">*</text></text>
+          <picker bindchange="onThoughtTeacherChange" value="{{thoughtTeacherIndex}}" range="{{thoughtTeacherNames}}">
+            <view class="fancy-input" style="display: flex; justify-content: space-between; align-items: center;">
+              <text style="color: #0f172a; font-size: 13px;">{{thoughtTeacherNames[thoughtTeacherIndex] || '全部 (全部老师与管理员可见)'}}</text>
+              <text style="color: #64748b;">▼</text>
+            </view>
+          </picker>
+        </view>
+
         <view class="form-group" wx:if="{{activeThoughtType !== 'ALL'}}">
           <text class="field-label">发布{{activeThoughtType === 'THOUGHT' ? '【有感而发】' : '【说说心里话】'}}正文 <text class="required">*</text></text>
           <textarea class="fancy-textarea" style="height: 90px;" placeholder="{{activeThoughtType === 'THOUGHT' ? '分享孩子的舞蹈练习收获、喜悦与点滴成就...' : '写下您对教务管理、课程设置或孩子学习的心里话...'}}" model:value="{{thoughtContent}}"></textarea>
@@ -393,14 +403,17 @@
         <view class="history-thoughts-box margin-top-14">
           <view style="display: flex; justify-content: space-between; align-items: center;">
             <text class="field-label" style="font-size: 13px; font-weight: 800; color: #0f172a;">📋 动态互动与反馈列表:</text>
-            <text class="group-tip" style="font-size: 11px;" wx:if="{{activeThoughtType === 'HEART' && (isAdmin || isTeacher)}}">🔒 管理员/老师可查全员倾诉</text>
+            <text class="group-tip" style="font-size: 11px;" wx:if="{{activeThoughtType === 'HEART' && (isAdmin || isTeacher)}}">🔒 管理员/指定老师可见</text>
           </view>
           
           <block wx:for="{{displayThoughtList}}" wx:key="id">
             <view class="item-card margin-top-8" style="padding: 12px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
               <view class="item-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <text class="item-name" style="font-size: 13px; font-weight: 700; color: #0f172a;">👤 {{item.studentName || '匿名家长'}}</text>
-                <text class="item-status-tag {{item.type === 'THOUGHT' ? 'tag-emerald' : 'tag-rose'}}" style="font-size: 10px; padding: 2px 8px; border-radius: 10px;">{{item.type === 'THOUGHT' ? '💭 有感而发 (全员可见)' : '💖 说说心里话 (管理员/老师可见)'}}</text>
+                <text class="item-status-tag {{item.type === 'THOUGHT' ? 'tag-emerald' : 'tag-rose'}}" style="font-size: 10px; padding: 2px 8px; border-radius: 10px;">{{item.type === 'THOUGHT' ? '💭 有感而发 (全员可见)' : '💖 说说心里话'}}</text>
+              </view>
+              <view class="margin-top-4" wx:if="{{item.type === 'HEART'}}">
+                <text class="group-tip" style="font-size: 11px; color: #64748b;">🎯 目标教师: {{item.targetTeacherName || '全部老师'}}</text>
               </view>
               <text class="sec-sub margin-top-6" style="color: #334155; font-size: 13px; line-height: 1.6; display: block;">{{item.content}}</text>
               <view class="item-header margin-top-8" style="display: flex; justify-content: space-between; align-items: center;">
@@ -629,8 +642,16 @@
           <input class="fancy-input" placeholder-class="ph-style" placeholder="例如：国家一级演员 / 首席舞蹈导师" value="{{teacherForm.title}}" bindinput="onTeacherInput" data-field="title" />
         </view>
         <view class="form-group margin-top-8">
-          <text class="field-label">任教学科/舞种</text>
-          <input class="fancy-input" placeholder-class="ph-style" placeholder="例如：少儿芭蕾基训 / 剧目软开度" value="{{teacherForm.danceType}}" bindinput="onTeacherInput" data-field="danceType" />
+          <text class="field-label">教龄经验</text>
+          <input class="fancy-input" placeholder-class="ph-style" placeholder="例如：8年教龄" value="{{teacherForm.experienceYears}}" bindinput="onTeacherInput" data-field="experienceYears" />
+        </view>
+        <view class="form-group margin-top-8">
+          <text class="field-label">教师肖像照片</text>
+          <view class="fancy-input" style="display: flex; justify-content: space-between; align-items: center;" bindtap="chooseTeacherAvatar">
+            <text style="color: #334155; font-size: 13px;">📷 从相册选取照片</text>
+            <text style="color: #64748b;">▼</text>
+          </view>
+          <image wx:if="{{teacherForm.avatarUrl}}" src="{{teacherForm.avatarUrl}}" mode="aspectFill" style="width: 80px; height: 80px; border-radius: 8px; margin-top: 8px; border: 1px solid #cbd5e1;"></image>
         </view>
         <view class="form-group margin-top-8">
           <text class="field-label">个人履历与教学简介</text>

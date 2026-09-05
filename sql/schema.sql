@@ -289,6 +289,18 @@ CREATE TABLE sys_thought (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='随感与心里话交流表';
 
+-- 18. 系统操作与查看日志表 (sys_operation_log)
+DROP TABLE IF EXISTS sys_operation_log;
+CREATE TABLE sys_operation_log (
+    log_id VARCHAR(64) PRIMARY KEY COMMENT '日志ID (字符串雪花算法 ID)',
+    user_id VARCHAR(64) NOT NULL DEFAULT '1787400000000000001' COMMENT '用户ID',
+    user_name VARCHAR(50) NOT NULL DEFAULT '系统管理员' COMMENT '姓名/操作人姓名',
+    api_path VARCHAR(255) NOT NULL COMMENT '操作接口 (请求 URL/URI 路径)',
+    api_name VARCHAR(100) NOT NULL COMMENT '接口名 (功能名称/操作描述)',
+    op_type VARCHAR(50) NOT NULL COMMENT '操作类型 (VIEW-查看 / QUERY-查询 / CREATE-新增 / UPDATE-修改 / DELETE-删除 / LOGIN-登录等)',
+    op_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统操作与查看日志表';
+
 -- =========================================================================
 -- 基础测试数据初始化
 -- =========================================================================

@@ -127,20 +127,22 @@ Page({
     api.getItemDemands(filterClass).then(res => {
       const list = (res && res.data) ? res.data : [];
       const today = this.getTodayDate();
-      const mapped = list.map(item => {
-        const deadlineStr = item.deadline || today;
-        const isExpired = deadlineStr < today;
-        return {
-          ...item,
-          deadlineStr: deadlineStr,
-          expectedArrivalDate: item.expectedArrivalDate || '',
-          arrivalStatus: item.arrivalStatus || '未到货',
-          isExpired: isExpired,
-          danceClassName: item.danceClassName || '全校/公共',
-          sizeSummaryStr: item.sizeSummaryStr || '已登记采购需求',
-          signedCount: item.signedCount || 0
-        };
-      });
+      const mapped = list
+        .map(item => {
+          const deadlineStr = item.deadline || '';
+          const isExpired = deadlineStr ? (deadlineStr < today) : false;
+          return {
+            ...item,
+            deadlineStr: deadlineStr,
+            expectedArrivalDate: item.expectedArrivalDate || '',
+            arrivalStatus: item.arrivalStatus || '未到货',
+            isExpired: isExpired,
+            danceClassName: item.danceClassName || '全校/公共',
+            sizeSummaryStr: item.sizeSummaryStr || '已登记采购需求',
+            signedCount: item.signedCount || 0
+          };
+        })
+        .filter(item => !item.deadlineStr || item.deadlineStr >= today);
       this.setData({ itemDemandList: mapped });
       if (typeof cb === 'function') cb();
     }).catch(err => {

@@ -29,6 +29,7 @@
             <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校全部'">
                 (dance_class_name = #{danceClassName} OR dance_class_name = 'GRADE_ALL')
             </if>
+            AND (deadline IS NULL OR deadline = '' OR deadline >= DATE_FORMAT(NOW(), '%Y-%m-%d'))
         </where>
         ORDER BY created_at DESC
     </select>

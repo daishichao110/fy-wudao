@@ -88,7 +88,7 @@
           <text class="task-name-text">📋 {{item.taskName}}</text>
           
           <view class="task-meta-box">
-            <text class="t-meta-item">📅 服务日期: {{item.taskDate || '2026-08-30'}}</text>
+            <text class="t-meta-item">📅 服务日期: {{item.taskDate || '待确定'}}</text>
             <text class="t-meta-item">⏰ 服务时间: {{item.serviceTime || '13:30 - 17:30 (4小时)'}}</text>
             <text class="t-meta-item">📍 活动地点: {{item.location || '大剧院/排练厅'}}</text>
             <text class="t-meta-item">👥 招募配额: {{item.enrolledCount || 0}} / {{item.quotaCount}} 人</text>

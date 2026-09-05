@@ -27,6 +27,12 @@ Page({
     showApprovalModal: false,
     showStudentProfileModal: false,
     showThoughtModal: false,
+    activeThoughtType: 'THOUGHT',
+    thoughtContent: '',
+    thoughtList: [],
+    displayThoughtList: [],
+    thoughtTeacherNames: ['全部 (全部老师与管理员可见)'],
+    thoughtTeacherIndex: 0,
     showDynamicPurchaseModal: false,
     showScheduleModal: false,
     showNoticeConfigModal: false,
@@ -615,6 +621,34 @@ Page({
   },
 
   // 💬 5. 💭有感而发 & 💖说说心里话
+  initThoughtTeachers() {
+    api.getTeacherList().then(res => {
+      const dbList = (res && res.data) ? res.data : [];
+      const teacherNames = ['全部 (全部老师与管理员可见)'];
+      dbList.forEach(t => {
+        if (t && t.name && teacherNames.indexOf(t.name) === -1) {
+          teacherNames.push(t.name);
+        }
+      });
+      if (teacherNames.indexOf('林依依老师') === -1) teacherNames.push('林依依老师');
+      this.setData({
+        thoughtTeacherNames: teacherNames,
+        thoughtTeacherIndex: 0
+      });
+    }).catch(err => {
+      this.setData({
+        thoughtTeacherNames: ['全部 (全部老师与管理员可见)', '林依依老师'],
+        thoughtTeacherIndex: 0
+      });
+    });
+  },
+
+  onThoughtTeacherChange(e) {
+    this.setData({
+      thoughtTeacherIndex: Number(e.detail.value)
+    });
+  },
+
   openThoughtModal(e) {
     let type = 'THOUGHT';
     if (e && e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.type) {
@@ -625,6 +659,7 @@ Page({
       thoughtContent: '',
       showThoughtModal: true
     });
+    this.initThoughtTeachers();
     this.loadThoughts(type);
   },
 
@@ -643,22 +678,32 @@ Page({
     const userInfo = wx.getStorageSync('userInfo') || {};
     const role = userInfo.roleType || 'STUDENT';
     const currentName = userInfo.realName || userInfo.studentName || userInfo.parentName || '';
-    const isAdminOrTeacher = (role === 'SUPER_ADMIN' || role === 'TEACHER');
 
     api.getThoughts(targetType).then(res => {
       const list = (res && res.data) ? res.data : [];
 
       const filtered = list.filter(item => {
         if (targetType === 'THOUGHT') {
-          // 有感而发：全部成员均可见！
           return item.type === 'THOUGHT' || !item.type;
         } else if (targetType === 'HEART') {
-          // 说说心里话：管理员与老师可查全员倾诉；普通家长只看属于自己的心里话
-          if (isAdminOrTeacher) return true;
-          return item.studentName && currentName && (item.studentName.indexOf(currentName) !== -1 || currentName.indexOf(item.studentName) !== -1);
+          const isSelf = item.studentName && currentName && (item.studentName.indexOf(currentName) !== -1 || currentName.indexOf(item.studentName) !== -1);
+          if (isSelf) return true;
+          if (role === 'SUPER_ADMIN') return true;
+          if (role === 'TEACHER') {
+            const targetTeacher = item.targetTeacherName || '全部';
+            if (targetTeacher === '全部' || targetTeacher === 'ALL' || targetTeacher.indexOf('全部') !== -1) {
+              return true;
+            }
+            return currentName && (currentName.indexOf(targetTeacher) !== -1 || targetTeacher.indexOf(currentName) !== -1);
+          }
+          return false;
         } else {
-          // 全部反馈（仅管理角色）：
-          if (isAdminOrTeacher) return true;
+          if (role === 'SUPER_ADMIN') return true;
+          if (role === 'TEACHER') {
+            const targetTeacher = item.targetTeacherName || '全部';
+            if (targetTeacher === '全部' || targetTeacher === 'ALL' || targetTeacher.indexOf('全部') !== -1) return true;
+            return currentName && (currentName.indexOf(targetTeacher) !== -1 || targetTeacher.indexOf(currentName) !== -1);
+          }
           return item.type === 'THOUGHT' || (item.studentName && currentName && item.studentName.indexOf(currentName) !== -1);
         }
       });
@@ -684,12 +729,20 @@ Page({
     const studentName = userInfo.realName || userInfo.studentName || userInfo.parentName || '家长';
     const type = this.data.activeThoughtType || 'THOUGHT';
 
+    let chosenTeacher = '全部';
+    if (type === 'HEART') {
+      const options = this.data.thoughtTeacherNames || ['全部 (全部老师与管理员可见)'];
+      const rawName = options[this.data.thoughtTeacherIndex] || '全部';
+      chosenTeacher = rawName.split(' ')[0];
+    }
+
     wx.showLoading({ title: '正在发布...' });
 
     api.submitThought({
       type: type,
       content: content.trim(),
       studentName: studentName,
+      targetTeacherName: chosenTeacher,
       danceClassName: userInfo.danceClassName || '二年级',
       roleType: userInfo.roleType || 'STUDENT'
     }).then(res => {
@@ -825,27 +878,15 @@ Page({
   },
 
   chooseBannerImage() {
-    wx.showActionSheet({
-      itemList: ['📷 从相册选择 / 现场拍摄照片', '🖼️ 使用国家大剧院首演剧照', '🖼️ 使用后台幕后花絮剧照'],
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          wx.chooseMedia({
-            count: 1,
-            mediaType: ['image'],
-            sourceType: ['album', 'camera'],
-            success: (chooseRes) => {
-              if (chooseRes.tempFiles && chooseRes.tempFiles.length > 0) {
-                const tempPath = chooseRes.tempFiles[0].tempFilePath;
-                this.setData({ 'publishBannerForm.imageUrl': tempPath });
-                wx.showToast({ title: '已选定封面照片', icon: 'success' });
-              }
-            }
-          });
-        } else if (res.tapIndex === 1) {
-          this.setData({ 'publishBannerForm.imageUrl': '/image/banner1.jpg' });
-        } else {
-          this.setData({ 'publishBannerForm.imageUrl': '/image/banner2.jpg' });
-          wx.showToast({ title: '已应用剧照 2', icon: 'success' });
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album'],
+      success: (chooseRes) => {
+        if (chooseRes.tempFiles && chooseRes.tempFiles.length > 0) {
+          const tempPath = chooseRes.tempFiles[0].tempFilePath;
+          this.setData({ 'publishBannerForm.imageUrl': tempPath });
+          wx.showToast({ title: '已从相册选取照片', icon: 'success' });
         }
       }
     });
@@ -1143,8 +1184,24 @@ Page({
         name: userInfo.roleType === 'TEACHER' ? (userInfo.realName || '') : '',
         title: '资深首席舞蹈导师',
         danceType: '少儿芭蕾基训 / 剧目软开度',
+        experienceYears: '8年教龄',
         avatarUrl: '/image/teacher1.jpg',
         bio: ''
+      }
+    });
+  },
+
+  chooseTeacherAvatar() {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album'],
+      success: (chooseRes) => {
+        if (chooseRes.tempFiles && chooseRes.tempFiles.length > 0) {
+          const tempPath = chooseRes.tempFiles[0].tempFilePath;
+          this.setData({ 'teacherForm.avatarUrl': tempPath });
+          wx.showToast({ title: '已从相册选取照片', icon: 'success' });
+        }
       }
     });
   },

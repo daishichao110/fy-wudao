@@ -40,6 +40,10 @@ public class TeacherController {
             teacher.setDanceType("芭蕾舞/中国舞");
         }
 
+        if (teacher.getExperienceYears() == null || teacher.getExperienceYears().trim().isEmpty()) {
+            teacher.setExperienceYears("8年教龄");
+        }
+
         if (teacher.getAvatarUrl() == null || teacher.getAvatarUrl().trim().isEmpty()) {
             teacher.setAvatarUrl("/image/teacher1.jpg");
         }
