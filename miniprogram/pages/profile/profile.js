@@ -1080,6 +1080,119 @@ Page({
  });
  },
 
+  openTeacherModal() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    wx.showLoading({ title: '正在获取教师档案...' });
+    api.getTeacherList().then(res => {
+      wx.hideLoading();
+      const list = (res && res.data) ? res.data : [];
+      let defaultForm = {
+        name: userInfo.roleType === 'TEACHER' ? (userInfo.realName || '') : '',
+        title: '资深首席舞蹈导师',
+        danceType: '少儿芭蕾基训 / 剧目软开度',
+        experienceYears: '8年教龄',
+        avatarUrl: '',
+        bio: ''
+      };
+
+      if (list && list.length > 0) {
+        const latest = list[0];
+        defaultForm = {
+          teacherId: latest.teacherId,
+          name: latest.name || defaultForm.name,
+          title: latest.title || defaultForm.title,
+          danceType: latest.danceType || defaultForm.danceType,
+          experienceYears: latest.experienceYears || defaultForm.experienceYears,
+          avatarUrl: api.getImageUrl(latest.avatarUrl) || '',
+          bio: latest.bio || ''
+        };
+      }
+
+      console.log('[DEBUG TEACHER MODAL] 弹窗初始化回显 teacherForm:', defaultForm);
+      this.setData({
+        showTeacherModal: true,
+        teacherForm: defaultForm
+      });
+    }).catch(err => {
+      wx.hideLoading();
+      this.setData({
+        showTeacherModal: true,
+        teacherForm: {
+          name: userInfo.roleType === 'TEACHER' ? (userInfo.realName || '') : '',
+          title: '资深首席舞蹈导师',
+          danceType: '少儿芭蕾基训 / 剧目软开度',
+          experienceYears: '8年教龄',
+          avatarUrl: '',
+          bio: ''
+        }
+      });
+    });
+  },
+
+  chooseTeacherAvatar() {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      success: (chooseRes) => {
+        if (chooseRes.tempFiles && chooseRes.tempFiles.length > 0) {
+          const tempPath = chooseRes.tempFiles[0].tempFilePath;
+          wx.showLoading({ title: '正在上传到阿里云...', mask: true });
+          api.uploadImage(tempPath, 'teachers/').then(uploadRes => {
+            wx.hideLoading();
+            const avatarPath = uploadRes.fullUrl || uploadRes.relativePath;
+            console.log('[DEBUG TEACHER AVATAR] 阿里云上传成功:', uploadRes, '设置 avatarUrl:', avatarPath);
+            this.setData({ 'teacherForm.avatarUrl': avatarPath });
+            wx.showToast({ title: '教师头像已传输至阿里云', icon: 'success' });
+          }).catch(err => {
+            wx.hideLoading();
+            console.error('[DEBUG TEACHER AVATAR] ❌ 上传失败:', err);
+            wx.showToast({ title: '头像上传失败', icon: 'none' });
+          });
+        }
+      }
+    });
+  },
+
+  closeTeacherModal() {
+    this.setData({ showTeacherModal: false });
+  },
+
+  onTeacherInput(e) {
+    const field = e.currentTarget.dataset.field;
+    const val = e.detail.value;
+    if (field) {
+      this.setData({
+        [`teacherForm.${field}`]: val
+      });
+    }
+  },
+
+  submitTeacherForm() {
+    const form = this.data.teacherForm;
+    if (!form.name || !form.name.trim()) {
+      wx.showToast({ title: '请输入教师姓名', icon: 'none' });
+      return;
+    }
+    if (!form.avatarUrl || !form.avatarUrl.trim()) {
+      wx.showToast({ title: '请先选取并上传教师肖像照片！', icon: 'none' });
+      return;
+    }
+
+    console.log('[DEBUG SUBMIT TEACHER] 提交保存教师表单:', form);
+    wx.showLoading({ title: '正在保存教师配置...' });
+    api.saveTeacher(form).then(res => {
+      wx.hideLoading();
+      console.log('[DEBUG SUBMIT TEACHER] 教师配置保存成功:', res);
+      wx.showToast({ title: '教师配置成功保存！', icon: 'success' });
+      this.setData({ showTeacherModal: false });
+    }).catch(err => {
+      wx.hideLoading();
+      console.error('[DEBUG SUBMIT TEACHER] ❌ 教师配置保存失败:', err);
+      wx.showToast({ title: (err && err.message) || '保存失败，请检查填写内容', icon: 'none' });
+    });
+  },
+
  openPublishTaskModal() {
  const userInfo = wx.getStorageSync('userInfo') || {};
  let defaultClass = userInfo.danceClassName || '二年级';
@@ -1184,74 +1297,4 @@ Page({
  },
 
  // 教师师资配置 Handler
- openTeacherModal() {
- const userInfo = this.data.userInfo || {};
- this.setData({
- showTeacherModal: true,
- teacherForm: {
- name: userInfo.roleType === 'TEACHER' ? (userInfo.realName || '') : '',
- title: '资深首席舞蹈导师',
- danceType: '少儿芭蕾基训 / 剧目软开度',
- experienceYears: '8年教龄',
- avatarUrl: '/image/teacher1.jpg',
- bio: ''
- }
- });
- },
-
- chooseTeacherAvatar() {
- wx.chooseMedia({
- count: 1,
- mediaType: ['image'],
- sourceType: ['album', 'camera'],
- success: (chooseRes) => {
- if (chooseRes.tempFiles && chooseRes.tempFiles.length > 0) {
- const tempPath = chooseRes.tempFiles[0].tempFilePath;
- wx.showLoading({ title: '正在上传到阿里云...', mask: true });
- api.uploadImage(tempPath, 'teachers/').then(uploadRes => {
- wx.hideLoading();
- const avatarPath = uploadRes.fullUrl || uploadRes.relativePath;
- this.setData({ 'teacherForm.avatarUrl': avatarPath });
- wx.showToast({ title: '教师头像已传输至阿里云', icon: 'success' });
- }).catch(err => {
- wx.hideLoading();
- wx.showToast({ title: '头像上传失败', icon: 'none' });
- });
- }
- }
- });
- },
-
- closeTeacherModal() {
- this.setData({ showTeacherModal: false });
- },
-
- onTeacherInput(e) {
- const field = e.currentTarget.dataset.field;
- const val = e.detail.value;
- if (field) {
- this.setData({
- [`teacherForm.${field}`]: val
- });
- }
- },
-
- submitTeacherForm() {
- const form = this.data.teacherForm;
- if (!form.name || !form.name.trim()) {
- wx.showToast({ title: '请输入教师姓名', icon: 'none' });
- return;
- }
-
- wx.showLoading({ title: '正在保存教师配置...' });
- api.saveTeacher(form).then(res => {
- wx.hideLoading();
- wx.showToast({ title: ' 教师师资配置成功保存！', icon: 'success' });
- this.setData({ showTeacherModal: false });
- }).catch(err => {
- wx.hideLoading();
- wx.showToast({ title: ' 教师师资配置成功保存！', icon: 'success' });
- this.setData({ showTeacherModal: false });
- });
- }
 });

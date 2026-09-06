@@ -3,7 +3,7 @@
   <!-- 1. 个人信息卡片 Header (爱马仕橙渐变尊享风) -->
   <view class="profile-header-card">
     <view class="user-main-row">
-      <image class="u-avatar" src="{{currentUser.avatarUrl || '/image/teacher1.jpg'}}" mode="aspectFill"></image>
+      <image class="u-avatar" src="{{currentUser.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
       <view class="u-info-col">
         <view class="u-name-line">
           <text class="u-name">{{currentUser.realName}}</text>
@@ -17,9 +17,6 @@
   <!-- 2. 学员成绩与测评管理入口 (独立新页面，包含分级权限与成绩录入) -->
   <view class="score-entrance-card margin-top-12" bindtap="goToScorePage">
     <view class="sec-left">
-      <view class="sec-icon-box">
-        <text class="sec-icon">[成绩]</text>
-      </view>
       <view class="sec-text-col">
         <view class="sec-title-row">
           <text class="sec-title">学员成绩与档案管理</text>
@@ -37,9 +34,6 @@
   <!-- 3. 物品选购与集中采购管理入口 (独立新页面，包含进度与集中导出) -->
   <view class="score-entrance-card margin-top-12" bindtap="goToPurchasePage">
     <view class="sec-left">
-      <view class="sec-icon-box">
-        <text class="sec-icon">[采购]</text>
-      </view>
       <view class="sec-text-col">
         <view class="sec-title-row">
           <text class="sec-title">物品选购与集中采购管理</text>
@@ -67,7 +61,7 @@
       <!-- 1. 角色审批 (仅管理员可见) -->
       <view class="action-item" bindtap="openModal" data-modal="approval" wx:if="{{isAdmin}}">
         <view class="action-icon-box">
-          <text class="action-badge-text">审批</text>
+          <image class="action-icon-img" src="/images/icons/approval.png" mode="aspectFit"></image>
           <text wx:if="{{pendingList.length > 0}}" class="badge-dot">{{pendingList.length}}</text>
         </view>
         <text class="action-label">角色审批</text>
@@ -76,7 +70,7 @@
       <!-- 2. 发布招募任务 -->
       <view class="action-item" bindtap="openPublishTaskModal">
         <view class="action-icon-box">
-          <text class="action-badge-text">招募</text>
+          <image class="action-icon-img" src="/images/icons/task.png" mode="aspectFit"></image>
         </view>
         <text class="action-label">发布招募任务</text>
       </view>
@@ -84,7 +78,7 @@
       <!-- 3. 日常工作小组风采配置 -->
       <view class="action-item" bindtap="openWorkGroupModal">
         <view class="action-icon-box">
-          <text class="action-badge-text">小组</text>
+          <image class="action-icon-img" src="/images/icons/group.png" mode="aspectFit"></image>
         </view>
         <text class="action-label">工作小组配置</text>
       </view>
@@ -92,7 +86,7 @@
       <!-- 4. 发布活动展播 -->
       <view class="action-item" bindtap="openPublishBannerModal">
         <view class="action-icon-box">
-          <text class="action-badge-text">展播</text>
+          <image class="action-icon-img" src="/images/icons/banner.png" mode="aspectFit"></image>
         </view>
         <text class="action-label">发布活动展播</text>
       </view>
@@ -100,7 +94,7 @@
       <!-- 5. 发布系统公告 -->
       <view class="action-item" bindtap="openPublishNoticeModal">
         <view class="action-icon-box">
-          <text class="action-badge-text">公告</text>
+          <image class="action-icon-img" src="/images/icons/notice.png" mode="aspectFit"></image>
         </view>
         <text class="action-label">发布系统公告</text>
       </view>
@@ -108,7 +102,7 @@
       <!-- 6. 排课与课表配置 -->
       <view class="action-item" bindtap="openPublishScheduleModal">
         <view class="action-icon-box">
-          <text class="action-badge-text">排课</text>
+          <image class="action-icon-img" src="/images/icons/schedule.png" mode="aspectFit"></image>
         </view>
         <text class="action-label">发布教务排课</text>
       </view>
@@ -116,7 +110,7 @@
       <!-- 6. 档案数据导出模版 -->
       <view class="action-item" bindtap="downloadStudentInfo">
         <view class="action-icon-box">
-          <text class="action-badge-text">导出</text>
+          <image class="action-icon-img" src="/images/icons/export.png" mode="aspectFit"></image>
         </view>
         <text class="action-label">档案数据导出</text>
       </view>
@@ -124,7 +118,7 @@
       <!-- 7. 教师师资配置 (仅管理员及老师可用) -->
       <view class="action-item" bindtap="openTeacherModal" wx:if="{{isTeacherOrAdmin}}">
         <view class="action-icon-box">
-          <text class="action-badge-text">名师</text>
+          <image class="action-icon-img" src="/images/icons/teacher.png" mode="aspectFit"></image>
         </view>
         <text class="action-label">设置教师信息</text>
       </view>
@@ -143,7 +137,7 @@
     <!-- 有感而发 (当前年级+老师+管理员可见) -->
     <view class="action-item" bindtap="openThoughtModal" data-type="THOUGHT">
       <view class="action-icon-box">
-        <text class="action-badge-text">随感</text>
+        <image class="action-icon-img" src="/images/icons/thought.png" mode="aspectFit"></image>
       </view>
       <text class="action-label">有感而发</text>
     </view>
@@ -151,7 +145,7 @@
     <!-- 说说心里话 (仅老师+管理员可见) -->
     <view class="action-item" bindtap="openThoughtModal" data-type="HEART">
       <view class="action-icon-box">
-        <text class="action-badge-text">心声</text>
+        <image class="action-icon-img" src="/images/icons/heart.png" mode="aspectFit"></image>
       </view>
       <text class="action-label">说说心里话</text>
     </view>

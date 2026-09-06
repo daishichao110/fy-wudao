@@ -297,11 +297,9 @@
   transition: all 0.2s ease;
 }
 
-.action-badge-text {
-  font-size: 13px;
-  font-weight: 700;
-  color: #ea580c;
-  line-height: 1;
+.action-icon-img {
+  width: 26px;
+  height: 26px;
 }
 
 /* 📐 SVG 图标样式 */

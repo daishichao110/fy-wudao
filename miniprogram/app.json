@@ -17,30 +17,38 @@
  "navigationBarTitleText": "劲松金帆舞团",
  "navigationBarTextStyle": "black"
  },
- "tabBar": {
- "color": "#969799",
- "selectedColor": "#ea580c",
- "backgroundColor": "#ffffff",
- "borderStyle": "black",
- "list": [
- {
- "pagePath": "pages/home/home",
- "text": "首页指南"
- },
- {
- "pagePath": "pages/schedule/schedule",
- "text": "教务课表"
- },
- {
- "pagePath": "pages/volunteers/volunteers",
- "text": "家委协同"
- },
- {
- "pagePath": "pages/profile/profile",
- "text": "我的"
- }
- ]
- },
+  "tabBar": {
+    "color": "#969799",
+    "selectedColor": "#ea580c",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页指南",
+        "iconPath": "images/tabbar/home.png",
+        "selectedIconPath": "images/tabbar/home_active.png"
+      },
+      {
+        "pagePath": "pages/schedule/schedule",
+        "text": "教务课表",
+        "iconPath": "images/tabbar/schedule.png",
+        "selectedIconPath": "images/tabbar/schedule_active.png"
+      },
+      {
+        "pagePath": "pages/volunteers/volunteers",
+        "text": "家委协同",
+        "iconPath": "images/tabbar/volunteers.png",
+        "selectedIconPath": "images/tabbar/volunteers_active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tabbar/profile.png",
+        "selectedIconPath": "images/tabbar/profile_active.png"
+      }
+    ]
+  },
  "style": "v2",
  "lazyCodeLoading": "requiredComponents",
  "sitemapLocation": "sitemap.json"
