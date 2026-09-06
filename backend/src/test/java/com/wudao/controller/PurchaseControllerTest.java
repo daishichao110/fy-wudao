@@ -16,34 +16,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class PurchaseControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+ @Autowired
+ private MockMvc mockMvc;
 
-    @Test
-    public void testListPurchases() throws Exception {
-        mockMvc.perform(get("/api/purchase/list")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data").isArray());
-    }
+ @Test
+ public void testListPurchases() throws Exception {
+ mockMvc.perform(get("/api/purchase/list")
+ .contentType(MediaType.APPLICATION_JSON))
+ .andExpect(status().isOk())
+ .andExpect(jsonPath("$.code").value(200))
+ .andExpect(jsonPath("$.data").isArray());
+ }
 
-    @Test
-    public void testCreatePurchase() throws Exception {
-        String json = "{\n" +
-                "  \"itemName\": \"舞蹈拉伸大把木砖\",\n" +
-                "  \"category\": \"教具\",\n" +
-                "  \"totalAmount\": 500.00,\n" +
-                "  \"unitPrice\": 50.00,\n" +
-                "  \"quantity\": 10,\n" +
-                "  \"proofUrl\": \"https://example.com/proof.jpg\",\n" +
-                "  \"remark\": \"单元测试采购\"\n" +
-                "}";
+ @Test
+ public void testCreatePurchase() throws Exception {
+ String json = "{\n" +
+ " \"itemName\": \"舞蹈拉伸大把木砖\",\n" +
+ " \"category\": \"教具\",\n" +
+ " \"totalAmount\": 500.00,\n" +
+ " \"unitPrice\": 50.00,\n" +
+ " \"quantity\": 10,\n" +
+ " \"proofUrl\": \"https://example.com/proof.jpg\",\n" +
+ " \"remark\": \"单元测试采购\"\n" +
+ "}";
 
-        mockMvc.perform(post("/api/purchase/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200));
-    }
+ mockMvc.perform(post("/api/purchase/create")
+ .contentType(MediaType.APPLICATION_JSON)
+ .content(json))
+ .andExpect(status().isOk())
+ .andExpect(jsonPath("$.code").value(200));
+ }
 }

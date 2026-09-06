@@ -7,7 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface DutyScheduleMapper {
-    List<DutySchedule> selectAllDuties(@Param("danceClassName") String danceClassName);
-    DutySchedule selectByDate(@Param("dutyDate") String dutyDate, @Param("danceClassName") String danceClassName);
-    int insertOrUpdateDuty(DutySchedule duty);
+ List<DutySchedule> selectAllDuties(@Param("danceClassName") String danceClassName);
+ DutySchedule selectByDate(@Param("dutyDate") String dutyDate, @Param("danceClassName") String danceClassName);
+ int insertOrUpdateDuty(DutySchedule duty);
 }

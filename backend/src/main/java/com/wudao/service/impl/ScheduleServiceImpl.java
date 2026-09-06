@@ -21,225 +21,225 @@ import java.util.List;
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
 
-    private static final Logger log = LoggerFactory.getLogger(ScheduleServiceImpl.class);
+ private static final Logger log = LoggerFactory.getLogger(ScheduleServiceImpl.class);
 
-    @Autowired
-    private ScheduleMapper scheduleMapper;
+ @Autowired
+ private ScheduleMapper scheduleMapper;
 
-    @Autowired
-    private LeaveMakeUpMapper leaveMakeUpMapper;
+ @Autowired
+ private LeaveMakeUpMapper leaveMakeUpMapper;
 
-    @Autowired
-    private UserMapper userMapper;
+ @Autowired
+ private UserMapper userMapper;
 
-    @Override
-    public List<Schedule> getAllSchedules(String danceClassName) {
-        String code = (StringUtils.hasText(danceClassName) && !"全校/公共".equals(danceClassName) && !"全校公共".equals(danceClassName) && !"全校全部".equals(danceClassName) && !"GRADE_ALL".equals(danceClassName) && !"ALL".equals(danceClassName)) 
-                ? com.wudao.common.DanceClassEnum.getCodeByName(danceClassName) : null;
-        log.info("[ScheduleService] Executing getAllSchedules() for class: {}, resolved code: {}", danceClassName, code);
-        List<Schedule> list = scheduleMapper.selectAll(code);
-        log.info("[ScheduleService] Successfully retrieved {} schedule records", list != null ? list.size() : 0);
-        return list;
-    }
+ @Override
+ public List<Schedule> getAllSchedules(String danceClassName) {
+ String code = (StringUtils.hasText(danceClassName) && !"全校/公共".equals(danceClassName) && !"全校公共".equals(danceClassName) && !"全校全部".equals(danceClassName) && !"GRADE_ALL".equals(danceClassName) && !"ALL".equals(danceClassName)) 
+ ? com.wudao.common.DanceClassEnum.getCodeByName(danceClassName) : null;
+ log.info("[ScheduleService] Executing getAllSchedules() for class: {}, resolved code: {}", danceClassName, code);
+ List<Schedule> list = scheduleMapper.selectAll(code);
+ log.info("[ScheduleService] Successfully retrieved {} schedule records", list != null ? list.size() : 0);
+ return list;
+ }
 
-    @Override
-    @Transactional
-    public Schedule createSchedule(Schedule schedule) {
-        log.info("[ScheduleService] Executing createSchedule() for class: {}, course: {}", schedule != null ? schedule.getDanceClassName() : "NULL", schedule != null ? schedule.getCourseName() : "NULL");
+ @Override
+ @Transactional
+ public Schedule createSchedule(Schedule schedule) {
+ log.info("[ScheduleService] Executing createSchedule() for class: {}, course: {}", schedule != null ? schedule.getDanceClassName() : "NULL", schedule != null ? schedule.getCourseName() : "NULL");
 
-        // 1. 严格参数校验 (非空直接抛错，绝不悄悄充入假数据)
-        if (schedule == null) {
-            log.error("[ScheduleService] Schedule object is null!");
-            throw new IllegalArgumentException("排课数据不可为空");
-        }
-        if (!StringUtils.hasText(schedule.getCourseName())) {
-            throw new IllegalArgumentException("课程名称不可为空");
-        }
-        if (!StringUtils.hasText(schedule.getClassDate())) {
-            throw new IllegalArgumentException("请选择上课日期");
-        }
-        if (!StringUtils.hasText(schedule.getStartTime())) {
-            throw new IllegalArgumentException("请选择开始时间");
-        }
-        if (!StringUtils.hasText(schedule.getEndTime())) {
-            throw new IllegalArgumentException("请选择结束时间");
-        }
-        if (!StringUtils.hasText(schedule.getClassroomName())) {
-            throw new IllegalArgumentException("请填写教室名称");
-        }
+ // 1. 严格参数校验 (非空直接抛错，绝不悄悄充入假数据)
+ if (schedule == null) {
+ log.error("[ScheduleService] Schedule object is null!");
+ throw new IllegalArgumentException("排课数据不可为空");
+ }
+ if (!StringUtils.hasText(schedule.getCourseName())) {
+ throw new IllegalArgumentException("课程名称不可为空");
+ }
+ if (!StringUtils.hasText(schedule.getClassDate())) {
+ throw new IllegalArgumentException("请选择上课日期");
+ }
+ if (!StringUtils.hasText(schedule.getStartTime())) {
+ throw new IllegalArgumentException("请选择开始时间");
+ }
+ if (!StringUtils.hasText(schedule.getEndTime())) {
+ throw new IllegalArgumentException("请选择结束时间");
+ }
+ if (!StringUtils.hasText(schedule.getClassroomName())) {
+ throw new IllegalArgumentException("请填写教室名称");
+ }
 
-        // 2. 教师身份与动态姓名校验 (按传入的姓名或 ID 标准查询绑定，绝不做特例硬编码转换)
-        String inputTeacherName = schedule.getTeacherName();
-        String inputTeacherId = schedule.getTeacherId();
+ // 2. 教师身份与动态姓名校验 (按传入的姓名或 ID 标准查询绑定，绝不做特例硬编码转换)
+ String inputTeacherName = schedule.getTeacherName();
+ String inputTeacherId = schedule.getTeacherId();
 
-        if (StringUtils.hasText(inputTeacherName)) {
-            String cleanName = inputTeacherName.trim();
-            schedule.setTeacherName(cleanName);
+ if (StringUtils.hasText(inputTeacherName)) {
+ String cleanName = inputTeacherName.trim();
+ schedule.setTeacherName(cleanName);
 
-            User matchedUser = userMapper.selectByRealName(cleanName);
-            if (matchedUser != null) {
-                schedule.setTeacherId(matchedUser.getUserId());
-            } else if (StringUtils.hasText(inputTeacherId)) {
-                schedule.setTeacherId(inputTeacherId);
-            } else {
-                schedule.setTeacherId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
-            }
-        } else if (StringUtils.hasText(inputTeacherId)) {
-            User teacher = userMapper.selectById(inputTeacherId);
-            if (teacher != null && StringUtils.hasText(teacher.getRealName())) {
-                schedule.setTeacherId(teacher.getUserId());
-                schedule.setTeacherName(teacher.getRealName());
-            } else {
-                schedule.setTeacherId(inputTeacherId);
-                schedule.setTeacherName("任课教师");
-            }
-        } else {
-            throw new IllegalArgumentException("请填写任课导师姓名");
-        }
+ User matchedUser = userMapper.selectByRealName(cleanName);
+ if (matchedUser != null) {
+ schedule.setTeacherId(matchedUser.getUserId());
+ } else if (StringUtils.hasText(inputTeacherId)) {
+ schedule.setTeacherId(inputTeacherId);
+ } else {
+ schedule.setTeacherId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
+ }
+ } else if (StringUtils.hasText(inputTeacherId)) {
+ User teacher = userMapper.selectById(inputTeacherId);
+ if (teacher != null && StringUtils.hasText(teacher.getRealName())) {
+ schedule.setTeacherId(teacher.getUserId());
+ schedule.setTeacherName(teacher.getRealName());
+ } else {
+ schedule.setTeacherId(inputTeacherId);
+ schedule.setTeacherName("任课教师");
+ }
+ } else {
+ throw new IllegalArgumentException("请填写任课导师姓名");
+ }
 
-        // 3. 可选字段防 null 转换（用户未填写着装/教具即保存为空字符串，绝不自动插入假数据）
-        schedule.setDanceClassName(com.wudao.common.DanceClassEnum.getCodeByName(schedule.getDanceClassName()));
-        if (schedule.getDanceType() == null) schedule.setDanceType("");
-        if (schedule.getTopsReq() == null) schedule.setTopsReq("");
-        if (schedule.getBottomsReq() == null) schedule.setBottomsReq("");
-        if (schedule.getSkirtReq() == null) schedule.setSkirtReq("");
-        if (schedule.getShoesReq() == null) schedule.setShoesReq("");
-        if (schedule.getHairReq() == null) schedule.setHairReq("");
-        if (schedule.getPropsReq() == null) schedule.setPropsReq("");
-        if (schedule.getOtherReq() == null) schedule.setOtherReq("");
-        if (schedule.getRemark() == null) schedule.setRemark("");
-        if (schedule.getParticipantNames() == null) schedule.setParticipantNames("");
+ // 3. 可选字段防 null 转换（用户未填写着装/教具即保存为空字符串，绝不自动插入假数据）
+ schedule.setDanceClassName(com.wudao.common.DanceClassEnum.getCodeByName(schedule.getDanceClassName()));
+ if (schedule.getDanceType() == null) schedule.setDanceType("");
+ if (schedule.getTopsReq() == null) schedule.setTopsReq("");
+ if (schedule.getBottomsReq() == null) schedule.setBottomsReq("");
+ if (schedule.getSkirtReq() == null) schedule.setSkirtReq("");
+ if (schedule.getShoesReq() == null) schedule.setShoesReq("");
+ if (schedule.getHairReq() == null) schedule.setHairReq("");
+ if (schedule.getPropsReq() == null) schedule.setPropsReq("");
+ if (schedule.getOtherReq() == null) schedule.setOtherReq("");
+ if (schedule.getRemark() == null) schedule.setRemark("");
+ if (schedule.getParticipantNames() == null) schedule.setParticipantNames("");
 
-        if (schedule.getCapacity() == null || schedule.getCapacity() <= 0) {
-            schedule.setCapacity(15);
-        }
-        schedule.setBookedCount(0);
+ if (schedule.getCapacity() == null || schedule.getCapacity() <= 0) {
+ schedule.setCapacity(15);
+ }
+ schedule.setBookedCount(0);
 
-        if (!StringUtils.hasText(schedule.getScheduleId())) {
-            schedule.setScheduleId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
-        }
+ if (!StringUtils.hasText(schedule.getScheduleId())) {
+ schedule.setScheduleId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
+ }
 
-        scheduleMapper.insert(schedule);
-        log.info("[ScheduleService] Schedule created successfully, assigned ScheduleId: {}", schedule.getScheduleId());
-        return schedule;
-    }
+ scheduleMapper.insert(schedule);
+ log.info("[ScheduleService] Schedule created successfully, assigned ScheduleId: {}", schedule.getScheduleId());
+ return schedule;
+ }
 
-    @Override
-    @Transactional
-    public LeaveMakeUp applyLeave(LeaveMakeUp leaveRecord) {
-        log.info("[ScheduleService] Executing applyLeave()...");
+ @Override
+ @Transactional
+ public LeaveMakeUp applyLeave(LeaveMakeUp leaveRecord) {
+ log.info("[ScheduleService] Executing applyLeave()...");
 
-        // 1. 参数校验
-        if (leaveRecord == null) {
-            throw new IllegalArgumentException("请假记录参数不可为空");
-        }
-        if (!StringUtils.hasText(leaveRecord.getStudentId())) {
-            throw new IllegalArgumentException("学员ID不可为空");
-        }
-        if (!StringUtils.hasText(leaveRecord.getScheduleId())) {
-            throw new IllegalArgumentException("排课ID不可为空");
-        }
+ // 1. 参数校验
+ if (leaveRecord == null) {
+ throw new IllegalArgumentException("请假记录参数不可为空");
+ }
+ if (!StringUtils.hasText(leaveRecord.getStudentId())) {
+ throw new IllegalArgumentException("学员ID不可为空");
+ }
+ if (!StringUtils.hasText(leaveRecord.getScheduleId())) {
+ throw new IllegalArgumentException("排课ID不可为空");
+ }
 
-        // 2. 学员与课程存在性校验
-        User student = userMapper.selectById(leaveRecord.getStudentId());
-        if (student == null) {
-            log.error("[ScheduleService] Leave failed: Student ID {} not found", leaveRecord.getStudentId());
-            throw new IllegalArgumentException("申请学员不存在");
-        }
-        Schedule schedule = scheduleMapper.selectById(leaveRecord.getScheduleId());
-        if (schedule == null) {
-            log.error("[ScheduleService] Leave failed: Schedule ID {} not found", leaveRecord.getScheduleId());
-            throw new IllegalArgumentException("申请请假的课程不存在");
-        }
+ // 2. 学员与课程存在性校验
+ User student = userMapper.selectById(leaveRecord.getStudentId());
+ if (student == null) {
+ log.error("[ScheduleService] Leave failed: Student ID {} not found", leaveRecord.getStudentId());
+ throw new IllegalArgumentException("申请学员不存在");
+ }
+ Schedule schedule = scheduleMapper.selectById(leaveRecord.getScheduleId());
+ if (schedule == null) {
+ log.error("[ScheduleService] Leave failed: Schedule ID {} not found", leaveRecord.getScheduleId());
+ throw new IllegalArgumentException("申请请假的课程不存在");
+ }
 
-        // 3. 防重复请假校验
-        List<LeaveMakeUp> history = leaveMakeUpMapper.selectByStudentId(leaveRecord.getStudentId());
-        if (history != null) {
-            for (LeaveMakeUp item : history) {
-                if ("LEAVE".equals(item.getRecordType()) &&
-                    "EFFECTIVE".equals(item.getStatus()) &&
-                    schedule.getScheduleId().equals(item.getScheduleId())) {
-                    log.warn("[ScheduleService] Duplicate leave request detected for student {} on schedule {}", student.getUserId(), schedule.getScheduleId());
-                    throw new IllegalStateException("您已针对《" + schedule.getCourseName() + "》提交过请假，请勿重复申请");
-                }
-            }
-        }
+ // 3. 防重复请假校验
+ List<LeaveMakeUp> history = leaveMakeUpMapper.selectByStudentId(leaveRecord.getStudentId());
+ if (history != null) {
+ for (LeaveMakeUp item : history) {
+ if ("LEAVE".equals(item.getRecordType()) &&
+ "EFFECTIVE".equals(item.getStatus()) &&
+ schedule.getScheduleId().equals(item.getScheduleId())) {
+ log.warn("[ScheduleService] Duplicate leave request detected for student {} on schedule {}", student.getUserId(), schedule.getScheduleId());
+ throw new IllegalStateException("您已针对《" + schedule.getCourseName() + "》提交过请假，请勿重复申请");
+ }
+ }
+ }
 
-        leaveRecord.setStudentName(student.getRealName());
-        leaveRecord.setCourseName(schedule.getCourseName());
-        leaveRecord.setRecordType("LEAVE");
-        leaveRecord.setStatus("EFFECTIVE");
+ leaveRecord.setStudentName(student.getRealName());
+ leaveRecord.setCourseName(schedule.getCourseName());
+ leaveRecord.setRecordType("LEAVE");
+ leaveRecord.setStatus("EFFECTIVE");
 
-        if (!StringUtils.hasText(leaveRecord.getRecordId())) {
-            leaveRecord.setRecordId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
-        }
+ if (!StringUtils.hasText(leaveRecord.getRecordId())) {
+ leaveRecord.setRecordId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
+ }
 
-        leaveMakeUpMapper.insert(leaveRecord);
-        scheduleMapper.decrementBookedCount(schedule.getScheduleId());
+ leaveMakeUpMapper.insert(leaveRecord);
+ scheduleMapper.decrementBookedCount(schedule.getScheduleId());
 
-        log.info("[ScheduleService] Zero-Approval Leave processed. RecordId: {}, Seat released on scheduleId: {}", leaveRecord.getRecordId(), schedule.getScheduleId());
-        return leaveRecord;
-    }
+ log.info("[ScheduleService] Zero-Approval Leave processed. RecordId: {}, Seat released on scheduleId: {}", leaveRecord.getRecordId(), schedule.getScheduleId());
+ return leaveRecord;
+ }
 
-    @Override
-    @Transactional
-    public LeaveMakeUp applyMakeup(LeaveMakeUp makeupRecord) {
-        log.info("[ScheduleService] Executing applyMakeup()...");
+ @Override
+ @Transactional
+ public LeaveMakeUp applyMakeup(LeaveMakeUp makeupRecord) {
+ log.info("[ScheduleService] Executing applyMakeup()...");
 
-        // 1. 参数校验
-        if (makeupRecord == null) {
-            throw new IllegalArgumentException("补课预约参数不可为空");
-        }
-        if (!StringUtils.hasText(makeupRecord.getStudentId())) {
-            throw new IllegalArgumentException("补课学员ID不可为空");
-        }
-        if (!StringUtils.hasText(makeupRecord.getScheduleId())) {
-            throw new IllegalArgumentException("补课排课ID不可为空");
-        }
+ // 1. 参数校验
+ if (makeupRecord == null) {
+ throw new IllegalArgumentException("补课预约参数不可为空");
+ }
+ if (!StringUtils.hasText(makeupRecord.getStudentId())) {
+ throw new IllegalArgumentException("补课学员ID不可为空");
+ }
+ if (!StringUtils.hasText(makeupRecord.getScheduleId())) {
+ throw new IllegalArgumentException("补课排课ID不可为空");
+ }
 
-        // 2. 学员与课程存在性校验
-        User student = userMapper.selectById(makeupRecord.getStudentId());
-        if (student == null) {
-            throw new IllegalArgumentException("预约学员不存在");
-        }
-        Schedule schedule = scheduleMapper.selectById(makeupRecord.getScheduleId());
-        if (schedule == null) {
-            throw new IllegalArgumentException("预约补课的课程不存在");
-        }
+ // 2. 学员与课程存在性校验
+ User student = userMapper.selectById(makeupRecord.getStudentId());
+ if (student == null) {
+ throw new IllegalArgumentException("预约学员不存在");
+ }
+ Schedule schedule = scheduleMapper.selectById(makeupRecord.getScheduleId());
+ if (schedule == null) {
+ throw new IllegalArgumentException("预约补课的课程不存在");
+ }
 
-        // 3. 容量与学位校验
-        if (schedule.getBookedCount() != null && schedule.getCapacity() != null) {
-            if (schedule.getBookedCount() >= schedule.getCapacity()) {
-                log.warn("[ScheduleService] Makeup failed: Schedule ID {} is fully booked ({}/{})", schedule.getScheduleId(), schedule.getBookedCount(), schedule.getCapacity());
-                throw new IllegalStateException("该补课场次学位已满(" + schedule.getBookedCount() + "/" + schedule.getCapacity() + "人)，请选择其他时间段");
-            }
-        }
+ // 3. 容量与学位校验
+ if (schedule.getBookedCount() != null && schedule.getCapacity() != null) {
+ if (schedule.getBookedCount() >= schedule.getCapacity()) {
+ log.warn("[ScheduleService] Makeup failed: Schedule ID {} is fully booked ({}/{})", schedule.getScheduleId(), schedule.getBookedCount(), schedule.getCapacity());
+ throw new IllegalStateException("该补课场次学位已满(" + schedule.getBookedCount() + "/" + schedule.getCapacity() + "人)，请选择其他时间段");
+ }
+ }
 
-        // 4. 防重复预约校验
-        List<LeaveMakeUp> history = leaveMakeUpMapper.selectByStudentId(makeupRecord.getStudentId());
-        if (history != null) {
-            for (LeaveMakeUp item : history) {
-                if ("MAKE_UP".equals(item.getRecordType()) &&
-                    "EFFECTIVE".equals(item.getStatus()) &&
-                    schedule.getScheduleId().equals(item.getScheduleId())) {
-                    throw new IllegalStateException("您已预约过《" + schedule.getCourseName() + "》的补课，无需重复预约");
-                }
-            }
-        }
+ // 4. 防重复预约校验
+ List<LeaveMakeUp> history = leaveMakeUpMapper.selectByStudentId(makeupRecord.getStudentId());
+ if (history != null) {
+ for (LeaveMakeUp item : history) {
+ if ("MAKE_UP".equals(item.getRecordType()) &&
+ "EFFECTIVE".equals(item.getStatus()) &&
+ schedule.getScheduleId().equals(item.getScheduleId())) {
+ throw new IllegalStateException("您已预约过《" + schedule.getCourseName() + "》的补课，无需重复预约");
+ }
+ }
+ }
 
-        makeupRecord.setStudentName(student.getRealName());
-        makeupRecord.setCourseName(schedule.getCourseName());
-        makeupRecord.setRecordType("MAKE_UP");
-        makeupRecord.setStatus("EFFECTIVE");
+ makeupRecord.setStudentName(student.getRealName());
+ makeupRecord.setCourseName(schedule.getCourseName());
+ makeupRecord.setRecordType("MAKE_UP");
+ makeupRecord.setStatus("EFFECTIVE");
 
-        if (!StringUtils.hasText(makeupRecord.getRecordId())) {
-            makeupRecord.setRecordId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
-        }
+ if (!StringUtils.hasText(makeupRecord.getRecordId())) {
+ makeupRecord.setRecordId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
+ }
 
-        leaveMakeUpMapper.insert(makeupRecord);
-        scheduleMapper.incrementBookedCount(schedule.getScheduleId());
+ leaveMakeUpMapper.insert(makeupRecord);
+ scheduleMapper.incrementBookedCount(schedule.getScheduleId());
 
-        log.info("[ScheduleService] Zero-Approval Makeup Appointment processed. RecordId: {}, Booked count updated.", makeupRecord.getRecordId());
-        return makeupRecord;
-    }
+ log.info("[ScheduleService] Zero-Approval Makeup Appointment processed. RecordId: {}, Booked count updated.", makeupRecord.getRecordId());
+ return makeupRecord;
+ }
 }

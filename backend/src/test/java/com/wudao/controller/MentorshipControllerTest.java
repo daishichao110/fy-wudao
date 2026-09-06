@@ -16,24 +16,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class MentorshipControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+ @Autowired
+ private MockMvc mockMvc;
 
-    @Test
-    public void testListMentorships() throws Exception {
-        mockMvc.perform(get("/api/mentorship/list")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200));
-    }
+ @Test
+ public void testListMentorships() throws Exception {
+ mockMvc.perform(get("/api/mentorship/list")
+ .contentType(MediaType.APPLICATION_JSON))
+ .andExpect(status().isOk())
+ .andExpect(jsonPath("$.code").value(200));
+ }
 
-    @Test
-    public void testCheckinMentorship() throws Exception {
-        String json = "{\"pairId\": 1}";
-        mockMvc.perform(post("/api/mentorship/checkin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200));
-    }
+ @Test
+ public void testCheckinMentorship() throws Exception {
+ String json = "{\"pairId\": 1}";
+ mockMvc.perform(post("/api/mentorship/checkin")
+ .contentType(MediaType.APPLICATION_JSON)
+ .content(json))
+ .andExpect(status().isOk())
+ .andExpect(jsonPath("$.code").value(200));
+ }
 }

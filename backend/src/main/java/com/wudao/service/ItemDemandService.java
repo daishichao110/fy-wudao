@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface ItemDemandService {
 
-    List<ItemDemand> getItemDemands(String danceClassName);
+ List<ItemDemand> getItemDemands(String danceClassName);
 
-    String createItemDemand(ItemDemand demand);
+ String createItemDemand(ItemDemand demand);
 
-    String updateItemDemand(ItemDemand demand);
+ String updateItemDemand(ItemDemand demand);
 
-    String enrollItemDemand(String itemId, String parentName, Integer quantity);
+ String enrollItemDemand(String itemId, String parentName, Integer quantity);
 
-    String exportItemDemands();
+ String exportItemDemands();
 }

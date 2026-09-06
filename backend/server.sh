@@ -43,7 +43,7 @@ build() {
         fi
     fi
 
-    $MVN_CMD clean package -DskipTests
+    "$MVN_CMD" clean package -DskipTests
     if [ $? -eq 0 ]; then
         if [ -f "target/$JAR_NAME" ]; then
             cp "target/$JAR_NAME" "./$JAR_NAME"

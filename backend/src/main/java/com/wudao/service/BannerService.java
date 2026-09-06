@@ -4,6 +4,6 @@ import com.wudao.entity.Banner;
 import java.util.List;
 
 public interface BannerService {
-    List<Banner> getActiveBanners();
-    Banner createBanner(Banner banner);
+ List<Banner> getActiveBanners();
+ Banner createBanner(Banner banner);
 }

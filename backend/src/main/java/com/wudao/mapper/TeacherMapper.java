@@ -6,6 +6,6 @@ import java.util.List;
 
 @Mapper
 public interface TeacherMapper {
-    List<Teacher> selectAllTeachers();
-    int insertTeacher(Teacher teacher);
+ List<Teacher> selectAllTeachers();
+ int insertTeacher(Teacher teacher);
 }

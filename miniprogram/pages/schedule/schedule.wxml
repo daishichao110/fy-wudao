@@ -1,212 +1,212 @@
 <!-- 舞蹈学校数字化综合管理小程序 —— 教务课表视图 -->
 <view class="container">
-  <!-- 1. 顶部班级年级切换 Header -->
-  <view class="header-card">
-    <view class="class-picker-row">
-      <view class="class-title-group">
-        <text class="class-label">🎓 适用年级排课</text>
-        <picker bindchange="onClassPickerChange" value="{{classPickerIndex}}" range="{{classPickerOptions}}" disabled="{{!isTeacherOrAdmin}}">
-          <view class="picker-pill {{!isTeacherOrAdmin ? 'disabled-picker' : ''}}" style="{{!isTeacherOrAdmin ? 'opacity: 0.88; background: #f1f5f9; border-color: #cbd5e1;' : ''}}">
-            <text class="picker-value" style="{{!isTeacherOrAdmin ? 'color: #475569;' : ''}}">{{currentClassName}}</text>
-            <text class="picker-arrow" wx:if="{{isTeacherOrAdmin}}">▼</text>
-          </view>
-        </picker>
-      </view>
-      <text class="filter-tip" wx:if="{{selectedDateStr}}" bindtap="clearDateFilter">重置日期 ✖</text>
-    </view>
-  </view>
+ <!-- 1. 顶部班级年级切换 Header -->
+ <view class="header-card">
+ <view class="class-picker-row">
+ <view class="class-title-group">
+ <text class="class-label">🎓 适用年级排课</text>
+ <picker bindchange="onClassPickerChange" value="{{classPickerIndex}}" range="{{classPickerOptions}}" disabled="{{!isTeacherOrAdmin}}">
+ <view class="picker-pill {{!isTeacherOrAdmin ? 'disabled-picker' : ''}}" style="{{!isTeacherOrAdmin ? 'opacity: 0.88; background: #f1f5f9; border-color: #cbd5e1;' : ''}}">
+ <text class="picker-value" style="{{!isTeacherOrAdmin ? 'color: #475569;' : ''}}">{{currentClassName}}</text>
+ <text class="picker-arrow" wx:if="{{isTeacherOrAdmin}}">▼</text>
+ </view>
+ </picker>
+ </view>
+ <text class="filter-tip" wx:if="{{selectedDateStr}}" bindtap="clearDateFilter">重置日期 ✖</text>
+ </view>
+ </view>
 
-  <!-- 2. 📅 14天滚动日历视图 (有课橙底/黑字/橙点，无课白底) -->
-  <view class="calendar-wrapper">
-    <scroll-view scroll-x class="calendar-scroll" enable-flex>
-      <block wx:for="{{calendarDays}}" wx:key="dateStr">
-        <view class="day-card {{item.isSelected ? 'selected-day' : (item.hasCourse ? 'has-course' : 'no-course')}}" bindtap="onSelectCalendarDate" data-date="{{item.dateStr}}">
-          <text class="day-month-num">{{item.monthNum}}月{{item.dayNum}}日</text>
-          <text class="day-week">{{item.weekDayStr}}</text>
-          <view class="day-dot-status">
-            <text wx:if="{{item.hasCourse}}" class="dot-orange">● 有课</text>
-            <text wx:else class="dot-empty"></text>
-          </view>
-        </view>
-      </block>
-    </scroll-view>
-  </view>
+ <!-- 2. 14天滚动日历视图 (有课橙底/黑字/橙点，无课白底) -->
+ <view class="calendar-wrapper">
+ <scroll-view scroll-x class="calendar-scroll" enable-flex>
+ <block wx:for="{{calendarDays}}" wx:key="dateStr">
+ <view class="day-card {{item.isSelected ? 'selected-day' : (item.hasCourse ? 'has-course' : 'no-course')}}" bindtap="onSelectCalendarDate" data-date="{{item.dateStr}}">
+ <text class="day-month-num">{{item.monthNum}}月{{item.dayNum}}日</text>
+ <text class="day-week">{{item.weekDayStr}}</text>
+ <view class="day-dot-status">
+ <text wx:if="{{item.hasCourse}}" class="dot-orange">● 有课</text>
+ <text wx:else class="dot-empty"></text>
+ </view>
+ </view>
+ </block>
+ </scroll-view>
+ </view>
 
-  <!-- 3. 排课列表区域 (点击日历切至明细) -->
-  <view class="schedule-list">
-    <block wx:for="{{displayScheduleList}}" wx:key="scheduleId">
-      <view class="course-card">
-        <!-- 卡片头部: 左侧双色饰条，时间、课程名、教室 -->
-        <view class="card-header" bindtap="toggleCollapse" data-id="{{item.scheduleId}}">
-          <view class="left-accent-bar"></view>
+ <!-- 3. 排课列表区域 (点击日历切至明细) -->
+ <view class="schedule-list">
+ <block wx:for="{{displayScheduleList}}" wx:key="scheduleId">
+ <view class="course-card">
+ <!-- 卡片头部: 左侧双色饰条，时间、课程名、教室 -->
+ <view class="card-header" bindtap="toggleCollapse" data-id="{{item.scheduleId}}">
+ <view class="left-accent-bar"></view>
 
-          <view class="header-main">
-            <view class="time-badge-row">
-              <view class="time-tag">
-                <text class="time-icon">📅</text>
-                <text class="time-text">{{item.classDate}} ({{item.startTime}}-{{item.endTime}})</text>
-              </view>
-              <view class="class-scope-tag">{{item.danceClassName === 'GRADE_ALL' ? '全校公共' : item.danceClassName}}</view>
-            </view>
+ <view class="header-main">
+ <view class="time-badge-row">
+ <view class="time-tag">
+ <text class="time-icon"></text>
+ <text class="time-text">{{item.classDate}} ({{item.startTime}}-{{item.endTime}})</text>
+ </view>
+ <view class="class-scope-tag">{{item.danceClassName === 'GRADE_ALL' ? '全校公共' : item.danceClassName}}</view>
+ </view>
 
-            <view class="title-row margin-top-4">
-              <text class="course-title">{{item.courseName}}</text>
-              <text class="collapse-btn">{{item.isCollapsed ? '展开着装 ▾' : '收起着装 ▴'}}</text>
-            </view>
+ <view class="title-row margin-top-4">
+ <text class="course-title">{{item.courseName}}</text>
+ <text class="collapse-btn">{{item.isCollapsed ? '展开着装 ▾' : '收起着装 ▴'}}</text>
+ </view>
 
-            <view class="meta-info-row margin-top-6">
-              <text class="meta-item">📍 {{item.classroomName}}</text>
-              <text class="meta-item">👩‍🏫 导师: {{item.teacherName}}</text>
-            </view>
-          </view>
-        </view>
+ <view class="meta-info-row margin-top-6">
+ <text class="meta-item"> {{item.classroomName}}</text>
+ <text class="meta-item"> 导师: {{item.teacherName}}</text>
+ </view>
+ </view>
+ </view>
 
-        <!-- 卡片折叠内容: 统一清晰配色服装、教具、其他物品、备注与参与学员 -->
-        <view class="card-body" wx:if="{{!item.isCollapsed}}">
-          <view class="divider"></view>
-          <text class="section-sub-title">👗 服装与着装规范 (爱马仕橙统一色调)</text>
-          
-          <view class="req-grid-orange margin-bottom-8">
-            <view class="req-pill-orange" wx:if="{{item.topsReq}}"><text class="req-label">👕 上装:</text> {{item.topsReq}}</view>
-            <view class="req-pill-orange" wx:if="{{item.bottomsReq}}"><text class="req-label">🩳 下装:</text> {{item.bottomsReq}}</view>
-            <view class="req-pill-orange" wx:if="{{item.skirtReq}}"><text class="req-label">🩰 短裙:</text> {{item.skirtReq}}</view>
-            <view class="req-pill-orange" wx:if="{{item.shoesReq}}"><text class="req-label">👟 舞鞋:</text> {{item.shoesReq}}</view>
-            <view class="req-pill-orange" wx:if="{{item.hairReq}}"><text class="req-label">💇 发型:</text> {{item.hairReq}}</view>
-          </view>
+ <!-- 卡片折叠内容: 统一清晰配色服装、教具、其他物品、备注与参与学员 -->
+ <view class="card-body" wx:if="{{!item.isCollapsed}}">
+ <view class="divider"></view>
+ <text class="section-sub-title"> 服装与着装规范 (爱马仕橙统一色调)</text>
+ 
+ <view class="req-grid-orange margin-bottom-8">
+ <view class="req-pill-orange" wx:if="{{item.topsReq}}"><text class="req-label">👕 上装:</text> {{item.topsReq}}</view>
+ <view class="req-pill-orange" wx:if="{{item.bottomsReq}}"><text class="req-label">🩳 下装:</text> {{item.bottomsReq}}</view>
+ <view class="req-pill-orange" wx:if="{{item.skirtReq}}"><text class="req-label"> 短裙:</text> {{item.skirtReq}}</view>
+ <view class="req-pill-orange" wx:if="{{item.shoesReq}}"><text class="req-label">👟 舞鞋:</text> {{item.shoesReq}}</view>
+ <view class="req-pill-orange" wx:if="{{item.hairReq}}"><text class="req-label">💇 发型:</text> {{item.hairReq}}</view>
+ </view>
 
-          <text class="section-sub-title margin-top-12">🎒 教具与其他物品 (翡翠绿统一色调)</text>
-          <view class="req-grid-emerald margin-bottom-8">
-            <view class="req-pill-emerald" wx:if="{{item.propsReq}}"><text class="req-label">🧱 教具:</text> {{item.propsReq}}</view>
-            <view class="req-pill-emerald" wx:if="{{item.otherReq}}"><text class="req-label">🎒 其他带拿:</text> {{item.otherReq}}</view>
-          </view>
+ <text class="section-sub-title margin-top-12"> 教具与其他物品 (翡翠绿统一色调)</text>
+ <view class="req-grid-emerald margin-bottom-8">
+ <view class="req-pill-emerald" wx:if="{{item.propsReq}}"><text class="req-label">🧱 教具:</text> {{item.propsReq}}</view>
+ <view class="req-pill-emerald" wx:if="{{item.otherReq}}"><text class="req-label"> 其他带拿:</text> {{item.otherReq}}</view>
+ </view>
 
-          <!-- 💡 特殊交代与备注 -->
-          <view class="remark-box margin-top-8" wx:if="{{item.remark}}">
-            <text class="remark-icon">💡</text>
-            <text class="remark-text"><text class="remark-title">特殊交代: </text>{{item.remark}}</text>
-          </view>
+ <!-- 特殊交代与备注 -->
+ <view class="remark-box margin-top-8" wx:if="{{item.remark}}">
+ <text class="remark-icon"></text>
+ <text class="remark-text"><text class="remark-title">特殊交代: </text>{{item.remark}}</text>
+ </view>
 
-          <!-- 👥 参与剧目/课程学员名单 -->
-          <view class="participants-box margin-top-8" wx:if="{{item.participantNames}}">
-            <text class="part-title">👥 参与本作品学员:</text>
-            <text class="part-names">{{item.participantNames}}</text>
-          </view>
-        </view>
-      </view>
-    </block>
+ <!-- 👥 参与剧目/课程学员名单 -->
+ <view class="participants-box margin-top-8" wx:if="{{item.participantNames}}">
+ <text class="part-title">👥 参与本作品学员:</text>
+ <text class="part-names">{{item.participantNames}}</text>
+ </view>
+ </view>
+ </view>
+ </block>
 
-    <!-- 空列表提示 -->
-    <view class="empty-box" wx:if="{{displayScheduleList.length === 0}}">
-      <text class="empty-icon">📅</text>
-      <text class="empty-text">该日期/年级暂无排课记录</text>
-    </view>
-  </view>
+ <!-- 空列表提示 -->
+ <view class="empty-box" wx:if="{{displayScheduleList.length === 0}}">
+ <text class="empty-icon"></text>
+ <text class="empty-text">该日期/年级暂无排课记录</text>
+ </view>
+ </view>
 
-  <!-- ==================== 4. 📅 发布/新增教务排课 Modal 弹窗 ==================== -->
-  <view class="modal-overlay" wx:if="{{showScheduleModal}}">
-    <view class="modal-card">
-      <view class="modal-head">
-        <text class="m-title">📅 发布教务课程排课</text>
-        <text class="close-btn" bindtap="closeScheduleModal">✕</text>
-      </view>
-      <scroll-view scroll-y class="modal-body">
-        <view class="form-row-2 margin-top-8">
-          <view class="form-group flex-1">
-            <text class="field-label">适用年级 <text class="required">*</text></text>
-            <picker bindchange="onScheduleClassChange" value="{{scheduleClassIndex}}" range="{{scheduleClassOptions}}">
-              <view class="fancy-input picker-input">
-                <text>{{scheduleClassOptions[scheduleClassIndex]}}</text>
-                <text class="pi-arrow">▼</text>
-              </view>
-            </picker>
-          </view>
-          <view class="form-group flex-1">
-            <text class="field-label">上课日期 <text class="required">*</text></text>
-            <picker mode="date" value="{{scheduleForm.classDate}}" bindchange="onDateChange">
-              <view class="fancy-input picker-input-row">
-                <text>{{scheduleForm.classDate || '选择日期'}}</text>
-                <text class="pi-arrow">📅</text>
-              </view>
-            </picker>
-          </view>
-        </view>
+ <!-- ==================== 4. 发布/新增教务排课 Modal 弹窗 ==================== -->
+ <view class="modal-overlay" wx:if="{{showScheduleModal}}">
+ <view class="modal-card">
+ <view class="modal-head">
+ <text class="m-title"> 发布教务课程排课</text>
+ <text class="close-btn" bindtap="closeScheduleModal">✕</text>
+ </view>
+ <scroll-view scroll-y class="modal-body">
+ <view class="form-row-2 margin-top-8">
+ <view class="form-group flex-1">
+ <text class="field-label">适用年级 <text class="required">*</text></text>
+ <picker bindchange="onScheduleClassChange" value="{{scheduleClassIndex}}" range="{{scheduleClassOptions}}">
+ <view class="fancy-input picker-input">
+ <text>{{scheduleClassOptions[scheduleClassIndex]}}</text>
+ <text class="pi-arrow">▼</text>
+ </view>
+ </picker>
+ </view>
+ <view class="form-group flex-1">
+ <text class="field-label">上课日期 <text class="required">*</text></text>
+ <picker mode="date" value="{{scheduleForm.classDate}}" bindchange="onDateChange">
+ <view class="fancy-input picker-input-row">
+ <text>{{scheduleForm.classDate || '选择日期'}}</text>
+ <text class="pi-arrow"></text>
+ </view>
+ </picker>
+ </view>
+ </view>
 
-        <view class="form-group margin-top-8">
-          <text class="field-label">课程/剧目名称 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：少儿芭蕾基训与软开度专项" model:value="{{scheduleForm.courseName}}" />
-        </view>
+ <view class="form-group margin-top-8">
+ <text class="field-label">课程/剧目名称 <text class="required">*</text></text>
+ <input class="fancy-input" placeholder="例如：少儿芭蕾基训与软开度专项" model:value="{{scheduleForm.courseName}}" />
+ </view>
 
-        <view class="form-row-2 margin-top-8">
-          <view class="form-group flex-1">
-            <text class="field-label">开始时间 <text class="required">*</text></text>
-            <picker mode="time" value="{{scheduleForm.startTime || '09:30'}}" bindchange="onStartTimeChange">
-              <view class="fancy-input picker-input-row">
-                <text class="{{!scheduleForm.startTime ? 'ph-style' : ''}}">{{scheduleForm.startTime || '选择开始时间'}}</text>
-                <text class="pi-arrow">⏰</text>
-              </view>
-            </picker>
-          </view>
-          <view class="form-group flex-1">
-            <text class="field-label">结束时间 <text class="required">*</text></text>
-            <picker mode="time" value="{{scheduleForm.endTime || '11:30'}}" bindchange="onEndTimeChange">
-              <view class="fancy-input picker-input-row">
-                <text class="{{!scheduleForm.endTime ? 'ph-style' : ''}}">{{scheduleForm.endTime || '选择结束时间'}}</text>
-                <text class="pi-arrow">⏰</text>
-              </view>
-            </picker>
-          </view>
-        </view>
+ <view class="form-row-2 margin-top-8">
+ <view class="form-group flex-1">
+ <text class="field-label">开始时间 <text class="required">*</text></text>
+ <picker mode="time" value="{{scheduleForm.startTime || '09:30'}}" bindchange="onStartTimeChange">
+ <view class="fancy-input picker-input-row">
+ <text class="{{!scheduleForm.startTime ? 'ph-style' : ''}}">{{scheduleForm.startTime || '选择开始时间'}}</text>
+ <text class="pi-arrow">⏰</text>
+ </view>
+ </picker>
+ </view>
+ <view class="form-group flex-1">
+ <text class="field-label">结束时间 <text class="required">*</text></text>
+ <picker mode="time" value="{{scheduleForm.endTime || '11:30'}}" bindchange="onEndTimeChange">
+ <view class="fancy-input picker-input-row">
+ <text class="{{!scheduleForm.endTime ? 'ph-style' : ''}}">{{scheduleForm.endTime || '选择结束时间'}}</text>
+ <text class="pi-arrow">⏰</text>
+ </view>
+ </picker>
+ </view>
+ </view>
 
-        <view class="form-row-2 margin-top-8">
-          <view class="form-group flex-1">
-            <text class="field-label">教室房号 <text class="required">*</text></text>
-            <input class="fancy-input" placeholder="例如：101舞蹈大教室" model:value="{{scheduleForm.classroomName}}" />
-          </view>
-          <view class="form-group flex-1">
-            <text class="field-label">任课导师 <text class="required">*</text></text>
-            <input class="fancy-input" placeholder="例如：张雅文老师" model:value="{{scheduleForm.teacherName}}" />
-          </view>
-        </view>
+ <view class="form-row-2 margin-top-8">
+ <view class="form-group flex-1">
+ <text class="field-label">教室房号 <text class="required">*</text></text>
+ <input class="fancy-input" placeholder="例如：101舞蹈大教室" model:value="{{scheduleForm.classroomName}}" />
+ </view>
+ <view class="form-group flex-1">
+ <text class="field-label">任课导师 <text class="required">*</text></text>
+ <input class="fancy-input" placeholder="例如：张雅文老师" model:value="{{scheduleForm.teacherName}}" />
+ </view>
+ </view>
 
-        <!-- 服装要求 -->
-        <text class="section-sub-title margin-top-12">👗 服装与着装规范要求</text>
-        <view class="form-row-2 margin-top-6">
-          <view class="form-group flex-1">
-            <text class="field-label">上装</text>
-            <input class="fancy-input" placeholder="粉色芭蕾练功服" model:value="{{scheduleForm.topsReq}}" />
-          </view>
-          <view class="form-group flex-1">
-            <text class="field-label">下装/连裤袜</text>
-            <input class="fancy-input" placeholder="白色专业裤袜" model:value="{{scheduleForm.bottomsReq}}" />
-          </view>
-        </view>
+ <!-- 服装要求 -->
+ <text class="section-sub-title margin-top-12"> 服装与着装规范要求</text>
+ <view class="form-row-2 margin-top-6">
+ <view class="form-group flex-1">
+ <text class="field-label">上装</text>
+ <input class="fancy-input" placeholder="粉色芭蕾练功服" model:value="{{scheduleForm.topsReq}}" />
+ </view>
+ <view class="form-group flex-1">
+ <text class="field-label">下装/连裤袜</text>
+ <input class="fancy-input" placeholder="白色专业裤袜" model:value="{{scheduleForm.bottomsReq}}" />
+ </view>
+ </view>
 
-        <view class="form-row-2 margin-top-6">
-          <view class="form-group flex-1">
-            <text class="field-label">舞鞋</text>
-            <input class="fancy-input" placeholder="双皮头练功软鞋" model:value="{{scheduleForm.shoesReq}}" />
-          </view>
-          <view class="form-group flex-1">
-            <text class="field-label">发型盘发</text>
-            <input class="fancy-input" placeholder="高盘丸子头+发网" model:value="{{scheduleForm.hairReq}}" />
-          </view>
-        </view>
+ <view class="form-row-2 margin-top-6">
+ <view class="form-group flex-1">
+ <text class="field-label">舞鞋</text>
+ <input class="fancy-input" placeholder="双皮头练功软鞋" model:value="{{scheduleForm.shoesReq}}" />
+ </view>
+ <view class="form-group flex-1">
+ <text class="field-label">发型盘发</text>
+ <input class="fancy-input" placeholder="高盘丸子头+发网" model:value="{{scheduleForm.hairReq}}" />
+ </view>
+ </view>
 
-        <!-- 教具要求 -->
-        <text class="section-sub-title margin-top-12">🎒 教具与随身物品</text>
-        <view class="form-group margin-top-6">
-          <text class="field-label">教具准备</text>
-          <input class="fancy-input" placeholder="瑜伽垫、弹力带、瑜伽砖2个" model:value="{{scheduleForm.propsReq}}" />
-        </view>
-        <view class="form-group margin-top-6">
-          <text class="field-label">备注交代</text>
-          <textarea class="fancy-textarea" style="height: 60px;" placeholder="录入课前注意事项、剧目卡位交代等..." model:value="{{scheduleForm.remark}}"></textarea>
-        </view>
-      </scroll-view>
-      <view class="modal-foot">
-        <view class="act-btn btn-reject" bindtap="closeScheduleModal">取消</view>
-        <view class="act-btn btn-pass" bindtap="submitScheduleForm">🚀 确认发布排课</view>
-      </view>
-    </view>
-  </view>
+ <!-- 教具要求 -->
+ <text class="section-sub-title margin-top-12"> 教具与随身物品</text>
+ <view class="form-group margin-top-6">
+ <text class="field-label">教具准备</text>
+ <input class="fancy-input" placeholder="瑜伽垫、弹力带、瑜伽砖2个" model:value="{{scheduleForm.propsReq}}" />
+ </view>
+ <view class="form-group margin-top-6">
+ <text class="field-label">备注交代</text>
+ <textarea class="fancy-textarea" style="height: 60px;" placeholder="录入课前注意事项、剧目卡位交代等..." model:value="{{scheduleForm.remark}}"></textarea>
+ </view>
+ </scroll-view>
+ <view class="modal-foot">
+ <view class="act-btn btn-reject" bindtap="closeScheduleModal">取消</view>
+ <view class="act-btn btn-pass" bindtap="submitScheduleForm"> 确认发布排课</view>
+ </view>
+ </view>
+ </view>
 </view>

@@ -1,165 +1,165 @@
-<!-- 📦 劲松金帆舞团 —— 独立物品选购与集中采购管理页面 -->
+<!-- 劲松金帆舞团 —— 独立物品选购与集中采购管理页面 -->
 <view class="container">
-  <!-- 1. 👑 权限视角 Header Banner -->
-  <view class="permission-banner-card">
-    <view class="pbc-left">
-      <text class="pbc-title">{{roleTitle}}</text>
-      <text class="pbc-desc">{{permissionTip}}</text>
-    </view>
-    <view class="pbc-badge">
-      <text>{{userRoleName}}</text>
-    </view>
-  </view>
+ <!-- 1. 权限视角 Header Banner -->
+ <view class="permission-banner-card">
+ <view class="pbc-left">
+ <text class="pbc-title">{{roleTitle}}</text>
+ <text class="pbc-desc">{{permissionTip}}</text>
+ </view>
+ <view class="pbc-badge">
+ <text>{{userRoleName}}</text>
+ </view>
+ </view>
 
-  <!-- 2. 📦 选购计划管理操作栏 -->
-  <view class="action-header-row margin-top-12">
-    <view class="sh-left">
-      <text class="menu-group-title">📦 全校物品选购计划</text>
-      <text class="group-tip">家委采购与尺码汇总</text>
-    </view>
-    <view class="header-btn-group">
-      <view class="h-btn btn-orange" bindtap="openItemModal" wx:if="{{hasManagePermission}}">＋ 新增选购计划</view>
-      <view class="h-btn btn-green" bindtap="exportAllPurchaseData" wx:if="{{hasManagePermission}}">📥 导出全量数据</view>
-    </view>
-  </view>
+ <!-- 2. 选购计划管理操作栏 -->
+ <view class="action-header-row margin-top-12">
+ <view class="sh-left">
+ <text class="menu-group-title"> 全校物品选购计划</text>
+ <text class="group-tip">家委采购与尺码汇总</text>
+ </view>
+ <view class="header-btn-group">
+ <view class="h-btn btn-orange" bindtap="openItemModal" wx:if="{{hasManagePermission}}">＋ 新增选购计划</view>
+ <view class="h-btn btn-green" bindtap="exportAllPurchaseData" wx:if="{{hasManagePermission}}"> 导出全量数据</view>
+ </view>
+ </view>
 
-  <!-- 3. 📋 物品选购计划列表 -->
-  <view class="item-demand-list margin-top-10">
-    <block wx:for="{{itemDemandList}}" wx:key="itemId">
-      <view class="item-card {{item.isExpired ? 'expired-card' : ''}}">
-        <view class="item-header">
-          <view style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
-            <text class="item-name">📦 {{item.itemName}}</text>
-            <text class="item-status-tag tag-rose" style="font-size: 11px;">{{item.danceClassName || '全校/公共'}}</text>
-          </view>
-          <text class="item-status-tag {{item.isExpired ? 'tag-gray' : 'tag-emerald'}}">{{item.isExpired ? '⏰ 报名已截止' : '🔥 选购报名中'}}</text>
-        </view>
+ <!-- 3. 物品选购计划列表 -->
+ <view class="item-demand-list margin-top-10">
+ <block wx:for="{{itemDemandList}}" wx:key="itemId">
+ <view class="item-card {{item.isExpired ? 'expired-card' : ''}}">
+ <view class="item-header">
+ <view style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+ <text class="item-name"> {{item.itemName}}</text>
+ <text class="item-status-tag tag-rose" style="font-size: 11px;">{{item.danceClassName || '全校/公共'}}</text>
+ </view>
+ <text class="item-status-tag {{item.isExpired ? 'tag-gray' : 'tag-emerald'}}">{{item.isExpired ? '⏰ 报名已截止' : '🔥 选购报名中'}}</text>
+ </view>
 
-        <view class="item-meta-row margin-top-6">
-          <text class="im-pill">📅 截止时间: {{item.deadlineStr}}</text>
-          <text class="im-pill">🚚 预计到货: {{item.expectedArrivalDate}}</text>
-          <text class="im-pill status-click" bindtap="updateArrivalStatus" data-item="{{item}}" wx:if="{{hasManagePermission}}">📦 到货状态: {{item.arrivalStatus}} ▾</text>
-          <text class="im-pill" wx:else>📦 到货状态: {{item.arrivalStatus}}</text>
-        </view>
+ <view class="item-meta-row margin-top-6">
+ <text class="im-pill"> 截止时间: {{item.deadlineStr}}</text>
+ <text class="im-pill"> 预计到货: {{item.expectedArrivalDate}}</text>
+ <text class="im-pill status-click" bindtap="updateArrivalStatus" data-item="{{item}}" wx:if="{{hasManagePermission}}"> 到货状态: {{item.arrivalStatus}} ▾</text>
+ <text class="im-pill" wx:else> 到货状态: {{item.arrivalStatus}}</text>
+ </view>
 
-        <!-- 需求与个数汇总统计 (实时汇总) -->
-        <view class="size-summary-box margin-top-8">
-          <text class="ss-title">📊 采购需求与个数汇总 (已登记人次: {{item.signedCount || 0}}人):</text>
-          <text class="ss-content">{{item.sizeSummaryStr}}</text>
-        </view>
+ <!-- 需求与个数汇总统计 (实时汇总) -->
+ <view class="size-summary-box margin-top-8">
+ <text class="ss-title">📊 采购需求与个数汇总 (已登记人次: {{item.signedCount || 0}}人):</text>
+ <text class="ss-content">{{item.sizeSummaryStr}}</text>
+ </view>
 
-        <view class="item-footer margin-top-10" style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
-          <view class="act-btn btn-pass" style="font-size: 12px; padding: 6px 14px; background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); color: #ffffff; border-radius: 10px; box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);" bindtap="openEnrollItemModal" data-item="{{item}}">🛒 填写购买需求 (选个数)</view>
-          <view class="export-btn" bindtap="exportPlanForSupplier" data-item="{{item}}" wx:if="{{hasManagePermission}}">📥 导出明细(姓名/个数)</view>
-        </view>
-      </view>
-    </block>
+ <view class="item-footer margin-top-10" style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
+ <view class="act-btn btn-pass" style="font-size: 12px; padding: 6px 14px; background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); color: #ffffff; border-radius: 10px; box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);" bindtap="openEnrollItemModal" data-item="{{item}}">🛒 填写购买需求 (选个数)</view>
+ <view class="export-btn" bindtap="exportPlanForSupplier" data-item="{{item}}" wx:if="{{hasManagePermission}}"> 导出明细(姓名/个数)</view>
+ </view>
+ </view>
+ </block>
 
-    <view class="empty-box" wx:if="{{itemDemandList.length === 0}}">
-      <text class="empty-icon">📦</text>
-      <text class="empty-text">暂无对应年级物品选购计划</text>
-    </view>
-  </view>
+ <view class="empty-box" wx:if="{{itemDemandList.length === 0}}">
+ <text class="empty-icon"></text>
+ <text class="empty-text">暂无对应年级物品选购计划</text>
+ </view>
+ </view>
 
-  <!-- ==================== 弹窗 1：📦 发布/新增物品选购计划 Modal (仅管理角色) ==================== -->
-  <view class="modal-overlay" wx:if="{{showItemDemandModal}}">
-    <view class="modal-card">
-      <view class="modal-head">
-        <text class="m-title">📦 发布/新增物品选购计划</text>
-        <text class="close-btn" bindtap="closeItemModal">✕</text>
-      </view>
-      <scroll-view scroll-y class="modal-body">
-        <view class="fancy-notice-tip">
-          <text class="tip-icon">💡</text>
-          <text>{{isCommitteeLocked ? '家委限定：仅可发布您所属【' + userGradeName + '】的物品需求。' : '老师/管理员全校权限：可选择发布任意年级或全校公共的物品需求。'}}</text>
-        </view>
+ <!-- ==================== 弹窗 1： 发布/新增物品选购计划 Modal (仅管理角色) ==================== -->
+ <view class="modal-overlay" wx:if="{{showItemDemandModal}}">
+ <view class="modal-card">
+ <view class="modal-head">
+ <text class="m-title"> 发布/新增物品选购计划</text>
+ <text class="close-btn" bindtap="closeItemModal">✕</text>
+ </view>
+ <scroll-view scroll-y class="modal-body">
+ <view class="fancy-notice-tip">
+ <text class="tip-icon"></text>
+ <text>{{isCommitteeLocked ? '家委限定：仅可发布您所属【' + userGradeName + '】的物品需求。' : '老师/管理员全校权限：可选择发布任意年级或全校公共的物品需求。'}}</text>
+ </view>
 
-        <view class="form-group margin-top-12">
-          <text class="field-label">适用年级 <text class="required">*</text></text>
-          <picker bindchange="onItemClassChange" value="{{itemClassIndex}}" range="{{itemClassOptions}}" disabled="{{isCommitteeLocked}}">
-            <view class="fancy-input picker-input {{isCommitteeLocked ? 'disabled-picker' : ''}}">
-              <text>{{itemClassOptions[itemClassIndex]}}</text>
-              <text class="pi-arrow" wx:if="{{!isCommitteeLocked}}">▼</text>
-            </view>
-          </picker>
-        </view>
+ <view class="form-group margin-top-12">
+ <text class="field-label">适用年级 <text class="required">*</text></text>
+ <picker bindchange="onItemClassChange" value="{{itemClassIndex}}" range="{{itemClassOptions}}" disabled="{{isCommitteeLocked}}">
+ <view class="fancy-input picker-input {{isCommitteeLocked ? 'disabled-picker' : ''}}">
+ <text>{{itemClassOptions[itemClassIndex]}}</text>
+ <text class="pi-arrow" wx:if="{{!isCommitteeLocked}}">▼</text>
+ </view>
+ </picker>
+ </view>
 
-        <view class="form-group margin-top-12">
-          <text class="field-label">物品名称 <text class="required">*</text></text>
-          <input class="fancy-input" placeholder="例如：双皮头芭蕾练功软鞋 (粉色)" value="{{itemForm.itemName}}" bindinput="onItemNameInput" />
-        </view>
+ <view class="form-group margin-top-12">
+ <text class="field-label">物品名称 <text class="required">*</text></text>
+ <input class="fancy-input" placeholder="例如：双皮头芭蕾练功软鞋 (粉色)" value="{{itemForm.itemName}}" bindinput="onItemNameInput" />
+ </view>
 
-        <view class="form-group margin-top-12">
-          <text class="field-label">报名截止日期 <text class="required">*</text></text>
-          <picker mode="date" start="{{todayDateStr}}" value="{{itemForm.deadline}}" bindchange="onDeadlineDateChange">
-            <view class="fancy-input picker-input">
-              <text>{{itemForm.deadline ? itemForm.deadline : '📅 请选择截止日期'}}</text>
-              <text class="pi-arrow">📅</text>
-            </view>
-          </picker>
-        </view>
+ <view class="form-group margin-top-12">
+ <text class="field-label">报名截止日期 <text class="required">*</text></text>
+ <picker mode="date" start="{{todayDateStr}}" value="{{itemForm.deadline}}" bindchange="onDeadlineDateChange">
+ <view class="fancy-input picker-input">
+ <text>{{itemForm.deadline ? itemForm.deadline : ' 请选择截止日期'}}</text>
+ <text class="pi-arrow"></text>
+ </view>
+ </picker>
+ </view>
 
-        <view class="form-group margin-top-12">
-          <text class="field-label">预计到货时间</text>
-          <picker mode="date" start="{{todayDateStr}}" value="{{itemForm.expectedArrivalDate}}" bindchange="onArrivalDateChange">
-            <view class="fancy-input picker-input">
-              <text>{{itemForm.expectedArrivalDate ? itemForm.expectedArrivalDate : '📅 请选择预计到货日期'}}</text>
-              <text class="pi-arrow">📅</text>
-            </view>
-          </picker>
-        </view>
-      </scroll-view>
-      <view class="modal-foot">
-        <view class="act-btn btn-reject" bindtap="closeItemModal">取消</view>
-        <view class="act-btn btn-pass" bindtap="submitItemDemand">🚀 确认发布选购计划</view>
-      </view>
-    </view>
-  </view>
+ <view class="form-group margin-top-12">
+ <text class="field-label">预计到货时间</text>
+ <picker mode="date" start="{{todayDateStr}}" value="{{itemForm.expectedArrivalDate}}" bindchange="onArrivalDateChange">
+ <view class="fancy-input picker-input">
+ <text>{{itemForm.expectedArrivalDate ? itemForm.expectedArrivalDate : ' 请选择预计到货日期'}}</text>
+ <text class="pi-arrow"></text>
+ </view>
+ </picker>
+ </view>
+ </scroll-view>
+ <view class="modal-foot">
+ <view class="act-btn btn-reject" bindtap="closeItemModal">取消</view>
+ <view class="act-btn btn-pass" bindtap="submitItemDemand"> 确认发布选购计划</view>
+ </view>
+ </view>
+ </view>
 
-  <!-- ==================== 弹窗 2：📜 导出全量采购数据预览 Modal ==================== -->
-  <view class="modal-overlay" wx:if="{{showExportModal}}">
-    <view class="modal-card">
-      <view class="modal-head">
-        <text class="m-title">📜 全量物品选购数据导出预览</text>
-        <text class="close-btn" bindtap="closeExportModal">✕</text>
-      </view>
-      <scroll-view scroll-y class="modal-body">
-        <textarea class="export-textarea" value="{{exportTextData}}" disabled readonly style="height: 180px; width: 100%; font-size: 12px; background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 10px;"></textarea>
-      </scroll-view>
-      <view class="modal-foot">
-        <view class="act-btn btn-reject" bindtap="closeExportModal">关闭</view>
-        <view class="act-btn btn-pass" bindtap="copyExportTextData">📋 一键复制文本</view>
-      </view>
-    </view>
-  </view>
+ <!-- ==================== 弹窗 2：📜 导出全量采购数据预览 Modal ==================== -->
+ <view class="modal-overlay" wx:if="{{showExportModal}}">
+ <view class="modal-card">
+ <view class="modal-head">
+ <text class="m-title">📜 全量物品选购数据导出预览</text>
+ <text class="close-btn" bindtap="closeExportModal">✕</text>
+ </view>
+ <scroll-view scroll-y class="modal-body">
+ <textarea class="export-textarea" value="{{exportTextData}}" disabled readonly style="height: 180px; width: 100%; font-size: 12px; background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 10px;"></textarea>
+ </scroll-view>
+ <view class="modal-foot">
+ <view class="act-btn btn-reject" bindtap="closeExportModal">关闭</view>
+ <view class="act-btn btn-pass" bindtap="copyExportTextData"> 一键复制文本</view>
+ </view>
+ </view>
+ </view>
 
-  <!-- ==================== 弹窗 3：🛒 填写购买需求 Modal (所有角色通用填报个数) ==================== -->
-  <view class="modal-overlay" wx:if="{{showEnrollItemModal}}">
-    <view class="modal-card">
-      <view class="modal-head">
-        <text class="m-title">🛒 填写物品选购需求</text>
-        <text class="close-btn" bindtap="closeEnrollItemModal">✕</text>
-      </view>
-      <scroll-view scroll-y class="modal-body">
-        <view class="fancy-notice-tip">
-          <text class="tip-icon">📦</text>
-          <text>选购项目：【{{selectedItem.itemName}}】</text>
-        </view>
+ <!-- ==================== 弹窗 3：🛒 填写购买需求 Modal (所有角色通用填报个数) ==================== -->
+ <view class="modal-overlay" wx:if="{{showEnrollItemModal}}">
+ <view class="modal-card">
+ <view class="modal-head">
+ <text class="m-title">🛒 填写物品选购需求</text>
+ <text class="close-btn" bindtap="closeEnrollItemModal">✕</text>
+ </view>
+ <scroll-view scroll-y class="modal-body">
+ <view class="fancy-notice-tip">
+ <text class="tip-icon"></text>
+ <text>选购项目：【{{selectedItem.itemName}}】</text>
+ </view>
 
-        <view class="form-group margin-top-12">
-          <text class="field-label">填报人称谓</text>
-          <input class="fancy-input" value="{{userParentDisplayName}}" disabled style="background: #f1f5f9; color: #64748b;" />
-        </view>
+ <view class="form-group margin-top-12">
+ <text class="field-label">填报人称谓</text>
+ <input class="fancy-input" value="{{userParentDisplayName}}" disabled style="background: #f1f5f9; color: #64748b;" />
+ </view>
 
-        <view class="form-group margin-top-12">
-          <text class="field-label">购买个数 (件/双) <text class="required">*</text></text>
-          <input class="fancy-input" type="number" placeholder="例如：1" value="{{enrollQuantity}}" bindinput="onQuantityInput" />
-        </view>
-      </scroll-view>
-      <view class="modal-foot">
-        <view class="act-btn btn-reject" bindtap="closeEnrollItemModal">取消</view>
-        <view class="act-btn btn-pass" bindtap="submitItemQuantity">🚀 确认提交需求</view>
-      </view>
-    </view>
-  </view>
+ <view class="form-group margin-top-12">
+ <text class="field-label">购买个数 (件/双) <text class="required">*</text></text>
+ <input class="fancy-input" type="number" placeholder="例如：1" value="{{enrollQuantity}}" bindinput="onQuantityInput" />
+ </view>
+ </scroll-view>
+ <view class="modal-foot">
+ <view class="act-btn btn-reject" bindtap="closeEnrollItemModal">取消</view>
+ <view class="act-btn btn-pass" bindtap="submitItemQuantity"> 确认提交需求</view>
+ </view>
+ </view>
+ </view>
 </view>

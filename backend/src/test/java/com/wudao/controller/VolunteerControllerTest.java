@@ -16,29 +16,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class VolunteerControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+ @Autowired
+ private MockMvc mockMvc;
 
-    @Test
-    public void testListVolunteerTasks() throws Exception {
-        mockMvc.perform(get("/api/volunteer/tasks")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data").isArray());
-    }
+ @Test
+ public void testListVolunteerTasks() throws Exception {
+ mockMvc.perform(get("/api/volunteer/tasks")
+ .contentType(MediaType.APPLICATION_JSON))
+ .andExpect(status().isOk())
+ .andExpect(jsonPath("$.code").value(200))
+ .andExpect(jsonPath("$.data").isArray());
+ }
 
-    @Test
-    public void testEnrollTask() throws Exception {
-        String json = "{\n" +
-                "  \"taskId\": 4,\n" +
-                "  \"userId\": 5,\n" +
-                "  \"userName\": \"张悦悦\"\n" +
-                "}";
+ @Test
+ public void testEnrollTask() throws Exception {
+ String json = "{\n" +
+ " \"taskId\": 4,\n" +
+ " \"userId\": 5,\n" +
+ " \"userName\": \"张悦悦\"\n" +
+ "}";
 
-        mockMvc.perform(post("/api/volunteer/enroll")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isOk());
-    }
+ mockMvc.perform(post("/api/volunteer/enroll")
+ .contentType(MediaType.APPLICATION_JSON)
+ .content(json))
+ .andExpect(status().isOk());
+ }
 }

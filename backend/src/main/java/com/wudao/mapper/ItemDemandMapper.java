@@ -10,17 +10,17 @@ import java.util.List;
 @Mapper
 public interface ItemDemandMapper {
 
-    List<ItemDemand> selectAll(@Param("danceClassName") String danceClassName);
+ List<ItemDemand> selectAll(@Param("danceClassName") String danceClassName);
 
-    ItemDemand selectById(@Param("itemId") String itemId);
+ ItemDemand selectById(@Param("itemId") String itemId);
 
-    int insertDemand(ItemDemand demand);
+ int insertDemand(ItemDemand demand);
 
-    int updateDemand(ItemDemand demand);
+ int updateDemand(ItemDemand demand);
 
-    List<ItemDemandEnrollment> selectEnrollmentsByItemId(@Param("itemId") String itemId);
+ List<ItemDemandEnrollment> selectEnrollmentsByItemId(@Param("itemId") String itemId);
 
-    int upsertEnrollment(ItemDemandEnrollment enrollment);
+ int upsertEnrollment(ItemDemandEnrollment enrollment);
 
-    int updateSizeSummaryStr(@Param("itemId") String itemId, @Param("sizeSummaryStr") String sizeSummaryStr);
+ int updateSizeSummaryStr(@Param("itemId") String itemId, @Param("sizeSummaryStr") String sizeSummaryStr);
 }

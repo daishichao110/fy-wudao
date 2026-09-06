@@ -15,24 +15,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+ @Autowired
+ private MockMvc mockMvc;
 
-    @Test
-    public void testListUsers() throws Exception {
-        mockMvc.perform(get("/api/user/list")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data").isArray());
-    }
+ @Test
+ public void testListUsers() throws Exception {
+ mockMvc.perform(get("/api/user/list")
+ .contentType(MediaType.APPLICATION_JSON))
+ .andExpect(status().isOk())
+ .andExpect(jsonPath("$.code").value(200))
+ .andExpect(jsonPath("$.data").isArray());
+ }
 
-    @Test
-    public void testGetUserInfo() throws Exception {
-        mockMvc.perform(get("/api/user/info/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.userId").value(1));
-    }
+ @Test
+ public void testGetUserInfo() throws Exception {
+ mockMvc.perform(get("/api/user/info/1")
+ .contentType(MediaType.APPLICATION_JSON))
+ .andExpect(status().isOk())
+ .andExpect(jsonPath("$.code").value(200))
+ .andExpect(jsonPath("$.data.userId").value(1));
+ }
 }

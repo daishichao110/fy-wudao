@@ -6,8 +6,8 @@ import java.util.List;
 
 @Mapper
 public interface WorkGroupMapper {
-    List<WorkGroup> selectAll();
-    int insert(WorkGroup group);
-    int update(WorkGroup group);
-    int delete(String groupId);
+ List<WorkGroup> selectAll();
+ int insert(WorkGroup group);
+ int update(WorkGroup group);
+ int delete(String groupId);
 }

@@ -10,19 +10,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private OperationLogInterceptor operationLogInterceptor;
+ @Autowired
+ private OperationLogInterceptor operationLogInterceptor;
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(operationLogInterceptor)
-                .addPathPatterns("/api/**");
-    }
+ @Override
+ public void addInterceptors(InterceptorRegistry registry) {
+ registry.addInterceptor(operationLogInterceptor)
+ .addPathPatterns("/api/**");
+ }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 将 /image/** 请求映射到 backend 服务的 classpath:/static/image/ 静态资源目录
-        registry.addResourceHandler("/image/**")
-                .addResourceLocations("classpath:/static/image/");
-    }
+ @Override
+ public void addResourceHandlers(ResourceHandlerRegistry registry) {
+ // 将 /image/** 请求映射到 backend 服务的 classpath:/static/image/ 静态资源目录
+ registry.addResourceHandler("/image/**")
+ .addResourceLocations("classpath:/static/image/");
+ }
 }

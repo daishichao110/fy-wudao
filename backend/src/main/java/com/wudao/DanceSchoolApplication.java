@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.wudao.mapper")
 public class DanceSchoolApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(DanceSchoolApplication.class, args);
-    }
+ public static void main(String[] args) {
+ SpringApplication.run(DanceSchoolApplication.class, args);
+ }
 }

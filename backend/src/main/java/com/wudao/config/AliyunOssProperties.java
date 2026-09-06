@@ -10,68 +10,81 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "aliyun.oss")
 public class AliyunOssProperties {
 
-    /**
-     * OSS 节点地址
-     */
-    private String endpoint;
+ /**
+ * OSS 节点地址
+ */
+ private String endpoint;
 
-    /**
-     * AccessKey ID
-     */
-    private String accessKeyId;
+ /**
+ * AccessKey ID
+ */
+ private String accessKeyId;
 
-    /**
-     * AccessKey Secret
-     */
-    private String accessKeySecret;
+ /**
+ * AccessKey Secret
+ */
+ private String accessKeySecret;
 
-    /**
-     * Bucket 存储桶名称
-     */
-    private String bucketName;
+ /**
+ * Bucket 存储桶名称
+ */
+ private String bucketName;
 
-    /**
-     * 公网访问 URL 前缀 (末尾带 /)
-     */
-    private String urlPrefix;
+ /**
+ * OSS 根目录名称（如 wudao/）
+ */
+ private String rootDir;
 
-    public String getEndpoint() {
-        return endpoint;
-    }
+ /**
+ * 公网访问 URL 前缀 (末尾带 /)
+ */
+ private String urlPrefix;
 
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
+ public String getRootDir() {
+ return rootDir;
+ }
 
-    public String getAccessKeyId() {
-        return accessKeyId;
-    }
+ public void setRootDir(String rootDir) {
+ this.rootDir = rootDir;
+ }
 
-    public void setAccessKeyId(String accessKeyId) {
-        this.accessKeyId = accessKeyId;
-    }
+ public String getEndpoint() {
+ return endpoint;
+ }
 
-    public String getAccessKeySecret() {
-        return accessKeySecret;
-    }
+ public void setEndpoint(String endpoint) {
+ this.endpoint = endpoint;
+ }
 
-    public void setAccessKeySecret(String accessKeySecret) {
-        this.accessKeySecret = accessKeySecret;
-    }
+ public String getAccessKeyId() {
+ return accessKeyId;
+ }
 
-    public String getBucketName() {
-        return bucketName;
-    }
+ public void setAccessKeyId(String accessKeyId) {
+ this.accessKeyId = accessKeyId;
+ }
 
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
+ public String getAccessKeySecret() {
+ return accessKeySecret;
+ }
 
-    public String getUrlPrefix() {
-        return urlPrefix;
-    }
+ public void setAccessKeySecret(String accessKeySecret) {
+ this.accessKeySecret = accessKeySecret;
+ }
 
-    public void setUrlPrefix(String urlPrefix) {
-        this.urlPrefix = urlPrefix;
-    }
+ public String getBucketName() {
+ return bucketName;
+ }
+
+ public void setBucketName(String bucketName) {
+ this.bucketName = bucketName;
+ }
+
+ public String getUrlPrefix() {
+ return urlPrefix;
+ }
+
+ public void setUrlPrefix(String urlPrefix) {
+ this.urlPrefix = urlPrefix;
+ }
 }

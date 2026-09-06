@@ -6,6 +6,6 @@ import java.util.List;
 
 @Mapper
 public interface NoticeMapper {
-    List<Notice> selectAllNotices();
-    int insertNotice(Notice notice);
+ List<Notice> selectAllNotices();
+ int insertNotice(Notice notice);
 }

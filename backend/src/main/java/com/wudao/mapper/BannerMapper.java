@@ -6,6 +6,6 @@ import java.util.List;
 
 @Mapper
 public interface BannerMapper {
-    List<Banner> selectActiveBanners();
-    int insertBanner(Banner banner);
+ List<Banner> selectActiveBanners();
+ int insertBanner(Banner banner);
 }

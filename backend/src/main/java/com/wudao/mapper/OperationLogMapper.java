@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface OperationLogMapper {
 
-    int insertLog(OperationLog log);
+ int insertLog(OperationLog log);
 
-    List<OperationLog> selectLogs(@Param("userId") String userId, @Param("opType") String opType, @Param("limit") Integer limit);
+ List<OperationLog> selectLogs(@Param("userId") String userId, @Param("opType") String opType, @Param("limit") Integer limit);
 }
