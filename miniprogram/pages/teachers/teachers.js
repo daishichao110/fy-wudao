@@ -20,38 +20,49 @@ Page({
  });
  },
 
- loadTeachers(cb) {
- api.getTeacherList().then(res => {
- const rawList = (res && res.data) ? res.data : [];
- const uniqueList = this.deduplicateTeachers(rawList);
- const mapped = uniqueList.map(item => ({
- ...item,
- avatarUrl: api.getImageUrl(item.avatarUrl)
- }));
- this.setData({ teacherList: mapped });
- this.filterByCategory(this.data.currentCategory, mapped);
- if (typeof cb === 'function') cb();
- }).catch(err => {
- console.log('读取后端教师列表 API 异常:', err);
- this.setData({ teacherList: [], filteredTeachers: [] });
- if (typeof cb === 'function') cb();
- });
- },
+  loadTeachers(cb) {
+    api.getTeacherList().then(res => {
+      const rawList = (res && res.data) ? res.data : [];
+      console.log('[DEBUG TEACHER LIST FE] 后端返回教师数据共 ' + rawList.length + ' 条:', rawList);
+      const uniqueList = this.deduplicateTeachers(rawList);
+      const mapped = uniqueList.map(item => {
+        const fullPic = api.getImageUrl(item.avatarUrl);
+        console.log('[DEBUG TEACHER LIST FE] 教师 Item:', item.name, '-> 处理后的头像 URL:', fullPic);
+        return {
+          ...item,
+          avatarUrl: fullPic
+        };
+      });
+      this.setData({ teacherList: mapped });
+      this.filterByCategory(this.data.currentCategory, mapped);
+      if (typeof cb === 'function') cb();
+    }).catch(err => {
+      console.error('[DEBUG TEACHER LIST FE] ❌ 读取后端教师列表 API 异常:', err);
+      this.setData({ teacherList: [], filteredTeachers: [] });
+      if (typeof cb === 'function') cb();
+    });
+  },
 
- // 严格按姓名去重：防止同一教师因本地缓存与数据库ID不一致出现重复
- deduplicateTeachers(list) {
- const result = [];
- const nameSet = new Set();
- list.forEach(item => {
- if (!item || !item.name) return;
- const nameKey = item.name.trim();
- if (!nameSet.has(nameKey)) {
- nameSet.add(nameKey);
- result.push(item);
- }
- });
- return result;
- },
+  // 严格按姓名去重：若遇到同名教师且已有记录缺乏有效图片，优先保留带 OSS 图片的新记录
+  deduplicateTeachers(list) {
+    const map = new Map();
+    list.forEach(item => {
+      if (!item || !item.name) return;
+      const nameKey = item.name.trim();
+      if (!map.has(nameKey)) {
+        map.set(nameKey, item);
+      } else {
+        const existing = map.get(nameKey);
+        const existingHasAvatar = existing.avatarUrl && (existing.avatarUrl.includes('wudao/') || existing.avatarUrl.startsWith('http'));
+        const currentHasAvatar = item.avatarUrl && (item.avatarUrl.includes('wudao/') || item.avatarUrl.startsWith('http'));
+        // 如果现有记录没有合法图片而新记录有，或者新记录是最新添加的，则替换
+        if (!existingHasAvatar && currentHasAvatar) {
+          map.set(nameKey, item);
+        }
+      }
+    });
+    return Array.from(map.values());
+  },
 
  selectCategory(e) {
  const category = e.currentTarget.dataset.category;

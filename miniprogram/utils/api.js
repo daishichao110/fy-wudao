@@ -34,37 +34,47 @@ const request = (url, method = 'GET', data = {}, showErrorToast = false) => {
 };
 
 const uploadImage = (filePath, dir = 'images/') => {
- const token = wx.getStorageSync('token') || '';
- return new Promise((resolve, reject) => {
- wx.uploadFile({
- url: `${BASE_URL}/upload/image`,
- filePath: filePath,
- name: 'file',
- formData: { dir: dir },
- header: {
- 'Authorization': `Bearer ${token}`
- },
- success: (res) => {
- try {
- const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
- if (res.statusCode === 200 && data && data.code === 200) {
- resolve(data.data); // 返回 { relativePath, fullUrl }
- } else {
- wx.showToast({ title: (data && data.message) || '上传阿里云服务器失败', icon: 'none' });
- reject(data);
- }
- } catch (e) {
- wx.showToast({ title: '解析上传结果失败', icon: 'none' });
- reject(e);
- }
- },
- fail: (err) => {
- console.error('上传图片至阿里云 OSS 失败:', err);
- wx.showToast({ title: '网络开小差，图片上传失败', icon: 'none' });
- reject(err);
- }
- });
- });
+  const token = wx.getStorageSync('token') || '';
+  const targetUrl = `${BASE_URL}/upload/image`;
+  console.log('[DEBUG OSS UPLOAD] 1. 准备发起上传图片至阿里云 OSS:', {
+    targetUrl: targetUrl,
+    filePath: filePath,
+    dir: dir
+  });
+  return new Promise((resolve, reject) => {
+    wx.uploadFile({
+      url: targetUrl,
+      filePath: filePath,
+      name: 'file',
+      formData: { dir: dir },
+      header: {
+        'Authorization': `Bearer ${token}`
+      },
+      success: (res) => {
+        console.log('[DEBUG OSS UPLOAD] 2. 收到上传接口原始 HTTP 状态码:', res.statusCode, '原始 Body:', res.data);
+        try {
+          const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+          if (res.statusCode === 200 && data && data.code === 200) {
+            console.log('[DEBUG OSS UPLOAD] 3. 阿里云 OSS 图片上传成功，解析数据:', data.data);
+            resolve(data.data); // 返回 { relativePath, fullUrl }
+          } else {
+            console.error('[DEBUG OSS UPLOAD] ❌ 上传接口业务报错:', data);
+            wx.showToast({ title: (data && data.message) || '上传阿里云服务器失败', icon: 'none' });
+            reject(data);
+          }
+        } catch (e) {
+          console.error('[DEBUG OSS UPLOAD] ❌ JSON 解析失败:', e);
+          wx.showToast({ title: '解析上传结果失败', icon: 'none' });
+          reject(e);
+        }
+      },
+      fail: (err) => {
+        console.error('[DEBUG OSS UPLOAD] ❌ 网络层或微信 uploadFile 失败:', err);
+        wx.showToast({ title: '网络开小差，图片上传失败', icon: 'none' });
+        reject(err);
+      }
+    });
+  });
 };
 
 const getImageUrl = (url) => {

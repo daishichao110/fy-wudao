@@ -15,6 +15,9 @@ if [ -f "./application-prod.yml" ]; then
 elif [ -f "./application.yml" ]; then
     CONFIG_OPTS="--spring.config.location=optional:classpath:/application.yml,file:./application.yml"
     echo "检测到外部配置文件: ./application.yml"
+elif [ -f "./src/main/resources/application.yml" ]; then
+    CONFIG_OPTS="--spring.config.location=file:./src/main/resources/application.yml"
+    echo "检测到本地源码配置文件: ./src/main/resources/application.yml"
 else
     echo "使用内嵌默认配置文件: classpath:/application.yml"
 fi

@@ -94,21 +94,22 @@ Page({
  });
  },
 
- loadTeachers(cb) {
- api.getTeacherList().then(res => {
- const list = (res && res.data) ? res.data : [];
- const mapped = list.map(t => ({
- ...t,
- avatarUrl: api.getImageUrl(t.avatarUrl)
- }));
- this.setData({ previewTeachers: mapped.slice(0, 2) });
- if (cb) cb();
- }).catch(err => {
- console.log('读取后端教师列表 API 异常:', err);
- this.setData({ previewTeachers: [] });
- if (cb) cb();
- });
- },
+  loadTeachers(cb) {
+    api.getTeacherList().then(res => {
+      const list = (res && res.data) ? res.data : [];
+      console.log('[DEBUG HOME TEACHERS FE] 首页获取教师列表:', list);
+      const mapped = list.map(t => ({
+        ...t,
+        avatarUrl: api.getImageUrl(t.avatarUrl)
+      }));
+      this.setData({ previewTeachers: mapped.slice(0, 2) });
+      if (cb) cb();
+    }).catch(err => {
+      console.error('[DEBUG HOME TEACHERS FE] ❌ 首页获取教师列表异常:', err);
+      this.setData({ previewTeachers: [] });
+      if (cb) cb();
+    });
+  },
 
  // 点击 Banner 打开演出/风采活动详情 Modal
  handleBannerClick(e) {

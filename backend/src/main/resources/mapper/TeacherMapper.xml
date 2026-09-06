@@ -5,12 +5,29 @@
     <select id="selectAllTeachers" resultType="com.wudao.entity.Teacher">
         SELECT teacher_id, name, title, dance_type, experience_years, avatar_url, bio, created_at
         FROM sys_teacher
-        ORDER BY teacher_id ASC
+        ORDER BY created_at DESC, teacher_id DESC
+    </select>
+
+    <select id="selectTeacherByName" resultType="com.wudao.entity.Teacher">
+        SELECT teacher_id, name, title, dance_type, experience_years, avatar_url, bio, created_at
+        FROM sys_teacher
+        WHERE name = #{name}
+        LIMIT 1
     </select>
 
     <insert id="insertTeacher" parameterType="com.wudao.entity.Teacher">
         INSERT INTO sys_teacher (teacher_id, name, title, dance_type, experience_years, avatar_url, bio)
         VALUES (#{teacherId}, #{name}, #{title}, #{danceType}, #{experienceYears}, #{avatarUrl}, #{bio})
     </insert>
+
+    <update id="updateTeacher" parameterType="com.wudao.entity.Teacher">
+        UPDATE sys_teacher
+        SET title = #{title},
+            dance_type = #{danceType},
+            experience_years = #{experienceYears},
+            avatar_url = #{avatarUrl},
+            bio = #{bio}
+        WHERE name = #{name} OR teacher_id = #{teacherId}
+    </update>
 
 </mapper>
