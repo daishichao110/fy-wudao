@@ -97,12 +97,28 @@ Page({
   loadTeachers(cb) {
     api.getTeacherList().then(res => {
       const list = (res && res.data) ? res.data : [];
-      console.log('[DEBUG HOME TEACHERS FE] 首页获取教师列表:', list);
-      const mapped = list.map(t => ({
-        ...t,
-        avatarUrl: api.getImageUrl(t.avatarUrl)
-      }));
-      this.setData({ previewTeachers: mapped.slice(0, 2) });
+      console.log('[DEBUG HOME TEACHERS FE] 首页获取教师原始列表:', list);
+      
+      const mapped = list.map(t => {
+        const fullUrl = api.getImageUrl(t.avatarUrl);
+        return {
+          ...t,
+          avatarUrl: fullUrl
+        };
+      });
+
+      // 智能排序：优先把包含真实有效 OSS 图片的教师记录置顶展示
+      mapped.sort((a, b) => {
+        const aHasOss = a.avatarUrl && (a.avatarUrl.includes('oss.52ddup.com') || a.avatarUrl.includes('wudao/'));
+        const bHasOss = b.avatarUrl && (b.avatarUrl.includes('oss.52ddup.com') || b.avatarUrl.includes('wudao/'));
+        if (aHasOss && !bHasOss) return -1;
+        if (!aHasOss && bHasOss) return 1;
+        return 0;
+      });
+
+      const previewTeachers = mapped.slice(0, 4);
+      console.log('[DEBUG HOME TEACHERS FE] 最终展示的 4 位首页名师:', previewTeachers);
+      this.setData({ previewTeachers: previewTeachers });
       if (cb) cb();
     }).catch(err => {
       console.error('[DEBUG HOME TEACHERS FE] ❌ 首页获取教师列表异常:', err);

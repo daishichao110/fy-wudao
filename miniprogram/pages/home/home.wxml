@@ -45,7 +45,7 @@
  <view class="teacher-preview-list">
  <block wx:for="{{previewTeachers}}" wx:key="teacherId">
  <view class="tp-card" bindtap="openTeacherModal" data-teacher="{{item}}">
- <image class="tp-avatar" src="{{item.avatarUrl || '/image/teacher1.jpg'}}" mode="aspectFill"></image>
+ <image class="tp-avatar" src="{{item.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
  <view class="tp-content">
  <view class="tp-name-line">
  <text class="tp-name">{{item.name}}</text>

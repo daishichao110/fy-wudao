@@ -77,13 +77,15 @@ const uploadImage = (filePath, dir = 'images/') => {
   });
 };
 
+const OSS_PREFIX = 'https://oss.52ddup.com/';
+
 const getImageUrl = (url) => {
- if (!url) return '';
- if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('wxfile://')) {
- return url;
- }
- const host = BASE_URL.replace(/\/api$/, '');
- return url.startsWith('/') ? `${host}${url}` : `${host}/${url}`;
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('wxfile://')) {
+    return url;
+  }
+  const cleanPath = url.startsWith('/') ? url.substring(1) : url;
+  return `${OSS_PREFIX}${cleanPath}`;
 };
 
 module.exports = {

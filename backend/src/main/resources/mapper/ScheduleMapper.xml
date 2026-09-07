@@ -6,11 +6,12 @@
         SELECT schedule_id, course_name, dance_type, teacher_id, teacher_name, classroom_name, class_date, start_time, end_time, tops_req, bottoms_req, skirt_req, shoes_req, hair_req, props_req, other_req, remark, participant_names, capacity, booked_count, dance_class_name, created_at
         FROM dance_schedule
         <where>
+            class_date &gt;= CURRENT_DATE()
             <if test="danceClassName != null and danceClassName != '' and danceClassName != 'GRADE_ALL' and danceClassName != 'ALL' and danceClassName != '全校/公共' and danceClassName != '全校全局管理' and danceClassName != '全校公共' and danceClassName != '全校全部'">
-                (dance_class_name = #{danceClassName} OR dance_class_name = 'GRADE_ALL' OR dance_class_name = '全校/公共' OR dance_class_name = '全校公共' OR dance_class_name IS NULL OR dance_class_name = '')
+                AND (dance_class_name = #{danceClassName} OR dance_class_name = 'GRADE_ALL' OR dance_class_name = '全校/公共' OR dance_class_name = '全校公共' OR dance_class_name IS NULL OR dance_class_name = '')
             </if>
         </where>
-        ORDER BY class_date DESC, start_time ASC
+        ORDER BY class_date ASC, start_time ASC
     </select>
 
     <select id="selectById" resultType="com.wudao.entity.Schedule">

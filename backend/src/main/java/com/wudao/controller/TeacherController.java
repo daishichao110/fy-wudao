@@ -43,50 +43,55 @@ public class TeacherController {
 
     @PostMapping("/create")
     public Result<Teacher> createTeacher(@RequestBody Teacher teacher) {
-        log.info("[REST API POST /api/teacher/create] 收到设置教师信息请求, 原始Name={}, 原始AvatarUrl={}", 
-                teacher != null ? teacher.getName() : null, 
+        log.info("[REST API POST /api/teacher/create] 收到保存教师配置请求: teacherId={}, name={}, avatarUrl={}",
+                teacher != null ? teacher.getTeacherId() : null,
+                teacher != null ? teacher.getName() : null,
                 teacher != null ? teacher.getAvatarUrl() : null);
 
         if (teacher == null) {
             return Result.error("请求参数不能为空！");
         }
-        if (teacher.getName() == null || teacher.getName().trim().isEmpty()) {
+        if (!org.springframework.util.StringUtils.hasText(teacher.getName())) {
             return Result.error("请输入教师姓名！");
         }
-        if (teacher.getAvatarUrl() == null || teacher.getAvatarUrl().trim().isEmpty()) {
+        if (!org.springframework.util.StringUtils.hasText(teacher.getAvatarUrl())) {
             return Result.error("请选择并上传教师肖像照片！");
         }
-        if (teacher.getTitle() == null || teacher.getTitle().trim().isEmpty()) {
-            return Result.error("请输入教师职称头衔！");
-        }
-        if (teacher.getDanceType() == null || teacher.getDanceType().trim().isEmpty()) {
-            return Result.error("请输入教师擅长舞种！");
-        }
 
-        // 提取相对路径写入数据库，拒绝硬编码默认图
+        // 提取相对路径
         String rawAvatar = teacher.getAvatarUrl();
         String relativePath = aliyunOssService.toRelativePath(rawAvatar);
         teacher.setAvatarUrl(relativePath);
-        log.info("[DEBUG TEACHER CREATE] 相对路径提取结果: 原始Url={} -> 提取Key={}", rawAvatar, relativePath);
 
-        // 检查数据库是否存在同名教师（存在则更新，不存在则插入）
-        Teacher existing = teacherMapper.selectTeacherByName(teacher.getName().trim());
+        // 1. 优先根据 ID 检索数据库现存记录
+        Teacher existingById = org.springframework.util.StringUtils.hasText(teacher.getTeacherId())
+                ? teacherMapper.selectTeacherById(teacher.getTeacherId())
+                : null;
+
+        // 2. 其次根据姓名检索数据库现存记录
+        Teacher existingByName = teacherMapper.selectTeacherByName(teacher.getName().trim());
+
+        Teacher existing = existingById != null ? existingById : existingByName;
+
         if (existing != null) {
-            log.info("[DEBUG TEACHER CREATE] 数据库已存在同名教师记录, 执行 UPDATE 更新操作. ExistingID={}, Name={}", existing.getTeacherId(), existing.getName());
+            // 已有记录，强制复用现有的 teacherId 执行 UPDATE 更新
             teacher.setTeacherId(existing.getTeacherId());
+            log.info("[DEBUG TEACHER UPSERT] 匹配到现存记录 (ID={}, Name={}), 执行 UPDATE 更新覆盖...", existing.getTeacherId(), existing.getName());
             teacherMapper.updateTeacher(teacher);
         } else {
-            if (!org.springframework.util.StringUtils.hasText(teacher.getTeacherId())) {
+            // 无匹配记录，检查 ID 是否已被占用，如果已被占用或无 ID 则自动生成全新 Snowflake ID
+            if (!org.springframework.util.StringUtils.hasText(teacher.getTeacherId()) 
+                    || teacherMapper.selectTeacherById(teacher.getTeacherId()) != null) {
                 teacher.setTeacherId(com.wudao.common.SnowflakeIdWorker.generateIdStr());
             }
-            log.info("[DEBUG TEACHER CREATE] 新建教师档案, 执行 INSERT 插入操作. NewID={}, Name={}", teacher.getTeacherId(), teacher.getName());
+            log.info("[DEBUG TEACHER UPSERT] 无现存匹配记录, 分配新 ID={}, 执行 INSERT 插入...", teacher.getTeacherId());
             teacherMapper.insertTeacher(teacher);
         }
 
-        // 重新转换为全路径返回给前端
-        String returnFullUrl = aliyunOssService.toFullUrl(teacher.getAvatarUrl());
-        teacher.setAvatarUrl(returnFullUrl);
-        log.info("[DEBUG TEACHER CREATE] 教师档案保存/更新完毕! 返回前端 FullUrl={}", returnFullUrl);
+        // 转换为全路径返回给前端
+        String fullUrl = aliyunOssService.toFullUrl(teacher.getAvatarUrl());
+        teacher.setAvatarUrl(fullUrl);
+        log.info("[DEBUG TEACHER UPSERT] 教师配置保存成功! 返回前端 FullUrl={}", fullUrl);
 
         return Result.success("教师档案添加成功！", teacher);
     }

@@ -7,8 +7,9 @@ import java.util.List;
 
 @Mapper
 public interface TeacherMapper {
- List<Teacher> selectAllTeachers();
- Teacher selectTeacherByName(@Param("name") String name);
- int insertTeacher(Teacher teacher);
- int updateTeacher(Teacher teacher);
+    List<Teacher> selectAllTeachers();
+    Teacher selectTeacherById(@Param("teacherId") String teacherId);
+    Teacher selectTeacherByName(@Param("name") String name);
+    int insertTeacher(Teacher teacher);
+    int updateTeacher(Teacher teacher);
 }

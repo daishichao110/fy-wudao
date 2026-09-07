@@ -311,44 +311,53 @@ Page({
  });
  },
 
- loadSchedules(cb) {
- const today = this.getTodayDate();
- const collapsedMap = {};
- (this.data.scheduleList || []).forEach(item => {
- if (item.scheduleId) {
- collapsedMap[item.scheduleId] = item.isCollapsed;
- }
- });
+  loadSchedules(cb) {
+    const today = this.getTodayDate();
+    const collapsedMap = {};
+    (this.data.scheduleList || []).forEach(item => {
+      if (item.scheduleId) {
+        collapsedMap[item.scheduleId] = item.isCollapsed;
+      }
+    });
 
- const queryClassCode = this.data.currentClassCode === 'GRADE_ALL' ? '' : this.data.currentClassCode;
+    const queryClassCode = this.data.currentClassCode === 'GRADE_ALL' ? '' : this.data.currentClassCode;
 
- api.getSchedules(queryClassCode).then(res => {
- const remoteData = (res && res.data) ? res.data : [];
- const mappedRemote = remoteData.map(item => {
- let displayClassName = '全校/公共';
- if (item.danceClassName === 'GRADE_1' || item.danceClassName === '一年级') displayClassName = '一年级';
- else if (item.danceClassName === 'GRADE_2' || item.danceClassName === '二年级') displayClassName = '二年级';
- else if (item.danceClassName === 'GRADE_3' || item.danceClassName === '三年级') displayClassName = '三年级';
- else if (item.danceClassName === 'GRADE_4' || item.danceClassName === '四年级') displayClassName = '四年级';
- else if (item.danceClassName === 'GRADE_5' || item.danceClassName === '五年级') displayClassName = '五年级';
- else if (item.danceClassName === 'GRADE_6' || item.danceClassName === '六年级') displayClassName = '六年级';
+    api.getSchedules(queryClassCode).then(res => {
+      const remoteData = (res && res.data) ? res.data : [];
+      
+      // 过滤只保留今天及以后的课程 (classDate >= today)
+      const validFutureData = remoteData.filter(item => {
+        if (!item || !item.classDate) return false;
+        const normDate = this.normalizeDateStr(item.classDate);
+        return normDate >= today;
+      });
 
- return {
- ...item,
- danceClassName: displayClassName,
- isCollapsed: collapsedMap[item.scheduleId] !== undefined ? !!collapsedMap[item.scheduleId] : true
- };
- });
+      const mappedRemote = validFutureData.map(item => {
+        let displayClassName = '全校/公共';
+        if (item.danceClassName === 'GRADE_1' || item.danceClassName === '一年级') displayClassName = '一年级';
+        else if (item.danceClassName === 'GRADE_2' || item.danceClassName === '二年级') displayClassName = '二年级';
+        else if (item.danceClassName === 'GRADE_3' || item.danceClassName === '三年级') displayClassName = '三年级';
+        else if (item.danceClassName === 'GRADE_4' || item.danceClassName === '四年级') displayClassName = '四年级';
+        else if (item.danceClassName === 'GRADE_5' || item.danceClassName === '五年级') displayClassName = '五年级';
+        else if (item.danceClassName === 'GRADE_6' || item.danceClassName === '六年级') displayClassName = '六年级';
 
- this.setData({ scheduleList: mappedRemote });
- this.updateDisplaySchedules();
- this.buildCalendarDays(mappedRemote);
+        return {
+          ...item,
+          danceClassName: displayClassName,
+          isCollapsed: collapsedMap[item.scheduleId] !== undefined ? !!collapsedMap[item.scheduleId] : true
+        };
+      });
 
- if (cb) cb();
- }).catch(err => {
- console.log('读取排课后端 API 异常:', err);
- this.setData({ scheduleList: [], displayScheduleList: [] });
- if (cb) cb();
- });
- }
+      console.log('[DEBUG SCHEDULE] 前端过滤后的今天及以后排课共 ' + mappedRemote.length + ' 条:', mappedRemote);
+      this.setData({ scheduleList: mappedRemote });
+      this.updateDisplaySchedules();
+      this.buildCalendarDays(mappedRemote);
+
+      if (cb) cb();
+    }).catch(err => {
+      console.log('读取排课后端 API 异常:', err);
+      this.setData({ scheduleList: [], displayScheduleList: [] });
+      if (cb) cb();
+    });
+  }
 });
