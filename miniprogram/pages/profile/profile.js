@@ -1136,7 +1136,12 @@ Page({
       sourceType: ['album', 'camera'],
       success: (chooseRes) => {
         if (chooseRes.tempFiles && chooseRes.tempFiles.length > 0) {
-          const tempPath = chooseRes.tempFiles[0].tempFilePath;
+          const file = chooseRes.tempFiles[0];
+          if (file.size > 1024 * 1024) {
+            wx.showToast({ title: '头像大小不能超过 1MB，请重新选择或压缩', icon: 'none' });
+            return;
+          }
+          const tempPath = file.tempFilePath;
           wx.showLoading({ title: '正在上传到阿里云...', mask: true });
           api.uploadImage(tempPath, 'teachers/').then(uploadRes => {
             wx.hideLoading();
@@ -1147,7 +1152,7 @@ Page({
           }).catch(err => {
             wx.hideLoading();
             console.error('[DEBUG TEACHER AVATAR] ❌ 上传失败:', err);
-            wx.showToast({ title: '头像上传失败', icon: 'none' });
+            wx.showToast({ title: (err && err.message) || '头像上传失败', icon: 'none' });
           });
         }
       }

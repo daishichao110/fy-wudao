@@ -22,6 +22,12 @@ public class GlobalExceptionHandler {
  return Result.error(400, e.getMessage());
  }
 
+ @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
+ public Result<String> handleMaxUploadSizeExceeded(org.springframework.web.multipart.MaxUploadSizeExceededException e) {
+ log.warn("[GlobalExceptionHandler] 文件上传超出 1MB 限制: {}", e.getMessage());
+ return Result.error(400, "上传图片大小不能超过 1MB，请压缩或选择较小的图片");
+ }
+
  @ExceptionHandler(Exception.class)
  public Result<String> handleException(Exception e) {
  log.error("[GlobalExceptionHandler] Uncaught System Exception:", e);
